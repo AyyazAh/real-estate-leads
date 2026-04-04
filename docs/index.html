@@ -697,82 +697,83 @@
             markers = [];
         }
         
-        // Add markers to map
-        function addMarkersToMap(leads) {
-            clearMarkers();
-            
-            // Group leads by location to avoid overlapping markers
-            const locationGroups = {};
-            leads.forEach(lead => {
-                const key = lead.Location;
-                if (!locationGroups[key]) {
-                    locationGroups[key] = [];
-                }
-                locationGroups[key].push(lead);
-            });
-            
-            // Add marker for each unique location
-            for (const [location, properties] of Object.entries(locationGroups)) {
-                const coords = getCoordinates(location);
-                const count = properties.length;
-                
-                // Create custom popup content
-                let popupContent = `
-                    <div class="custom-popup" style="min-width: 200px;">
-                        <div class="popup-title">📍 ${escapeHtml(location)}</div>
-                        <div class="popup-price">🏠 ${count} property${count > 1 ? 's' : ''}</div>
-                `;
-                
-                // Show first 3 properties in popup
-                properties.slice(0, 3).forEach(prop => {
-                    const title = prop.Title ? prop.Title.substring(0, 50) : 'N/A';
-                    const price = prop.Price || 'N/A';
-                    const phone = prop.Phone || 'N/A';
-                    popupContent += `
-                        <div style="margin-top: 8px; padding-top: 5px; border-top: 1px solid #eee;">
-                            <div style="font-weight: bold; font-size: 11px;">${escapeHtml(title)}</div>
-                            <div style="color: #e74c3c; font-size: 10px;">💰 ${escapeHtml(price)}</div>
-                            <div style="color: #27ae60; font-size: 9px;">📞 ${escapeHtml(phone)}</div>
-                            <a href="${prop.Link}" target="_blank" style="font-size: 9px;">View on OLX →</a>
-                        </div>
-                    `;
-                });
-                
-                if (properties.length > 3) {
-                    popupContent += `<div style="margin-top: 5px; font-style: italic; font-size: 9px;">... and ${properties.length - 3} more properties</div>`;
-                }
-                
-                popupContent += `</div>`;
-                
-                // Determine marker color based on property type
-                let markerColor = 'blue';
-                if (properties.some(p => p.Title?.toLowerCase().includes('plot'))) {
-                    markerColor = 'green';
-                } else if (properties.some(p => p.Title?.toLowerCase().includes('apartment') || p.Title?.toLowerCase().includes('flat'))) {
-                    markerColor = 'orange';
-                } else if (properties.some(p => p.Price?.includes('Crore') && parseFloat(p.Price) > 5)) {
-                    markerColor = 'red';
-                }
-                
-                // Create custom icon
-                const icon = L.divIcon({
-                    html: `<div style="background-color: ${markerColor === 'red' ? '#e74c3c' : markerColor === 'green' ? '#27ae60' : markerColor === 'orange' ? '#f39c12' : '#3498db'}; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; box-shadow: 0 1px 3px rgba(0,0,0,0.3);"></div>`,
-                    className: 'custom-marker',
-                    iconSize: [16, 16],
-                    popupAnchor: [0, -8]
-                });
-                
-                const marker = L.marker([coords.lat, coords.lng], { icon: icon }).addTo(map);
-                marker.bindPopup(popupContent);
-                markers.push(marker);
-            }
-            
-            // Fit bounds to show all markers
-            if (markers.length > 0) {
-                const group = L.featureGroup(markers);
-                map.fitBounds(group.getBounds().pad(0.2));
-            }
+        // Add markers to map with random offsets for better visibility
+function addMarkersToMap(leads) {
+    clearMarkers();
+    
+    // Track used coordinates to add offsets
+    const usedCoordinates = new Map();
+    
+    leads.forEach(lead => {
+        const location = lead.Location || 'Unknown';
+        let coords = getCoordinates(location);
+        
+        // Create a unique key for this exact location
+        const locationKey = `${coords.lat},${coords.lng}`;
+        
+        // If we already have properties at these coordinates, add a small random offset
+        if (usedCoordinates.has(locationKey)) {
+            const offsetCount = usedCoordinates.get(locationKey);
+            // Add random offset between -0.02 and 0.02 degrees (approx 1-2 km)
+            const latOffset = (Math.random() - 0.5) * 0.04;
+            const lngOffset = (Math.random() - 0.5) * 0.04;
+            coords = {
+                lat: coords.lat + latOffset,
+                lng: coords.lng + lngOffset
+            };
+            usedCoordinates.set(locationKey, offsetCount + 1);
+        } else {
+            usedCoordinates.set(locationKey, 1);
         }
+        
+        // Create popup content for this single property
+        const title = lead.Title ? lead.Title.substring(0, 60) : 'N/A';
+        const price = lead.Price || 'N/A';
+        const phone = lead.Phone || 'N/A';
+        const posted = lead.Posted || 'Unknown';
+        const seller = lead.Seller || 'N/A';
+        
+        let popupContent = `
+            <div class="custom-popup" style="min-width: 220px; max-width: 260px;">
+                <div style="font-weight: bold; font-size: 12px; margin-bottom: 8px; color: #2c3e50;">🏠 ${escapeHtml(title)}</div>
+                <div style="color: #e74c3c; font-weight: bold; font-size: 13px;">💰 ${escapeHtml(price)}</div>
+                <div style="color: #27ae60; font-size: 11px; margin: 4px 0;">📞 ${escapeHtml(phone)}</div>
+                <div style="color: #666; font-size: 10px;">📍 ${escapeHtml(location)}</div>
+                <div style="color: #8e44ad; font-size: 10px;">👤 ${escapeHtml(seller)}</div>
+                <div style="color: #999; font-size: 9px;">📅 ${escapeHtml(posted)}</div>
+                <a href="${lead.Link}" target="_blank" style="font-size: 10px; display: inline-block; margin-top: 6px;">🔗 View on OLX →</a>
+            </div>
+        `;
+        
+        // Determine marker color based on property type and price
+        let markerColor = '#3498db'; // default blue
+        if (title.toLowerCase().includes('plot')) {
+            markerColor = '#27ae60'; // green for plots
+        } else if (title.toLowerCase().includes('apartment') || title.toLowerCase().includes('flat')) {
+            markerColor = '#f39c12'; // orange for apartments
+        } else if (price.includes('Crore') && parseFloat(price) > 5) {
+            markerColor = '#e74c3c'; // red for luxury
+        }
+        
+        // Create custom icon
+        const icon = L.divIcon({
+            html: `<div style="background-color: ${markerColor}; width: 14px; height: 14px; border-radius: 50%; border: 2px solid white; box-shadow: 0 1px 3px rgba(0,0,0,0.3);"></div>`,
+            className: 'custom-marker',
+            iconSize: [18, 18],
+            popupAnchor: [0, -9]
+        });
+        
+        const marker = L.marker([coords.lat, coords.lng], { icon: icon }).addTo(map);
+        marker.bindPopup(popupContent);
+        markers.push(marker);
+    });
+    
+    // Fit bounds to show all markers
+    if (markers.length > 0) {
+        const group = L.featureGroup(markers);
+        map.fitBounds(group.getBounds().pad(0.1));
+    }
+}
         
         // Parse time string to minutes for sorting
         function parseTimeToMinutes(timeStr) {
