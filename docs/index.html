@@ -130,6 +130,7 @@
             overflow: hidden;
             transition: all 0.3s;
             border: 1px solid #eee;
+            cursor: pointer;
         }
         
         .recent-card:hover {
@@ -243,11 +244,33 @@
             overflow: hidden;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             transition: transform 0.3s, box-shadow 0.3s;
+            scroll-margin-top: 20px;
         }
         
         .lead-card:hover {
             transform: translateY(-3px);
             box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .lead-card.highlight {
+            animation: highlight 2s ease-in-out;
+            border: 2px solid #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+        }
+        
+        @keyframes highlight {
+            0% {
+                background-color: rgba(102, 126, 234, 0.2);
+                transform: scale(1);
+            }
+            50% {
+                background-color: rgba(102, 126, 234, 0.4);
+                transform: scale(1.02);
+            }
+            100% {
+                background-color: rgba(102, 126, 234, 0);
+                transform: scale(1);
+            }
         }
         
         .lead-image {
@@ -373,6 +396,29 @@
             background: #f0f0f0;
         }
         
+        /* Scroll to top button */
+        .scroll-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: none;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+        
+        .scroll-top:hover {
+            transform: scale(1.1);
+        }
+        
         .loading {
             text-align: center;
             padding: 60px;
@@ -409,6 +455,10 @@
             }
             .filter-group {
                 justify-content: space-between;
+            }
+            .recent-image {
+                width: 80px;
+                height: 80px;
             }
         }
     </style>
@@ -502,13 +552,30 @@
         </div>
     </div>
     
+    <button class="scroll-top" id="scrollTopBtn" onclick="scrollToTop()">↑</button>
+    
     <script>
         let currentPage = 1;
         let totalPages = 1;
         let allLeads = [];
+        let currentFilteredLeads = [];
         
         // Point to your JSON file
         const DATA_URL = 'https://raw.githubusercontent.com/AyyazAh/real-estate-leads/main/docs/leads_data.json';
+        
+        // Scroll to top button
+        window.onscroll = function() {
+            const btn = document.getElementById('scrollTopBtn');
+            if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+                btn.style.display = 'block';
+            } else {
+                btn.style.display = 'none';
+            }
+        };
+        
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
         
         function parseTimeValue(timeStr) {
             if (!timeStr) return 999999;
@@ -524,7 +591,34 @@
             return 999999;
         }
         
-        async function loadLeads() {
+        // Function to scroll to a specific ad and highlight it
+        function scrollToAd(link) {
+            // Find the card with matching link
+            const cards = document.querySelectorAll('.lead-card');
+            for (const card of cards) {
+                const adLink = card.querySelector('.lead-link a');
+                if (adLink && adLink.href === link) {
+                    // Remove highlight from all cards
+                    cards.forEach(c => c.classList.remove('highlight'));
+                    // Add highlight to this card
+                    card.classList.add('highlight');
+                    // Scroll to the card
+                    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    break;
+                }
+            }
+        }
+        
+        // Function to find which page contains a specific lead
+        function findPageForLead(leadLink, leads, perPage) {
+            const index = leads.findIndex(lead => lead.Link === leadLink);
+            if (index !== -1) {
+                return Math.floor(index / perPage) + 1;
+            }
+            return 1;
+        }
+        
+        async function loadLeads(scrollToLink = null) {
             const search = document.getElementById('searchInput').value;
             const price = document.getElementById('priceFilter').value;
             const furnished = document.getElementById('furnishedFilter').value;
@@ -569,6 +663,16 @@
                     filtered = filtered.filter(lead => lead.Furnished === furnished);
                 }
                 
+                currentFilteredLeads = filtered;
+                
+                // If we need to scroll to a specific ad, find its page
+                if (scrollToLink) {
+                    const targetPage = findPageForLead(scrollToLink, filtered, perPage);
+                    if (targetPage !== currentPage) {
+                        currentPage = targetPage;
+                    }
+                }
+                
                 const total = filtered.length;
                 totalPages = Math.ceil(total / perPage);
                 const start = (currentPage - 1) * perPage;
@@ -576,6 +680,13 @@
                 
                 renderLeads(paginated);
                 renderPagination();
+                
+                // After rendering, scroll to the ad if needed
+                if (scrollToLink) {
+                    setTimeout(() => {
+                        scrollToAd(scrollToLink);
+                    }, 300);
+                }
                 
             } catch (error) {
                 console.error('Error loading data:', error);
@@ -597,9 +708,10 @@
                 const location = ad.Location || 'N/A';
                 const posted = ad.Posted || 'Unknown';
                 const image = ad.ImageURL || '';
+                const link = ad.Link || '#';
                 
                 html += `
-                    <div class="recent-card">
+                    <div class="recent-card" onclick="scrollToAdByLink('${link.replace(/'/g, "\\'")}')">
                         ${image ? `<img src="${image}" alt="Property" class="recent-image" onerror="this.style.display='none'">` : ''}
                         <div class="recent-info">
                             <div class="recent-title-text">${escapeHtml(title.substring(0, 60))}</div>
@@ -611,6 +723,13 @@
                 `;
             }
             container.innerHTML = html;
+        }
+        
+        // Global function to handle scrolling from recent ad clicks
+        function scrollToAdByLink(link) {
+            // Reset to page 1 first to ensure we find the ad
+            currentPage = 1;
+            loadLeads(link);
         }
         
         function updateStats(data) {
@@ -657,7 +776,7 @@
                 const newBadge = (posted.includes('minute') || posted.includes('hour')) ? '<span class="badge badge-new">🆕 NEW</span>' : '';
                 
                 html += `
-                    <div class="lead-card">
+                    <div class="lead-card" data-link="${link.replace(/'/g, "\\'")}">
                         <div class="lead-image">
                             ${image ? `<img src="${image}" alt="Property" loading="lazy" onerror="this.src='https://placehold.co/400x200/e0e0e0/999?text=No+Image'">` : '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#999;">📷 No Image</div>'}
                         </div>
@@ -744,7 +863,7 @@
         loadLeads();
         
         // Auto-refresh every 10 minutes
-        setInterval(loadLeads, 600000);
+        setInterval(() => loadLeads(), 600000);
     </script>
 </body>
 </html>
