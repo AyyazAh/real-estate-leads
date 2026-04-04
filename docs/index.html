@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Estate Lead Engine | Live Property Leads Dashboard</title>
+    <meta name="description" content="Real-time property leads from OLX Pakistan. Find houses, apartments, plots and commercial properties with contact numbers.">
+    <meta name="keywords" content="real estate, property leads, OLX Pakistan, houses for sale, plots, apartments">
+    <meta property="og:title" content="Real Estate Lead Engine">
+    <meta property="og:description" content="Live property leads dashboard with phone numbers">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="https://img.icons8.com/color/48/real-estate.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255,255,255,0.95);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header p {
+            color: #666;
+            margin-top: 8px;
+        }
+
+        .last-updated {
+            background: #e8f4f8;
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        /* Filters */
+        .filters {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            color: #555;
+            font-size: 13px;
+        }
+
+        select, input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 13px;
+            outline: none;
+        }
+
+        select:focus, input:focus {
+            border-color: #667eea;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: opacity 0.3s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        /* Leads Grid */
+        .leads-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .lead-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .lead-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .lead-image {
+            height: 180px;
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .lead-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .lead-content {
+            padding: 16px;
+        }
+
+        .lead-title {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 10px;
+            line-height: 1.4;
+            height: 40px;
+            overflow: hidden;
+            color: #2c3e50;
+        }
+
+        .lead-price {
+            color: #e74c3c;
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .lead-phone {
+            color: #27ae60;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 8px;
+            word-break: break-all;
+        }
+
+        .lead-location {
+            color: #666;
+            font-size: 12px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .lead-seller {
+            color: #8e44ad;
+            font-size: 12px;
+            margin-bottom: 6px;
+        }
+
+        .lead-posted {
+            font-size: 11px;
+            color: #999;
+            margin-bottom: 10px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .badge-furnished {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-new {
+            background: #ffc107;
+            color: #856404;
+        }
+
+        .lead-link a {
+            color: #3498db;
+            text-decoration: none;
+            font-size: 12px;
+        }
+
+        .lead-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .page-btn {
+            background: white;
+            color: #333;
+            border: 1px solid #ddd;
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .page-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+        }
+
+        .page-btn:hover:not(.active) {
+            background: #f0f0f0;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 60px;
+            background: white;
+            border-radius: 16px;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px;
+            background: white;
+            border-radius: 16px;
+            color: #999;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            color: rgba(255,255,255,0.8);
+            font-size: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            .leads-grid {
+                grid-template-columns: 1fr;
+            }
+            .filters {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .filter-group {
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>
+                <span>🏠</span> Real Estate Lead Engine
+            </h1>
+            <p>Live property leads from OLX Pakistan | Updated daily with phone numbers</p>
+            <div class="last-updated" id="lastUpdated">
+                <span>🔄</span> Loading data...
+            </div>
+        </div>
+
+        <div class="stats-grid" id="stats">
+            <div class="stat-card">
+                <div class="stat-number">-</div>
+                <div class="stat-label">Total Leads</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">-</div>
+                <div class="stat-label">With Phone</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">-</div>
+                <div class="stat-label">Unique Locations</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">-</div>
+                <div class="stat-label">Furnished</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">-</div>
+                <div class="stat-label">Recent (24h)</div>
+            </div>
+        </div>
+
+        <div class="filters">
+            <div class="filter-group">
+                <label>🔍 Search:</label>
+                <input type="text" id="searchInput" placeholder="Title, location, seller..." style="width: 180px;">
+            </div>
+            <div class="filter-group">
+                <label>💰 Price:</label>
+                <select id="priceFilter">
+                    <option value="all">All</option>
+                    <option value="crore">> 1 Crore</option>
+                    <option value="lac">< 1 Crore</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>🛋️ Furnished:</label>
+                <select id="furnishedFilter">
+                    <option value="all">All</option>
+                    <option value="Furnished">Furnished</option>
+                    <option value="Unfurnished">Unfurnished</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>📊 Per page:</label>
+                <select id="perPage">
+                    <option value="12">12</option>
+                    <option value="24">24</option>
+                    <option value="48">48</option>
+                </select>
+            </div>
+            <button onclick="resetAndRefresh()">🔄 Refresh</button>
+        </div>
+
+        <div id="leadsContainer">
+            <div class="loading">📡 Loading leads from server...</div>
+        </div>
+
+        <div id="pagination" class="pagination"></div>
+
+        <div class="footer">
+            <p>Data sourced from OLX Pakistan | Updated daily</p>
+            <p>© 2024 Real Estate Lead Engine | For research purposes only</p>
+        </div>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        let totalPages = 1;
+        let allLeads = [];
+
+        // Configuration - Update these with your actual Gist/JSON URL
+        // For GitHub Pages, we'll use a JSON file in the same repository
+        const DATA_URL = 'https://raw.githubusercontent.com/YOUR_USERNAME/real-estate-leads/main/data/leads_data.json';
+
+        async function loadLeads() {
+            const search = document.getElementById('searchInput').value;
+            const price = document.getElementById('priceFilter').value;
+            const furnished = document.getElementById('furnishedFilter').value;
+            const perPage = parseInt(document.getElementById('perPage').value);
+
+            // Show loading
+            document.getElementById('leadsContainer').innerHTML = '<div class="loading">📡 Loading leads...</div>';
+
+            try {
+                const response = await fetch(DATA_URL + '?t=' + new Date().getTime());
+                if (!response.ok) throw new Error('Failed to load data');
+                const data = await response.json();
+
+                allLeads = data.leads || [];
+                updateStats(data);
+                document.getElementById('lastUpdated').innerHTML = `🔄 Last updated: ${data.last_updated || 'Unknown'}`;
+
+                // Apply filters
+                let filtered = [...allLeads];
+
+                if (search) {
+                    filtered = filtered.filter(lead =>
+                        (lead.Title || '').toLowerCase().includes(search.toLowerCase()) ||
+                        (lead.Location || '').toLowerCase().includes(search.toLowerCase()) ||
+                        (lead.Seller || '').toLowerCase().includes(search.toLowerCase())
+                    );
+                }
+
+                if (price === 'crore') {
+                    filtered = filtered.filter(lead => (lead.Price || '').includes('Crore'));
+                } else if (price === 'lac') {
+                    filtered = filtered.filter(lead => (lead.Price || '').includes('Lac'));
+                }
+
+                if (furnished !== 'all') {
+                    filtered = filtered.filter(lead => lead.Furnished === furnished);
+                }
+
+                // Pagination
+                const total = filtered.length;
+                totalPages = Math.ceil(total / perPage);
+                const start = (currentPage - 1) * perPage;
+                const paginated = filtered.slice(start, start + perPage);
+
+                renderLeads(paginated);
+                renderPagination();
+
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('leadsContainer').innerHTML = '<div class="no-results">⚠️ Error loading data. Please try again later.</div>';
+            }
+        }
+
+        function updateStats(data) {
+            const leads = data.leads || [];
+            const withPhone = leads.filter(l => l.Phone && l.Phone !== 'none').length;
+            const uniqueLocations = new Set(leads.map(l => l.Location)).size;
+            const furnished = leads.filter(l => l.Furnished === 'Furnished').length;
+            const recent = leads.filter(l => {
+                const posted = l.Posted || '';
+                return posted.includes('minute') || posted.includes('hour');
+            }).length;
+
+            const statDivs = document.querySelectorAll('.stat-card');
+            if (statDivs.length >= 5) {
+                statDivs[0].querySelector('.stat-number').textContent = leads.length;
+                statDivs[1].querySelector('.stat-number').textContent = withPhone;
+                statDivs[2].querySelector('.stat-number').textContent = uniqueLocations;
+                statDivs[3].querySelector('.stat-number').textContent = furnished;
+                statDivs[4].querySelector('.stat-number').textContent = recent;
+            }
+        }
+
+        function renderLeads(leads) {
+            const container = document.getElementById('leadsContainer');
+
+            if (leads.length === 0) {
+                container.innerHTML = '<div class="no-results">🔍 No leads found matching your criteria</div>';
+                return;
+            }
+
+            let html = '<div class="leads-grid">';
+            for (const lead of leads) {
+                const title = lead.Title || 'N/A';
+                const price = lead.Price || 'N/A';
+                const phone = lead.Phone || 'N/A';
+                const location = lead.Location || 'N/A';
+                const seller = lead.Seller || 'N/A';
+                const furnished = lead.Furnished || '';
+                const posted = lead.Posted || 'Unknown';
+                const image = lead.ImageURL || '';
+                const link = lead.Link || '#';
+
+                const furnishedBadge = furnished === 'Furnished' ? '<span class="badge badge-furnished">Furnished</span>' : '';
+                const newBadge = (posted.includes('minute') || posted.includes('hour')) ? '<span class="badge badge-new">🆕 NEW</span>' : '';
+
+                html += `
+                    <div class="lead-card">
+                        <div class="lead-image">
+                            ${image ? `<img src="${image}" alt="Property" loading="lazy" onerror="this.src='https://placehold.co/400x200/e0e0e0/999?text=No+Image'">` : '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#999;">📷 No Image</div>'}
+                        </div>
+                        <div class="lead-content">
+                            <div class="lead-title">${escapeHtml(title.substring(0, 70))}</div>
+                            <div class="lead-price">💰 ${escapeHtml(price)}</div>
+                            <div class="lead-phone">📞 ${escapeHtml(phone)}</div>
+                            <div class="lead-location">📍 ${escapeHtml(location)}</div>
+                            <div class="lead-seller">👤 ${escapeHtml(seller)} ${furnishedBadge}</div>
+                            <div class="lead-posted">📅 ${escapeHtml(posted)} ${newBadge}</div>
+                            <div class="lead-link">🔗 <a href="${link}" target="_blank" rel="noopener noreferrer">View on OLX</a></div>
+                        </div>
+                    </div>
+                `;
+            }
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function renderPagination() {
+            const container = document.getElementById('pagination');
+            if (totalPages <= 1) {
+                container.innerHTML = '';
+                return;
+            }
+
+            let html = '';
+            const startPage = Math.max(1, currentPage - 2);
+            const endPage = Math.min(totalPages, startPage + 4);
+
+            if (startPage > 1) {
+                html += `<button class="page-btn" onclick="goToPage(1)">1</button>`;
+                if (startPage > 2) html += `<span style="padding: 8px;">...</span>`;
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+            }
+
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) html += `<span style="padding: 8px;">...</span>`;
+                html += `<button class="page-btn" onclick="goToPage(${totalPages})">${totalPages}</button>`;
+            }
+
+            container.innerHTML = html;
+        }
+
+        function goToPage(page) {
+            currentPage = page;
+            loadLeads();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function resetAndRefresh() {
+            currentPage = 1;
+            document.getElementById('searchInput').value = '';
+            document.getElementById('priceFilter').value = 'all';
+            document.getElementById('furnishedFilter').value = 'all';
+            loadLeads();
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Debounced search
+        let searchTimeout;
+        document.getElementById('searchInput').addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                currentPage = 1;
+                loadLeads();
+            }, 300);
+        });
+
+        document.getElementById('priceFilter').addEventListener('change', () => { currentPage = 1; loadLeads(); });
+        document.getElementById('furnishedFilter').addEventListener('change', () => { currentPage = 1; loadLeads(); });
+        document.getElementById('perPage').addEventListener('change', () => { currentPage = 1; loadLeads(); });
+
+        // Initial load
+        loadLeads();
+
+        // Auto-refresh every 10 minutes
+        setInterval(loadLeads, 600000);
+    </script>
+</body>
+</html>

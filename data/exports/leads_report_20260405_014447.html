@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Estate Leads Report - 20260405_014447</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        .timestamp {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .summary-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .summary-card:hover {
+            transform: translateY(-5px);
+        }
+        .summary-card .number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #3498db;
+        }
+        .summary-card .label {
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .leads-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 20px;
+        }
+        .lead-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .lead-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        .lead-image {
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+            background: #f5f5f5;
+        }
+        .lead-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        .lead-card:hover .lead-image img {
+            transform: scale(1.05);
+        }
+        .no-image {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #bdc3c7;
+            font-size: 14px;
+        }
+        .lead-content {
+            padding: 15px;
+        }
+        .lead-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            line-height: 1.4;
+            height: 44px;
+            overflow: hidden;
+        }
+        .lead-detail {
+            margin: 8px 0;
+            font-size: 13px;
+            color: #555;
+        }
+        .lead-label {
+            font-weight: 600;
+            color: #7f8c8d;
+            display: inline-block;
+            width: 70px;
+        }
+        .phone {
+            color: #27ae60;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .price {
+            color: #e74c3c;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .seller {
+            color: #8e44ad;
+        }
+        .link {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #ecf0f1;
+        }
+        .link a {
+            color: #3498db;
+            text-decoration: none;
+            font-size: 12px;
+            word-break: break-all;
+        }
+        .link a:hover {
+            text-decoration: underline;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            color: white;
+            font-size: 12px;
+        }
+        @media (max-width: 768px) {
+            .leads-grid {
+                grid-template-columns: 1fr;
+            }
+            .lead-title {
+                height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏠 Real Estate Lead Engine Report</h1>
+            <div class="timestamp">Generated on: 2026-04-05 01:44:47</div>
+        </div>
+
+        <div class="summary">
+            <div class="summary-card">
+                <div class="number">39</div>
+                <div class="label">Total Leads</div>
+            </div>
+            <div class="summary-card">
+                <div class="number">36</div>
+                <div class="label">Properties > 1 Crore</div>
+            </div>
+            <div class="summary-card">
+                <div class="number">3</div>
+                <div class="label">Properties < 1 Crore</div>
+            </div>
+            <div class="summary-card">
+                <div class="number">27</div>
+                <div class="label">Unique Locations</div>
+            </div>
+            <div class="summary-card">
+                <div class="number">22</div>
+                <div class="label">Furnished Properties</div>
+            </div>
+        </div>
+
+        <div class="leads-grid">
+
+            <div class="lead-card">
+                <div class="lead-image">
+                    <img src="https://images.olx.com.pk/thumbnails/606135324-800x600.webp" alt="Property Image" loading="lazy">
+                </div>
+                <div class="lead-content">
+                    <div class="lead-title">1. Title: Premium 10 Marla Plot File for Sale in Etihad Town Phase III</div>
+                    <div class="lead-detail"><span class="lead-label">💰 Price:</span> <span class="price">Rs 1.02 Crore</span></div>
+                    <div class="lead-detail"><span class="lead-label">📍 Location:</span> Soul City, Lahore</div>
+                    <div class="lead-detail"><span class="lead-label">📞 Phone:</span> <span class="phone">03055544498</span></div>
+                    <div class="lead-detail"><span class="lead-label">🏠 Area:</span> 10 Marla</div>
+                    <div class="lead-detail"><span class="lead-label">🛏️ Bedrooms:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">🚿 Bathrooms:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">🛋️ Furnished:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">👤 Seller:</span> <span class="seller">Khurram Saddiqui</span></div>
+                    <div class="lead-detail"><span class="lead-label">📅 Posted:</span> 5 days ago</div>
+                    <div class="link"><a href="https://www.olx.com.pk/item/title-premium-10-marla-plot-file-for-sale-in-etihad-town-phase-iii-easy-installments-iid-1112587676" target="_blank">🔗 View on OLX →</a></div>
+                </div>
+            </div>
+
+            <div class="lead-card">
+                <div class="lead-image">
+                    <img src="https://images.olx.com.pk/thumbnails/605914347-800x600.webp" alt="Property Image" loading="lazy">
+                </div>
+                <div class="lead-content">
+                    <div class="lead-title">2. 4 Marla corner commercial plot</div>
+                    <div class="lead-detail"><span class="lead-label">💰 Price:</span> <span class="price">Rs 1.30 Crore</span></div>
+                    <div class="lead-detail"><span class="lead-label">📍 Location:</span> Adiala Road, Rawalpindi</div>
+                    <div class="lead-detail"><span class="lead-label">📞 Phone:</span> <span class="phone">03096107969</span></div>
+                    <div class="lead-detail"><span class="lead-label">🏠 Area:</span> 4 Marla</div>
+                    <div class="lead-detail"><span class="lead-label">🛏️ Bedrooms:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">🚿 Bathrooms:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">🛋️ Furnished:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">👤 Seller:</span> <span class="seller">Afzal Awan</span></div>
+                    <div class="lead-detail"><span class="lead-label">📅 Posted:</span> 1 week ago</div>
+                    <div class="link"><a href="https://www.olx.com.pk/item/4-marla-corner-commercial-plot-iid-1112551299" target="_blank">🔗 View on OLX →</a></div>
+                </div>
+            </div>
+
+            <div class="lead-card">
+                <div class="lead-image">
+                    <img src="https://images.olx.com.pk/thumbnails/607406402-800x600.webp" alt="Property Image" loading="lazy">
+                </div>
+                <div class="lead-content">
+                    <div class="lead-title">3. 2 bed dd brand new house for sale</div>
+                    <div class="lead-detail"><span class="lead-label">💰 Price:</span> <span class="price">Rs 1.30 Crore</span></div>
+                    <div class="lead-detail"><span class="lead-label">📍 Location:</span> Gulshan-e-Maymar, Karachi</div>
+                    <div class="lead-detail"><span class="lead-label">📞 Phone:</span> <span class="phone">03482554191</span></div>
+                    <div class="lead-detail"><span class="lead-label">🏠 Area:</span> 120 Square Yards</div>
+                    <div class="lead-detail"><span class="lead-label">🛏️ Bedrooms:</span> Bedrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🚿 Bathrooms:</span> Bathrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🛋️ Furnished:</span> Furnished</div>
+                    <div class="lead-detail"><span class="lead-label">👤 Seller:</span> <span class="seller">Zubair khan</span></div>
+                    <div class="lead-detail"><span class="lead-label">📅 Posted:</span> 4 days ago</div>
+                    <div class="link"><a href="https://www.olx.com.pk/item/2-bed-dd-brand-new-house-for-sale-iid-1112798226" target="_blank">🔗 View on OLX →</a></div>
+                </div>
+            </div>
+
+            <div class="lead-card">
+                <div class="lead-image">
+                    <img src="https://images.olx.com.pk/thumbnails/604090096-800x600.webp" alt="Property Image" loading="lazy">
+                </div>
+                <div class="lead-content">
+                    <div class="lead-title">4. EAST OPEN SUH 375 SQ YARD HOUSE AVAILABLE FOR SALE IN SEC H ASK V MALIR</div>
+                    <div class="lead-detail"><span class="lead-label">💰 Price:</span> <span class="price">Rs 9.10 Crore</span></div>
+                    <div class="lead-detail"><span class="lead-label">📍 Location:</span> Askari 5 - Sector H, Karachi</div>
+                    <div class="lead-detail"><span class="lead-label">📞 Phone:</span> <span class="phone">03005100087</span></div>
+                    <div class="lead-detail"><span class="lead-label">🏠 Area:</span> 375 Square Yards</div>
+                    <div class="lead-detail"><span class="lead-label">🛏️ Bedrooms:</span> Bedrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🚿 Bathrooms:</span> Bathrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🛋️ Furnished:</span> Furnished</div>
+                    <div class="lead-detail"><span class="lead-label">👤 Seller:</span> <span class="seller">User 6Pk0Mh</span></div>
+                    <div class="lead-detail"><span class="lead-label">📅 Posted:</span> 3 weeks ago</div>
+                    <div class="link"><a href="https://www.olx.com.pk/item/east-open-suh-375-sq-yard-house-available-for-sale-in-sec-h-ask-v-malir-iid-1112246968" target="_blank">🔗 View on OLX →</a></div>
+                </div>
+            </div>
+
+            <div class="lead-card">
+                <div class="lead-image">
+                    <img src="https://images.olx.com.pk/thumbnails/605122141-800x600.webp" alt="Property Image" loading="lazy">
+                </div>
+                <div class="lead-content">
+                    <div class="lead-title">5. 3 Marla Beautiful House For Sale</div>
+                    <div class="lead-detail"><span class="lead-label">💰 Price:</span> <span class="price">Rs 1.40 Crore</span></div>
+                    <div class="lead-detail"><span class="lead-label">📍 Location:</span> Nasheman-e-Iqbal Phase 2, Lahore</div>
+                    <div class="lead-detail"><span class="lead-label">📞 Phone:</span> <span class="phone">03214156812</span></div>
+                    <div class="lead-detail"><span class="lead-label">🏠 Area:</span> 3 Marla</div>
+                    <div class="lead-detail"><span class="lead-label">🛏️ Bedrooms:</span> Bedrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🚿 Bathrooms:</span> Bathrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🛋️ Furnished:</span> Furnished</div>
+                    <div class="lead-detail"><span class="lead-label">👤 Seller:</span> <span class="seller">Syed Saqlain Kirmani</span></div>
+                    <div class="lead-detail"><span class="lead-label">📅 Posted:</span> 1 week ago</div>
+                    <div class="link"><a href="https://www.olx.com.pk/item/3-marla-beautiful-house-for-sale-iid-1112419880" target="_blank">🔗 View on OLX →</a></div>
+                </div>
+            </div>
+
+            <div class="lead-card">
+                <div class="lead-image">
+                    <img src="https://images.olx.com.pk/thumbnails/601591092-800x600.webp" alt="Property Image" loading="lazy">
+                </div>
+                <div class="lead-content">
+                    <div class="lead-title">6. Single Story Used House For Sale Near By Valencia Society Prime Location 50 Fit Road</div>
+                    <div class="lead-detail"><span class="lead-label">💰 Price:</span> <span class="price">Rs 1.35 Crore</span></div>
+                    <div class="lead-detail"><span class="lead-label">📍 Location:</span> Naz Town, Lahore</div>
+                    <div class="lead-detail"><span class="lead-label">📞 Phone:</span> <span class="phone">03214156812</span></div>
+                    <div class="lead-detail"><span class="lead-label">🏠 Area:</span> 10 Marla</div>
+                    <div class="lead-detail"><span class="lead-label">🛏️ Bedrooms:</span> Bedrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🚿 Bathrooms:</span> Bathrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🛋️ Furnished:</span> Furnished</div>
+                    <div class="lead-detail"><span class="lead-label">👤 Seller:</span> <span class="seller">Syed Saqlain Kirmani</span></div>
+                    <div class="lead-detail"><span class="lead-label">📅 Posted:</span> 6 days ago</div>
+                    <div class="link"><a href="https://www.olx.com.pk/item/single-story-used-house-for-sale-near-by-valencia-society-prime-location-50-fit-road-iid-1111833115" target="_blank">🔗 View on OLX →</a></div>
+                </div>
+            </div>
+
+            <div class="lead-card">
+                <div class="lead-image">
+                    <img src="https://images.olx.com.pk/thumbnails/598688064-800x600.webp" alt="Property Image" loading="lazy">
+                </div>
+                <div class="lead-content">
+                    <div class="lead-title">7. Centrally Located Prime Location House In Formanites Housing Scheme</div>
+                    <div class="lead-detail"><span class="lead-label">💰 Price:</span> <span class="price">Rs 3 Crore</span></div>
+                    <div class="lead-detail"><span class="lead-label">📍 Location:</span> Formanites Housing Scheme - Block M, Lahore</div>
+                    <div class="lead-detail"><span class="lead-label">📞 Phone:</span> <span class="phone">03002222891</span></div>
+                    <div class="lead-detail"><span class="lead-label">🏠 Area:</span> 10 Marla</div>
+                    <div class="lead-detail"><span class="lead-label">🛏️ Bedrooms:</span> Bedrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🚿 Bathrooms:</span> Bathrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🛋️ Furnished:</span> Furnished</div>
+                    <div class="lead-detail"><span class="lead-label">👤 Seller:</span> <span class="seller">M ASIF DOGAR</span></div>
+                    <div class="lead-detail"><span class="lead-label">📅 Posted:</span> 3 weeks ago</div>
+                    <div class="link"><a href="https://www.olx.com.pk/item/centrally-located-prime-location-house-in-formanites-housing-scheme-block-m-is-available-for-sale-iid-1111359154" target="_blank">🔗 View on OLX →</a></div>
+                </div>
+            </div>
+
+            <div class="lead-card">
+                <div class="lead-image">
+                    <img src="https://images.olx.com.pk/thumbnails/606835104-800x600.webp" alt="Property Image" loading="lazy">
+                </div>
+                <div class="lead-content">
+                    <div class="lead-title">8. 2 BED DD Apartment Available For Sale</div>
+                    <div class="lead-detail"><span class="lead-label">💰 Price:</span> <span class="price">Rs 1.50 Crore</span></div>
+                    <div class="lead-detail"><span class="lead-label">📍 Location:</span> Aman Golf View, Karachi</div>
+                    <div class="lead-detail"><span class="lead-label">📞 Phone:</span> <span class="phone">03110025340</span></div>
+                    <div class="lead-detail"><span class="lead-label">🏠 Area:</span> 1,050 Square Feet</div>
+                    <div class="lead-detail"><span class="lead-label">🛏️ Bedrooms:</span> Bedrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🚿 Bathrooms:</span> Bathrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🛋️ Furnished:</span> Furnished</div>
+                    <div class="lead-detail"><span class="lead-label">👤 Seller:</span> <span class="seller">OLX User</span></div>
+                    <div class="lead-detail"><span class="lead-label">📅 Posted:</span> 16 minutes ago</div>
+                    <div class="link"><a href="https://www.olx.com.pk/item/2-bed-dd-apartment-available-for-sale-iid-1112702923" target="_blank">🔗 View on OLX →</a></div>
+                </div>
+            </div>
+
+            <div class="lead-card">
+                <div class="lead-image">
+                    <img src="https://images.olx.com.pk/thumbnails/605120915-800x600.webp" alt="Property Image" loading="lazy">
+                </div>
+                <div class="lead-content">
+                    <div class="lead-title">9. 7 Lac Rent Ground Floor Shop Main Location , Investor Price Shop, CDA Sectors, Blue Area</div>
+                    <div class="lead-detail"><span class="lead-label">💰 Price:</span> <span class="price">Rs 9 Crore</span></div>
+                    <div class="lead-detail"><span class="lead-label">📍 Location:</span> F-7, Islamabad</div>
+                    <div class="lead-detail"><span class="lead-label">📞 Phone:</span> <span class="phone">03335108099</span></div>
+                    <div class="lead-detail"><span class="lead-label">🏠 Area:</span> 800 Square Feet</div>
+                    <div class="lead-detail"><span class="lead-label">🛏️ Bedrooms:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">🚿 Bathrooms:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">🛋️ Furnished:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">👤 Seller:</span> <span class="seller">User 9Zi9Nl</span></div>
+                    <div class="lead-detail"><span class="lead-label">📅 Posted:</span> 17 minutes ago</div>
+                    <div class="link"><a href="https://www.olx.com.pk/item/7-lac-rent-ground-floor-shop-main-location-investor-price-shop-cda-sectors-blue-area-iid-1112419666" target="_blank">🔗 View on OLX →</a></div>
+                </div>
+            </div>
+
+            <div class="lead-card">
+                <div class="lead-image">
+                    <img src="https://images.olx.com.pk/thumbnails/604295414-800x600.webp" alt="Property Image" loading="lazy">
+                </div>
+                <div class="lead-content">
+                    <div class="lead-title">10. CDA Flat Investor Price Easy Instalments Plan Near Centaurus 30 D. P</div>
+                    <div class="lead-detail"><span class="lead-label">💰 Price:</span> <span class="price">Rs 8.50 Crore</span></div>
+                    <div class="lead-detail"><span class="lead-label">📍 Location:</span> Diplomatic Enclave, Islamabad</div>
+                    <div class="lead-detail"><span class="lead-label">📞 Phone:</span> <span class="phone">03335108099</span></div>
+                    <div class="lead-detail"><span class="lead-label">🏠 Area:</span> 1,500 Square Feet</div>
+                    <div class="lead-detail"><span class="lead-label">🛏️ Bedrooms:</span> Bedrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🚿 Bathrooms:</span> Bathrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🛋️ Furnished:</span> Furnished</div>
+                    <div class="lead-detail"><span class="lead-label">👤 Seller:</span> <span class="seller">User 9Zi9Nl</span></div>
+                    <div class="lead-detail"><span class="lead-label">📅 Posted:</span> 17 minutes ago</div>
+                    <div class="link"><a href="https://www.olx.com.pk/item/cda-flat-investor-price-easy-instalments-plan-near-centaurus-30-d-p-iid-1112281049" target="_blank">🔗 View on OLX →</a></div>
+                </div>
+            </div>
+
+            <div class="lead-card">
+                <div class="lead-image">
+                    <img src="https://images.olx.com.pk/thumbnails/603469053-800x600.webp" alt="Property Image" loading="lazy">
+                </div>
+                <div class="lead-content">
+                    <div class="lead-title">11. 2 Bed Renovated Investor Price Apartment</div>
+                    <div class="lead-detail"><span class="lead-label">💰 Price:</span> <span class="price">Rs 2.60 Crore</span></div>
+                    <div class="lead-detail"><span class="lead-label">📍 Location:</span> F-11, Islamabad</div>
+                    <div class="lead-detail"><span class="lead-label">📞 Phone:</span> <span class="phone">03335108099</span></div>
+                    <div class="lead-detail"><span class="lead-label">🏠 Area:</span> 1,500 Square Feet</div>
+                    <div class="lead-detail"><span class="lead-label">🛏️ Bedrooms:</span> Bedrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🚿 Bathrooms:</span> Bathrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🛋️ Furnished:</span> Furnished</div>
+                    <div class="lead-detail"><span class="lead-label">👤 Seller:</span> <span class="seller">User 9Zi9Nl</span></div>
+                    <div class="lead-detail"><span class="lead-label">📅 Posted:</span> 18 minutes ago</div>
+                    <div class="link"><a href="https://www.olx.com.pk/item/2-bed-renovated-investor-price-apartment-iid-1112143559" target="_blank">🔗 View on OLX →</a></div>
+                </div>
+            </div>
+
+            <div class="lead-card">
+                <div class="lead-image">
+                    <img src="https://images.olx.com.pk/thumbnails/605120983-800x600.webp" alt="Property Image" loading="lazy">
+                </div>
+                <div class="lead-content">
+                    <div class="lead-title">12. Commercial Plot Unique Location</div>
+                    <div class="lead-detail"><span class="lead-label">💰 Price:</span> <span class="price">Rs 130 Crore</span></div>
+                    <div class="lead-detail"><span class="lead-label">📍 Location:</span> Blue Area, Islamabad</div>
+                    <div class="lead-detail"><span class="lead-label">📞 Phone:</span> <span class="phone">03335108099</span></div>
+                    <div class="lead-detail"><span class="lead-label">🏠 Area:</span> 1 Kanal</div>
+                    <div class="lead-detail"><span class="lead-label">🛏️ Bedrooms:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">🚿 Bathrooms:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">🛋️ Furnished:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">👤 Seller:</span> <span class="seller">User 9Zi9Nl</span></div>
+                    <div class="lead-detail"><span class="lead-label">📅 Posted:</span> 20 minutes ago</div>
+                    <div class="link"><a href="https://www.olx.com.pk/item/commercial-plot-unique-location-iid-1112419674" target="_blank">🔗 View on OLX →</a></div>
+                </div>
+            </div>
+
+            <div class="lead-card">
+                <div class="lead-image">
+                    <img src="https://images.olx.com.pk/thumbnails/605120933-800x600.webp" alt="Property Image" loading="lazy">
+                </div>
+                <div class="lead-content">
+                    <div class="lead-title">13. Investor Price 2 Kanal House Urgent Sale</div>
+                    <div class="lead-detail"><span class="lead-label">💰 Price:</span> <span class="price">Rs 29 Crore</span></div>
+                    <div class="lead-detail"><span class="lead-label">📍 Location:</span> F-11, Islamabad</div>
+                    <div class="lead-detail"><span class="lead-label">📞 Phone:</span> <span class="phone">03335108099</span></div>
+                    <div class="lead-detail"><span class="lead-label">🏠 Area:</span> 2 Kanal</div>
+                    <div class="lead-detail"><span class="lead-label">🛏️ Bedrooms:</span> Bedrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🚿 Bathrooms:</span> Bathrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🛋️ Furnished:</span> Furnished</div>
+                    <div class="lead-detail"><span class="lead-label">👤 Seller:</span> <span class="seller">User 9Zi9Nl</span></div>
+                    <div class="lead-detail"><span class="lead-label">📅 Posted:</span> 20 minutes ago</div>
+                    <div class="link"><a href="https://www.olx.com.pk/item/investor-price-2-kanal-house-urgent-sale-iid-1112419668" target="_blank">🔗 View on OLX →</a></div>
+                </div>
+            </div>
+
+            <div class="lead-card">
+                <div class="lead-image">
+                    <img src="https://images.olx.com.pk/thumbnails/605120181-800x600.webp" alt="Property Image" loading="lazy">
+                </div>
+                <div class="lead-content">
+                    <div class="lead-title">14. Gorgeous 20 Marla Residential Plot For Sale Available In Margalla Valley</div>
+                    <div class="lead-detail"><span class="lead-label">💰 Price:</span> <span class="price">Rs 3.50 Crore</span></div>
+                    <div class="lead-detail"><span class="lead-label">📍 Location:</span> Margalla Valley - C-12, Islamabad</div>
+                    <div class="lead-detail"><span class="lead-label">📞 Phone:</span> <span class="phone">03335108099</span></div>
+                    <div class="lead-detail"><span class="lead-label">🏠 Area:</span> 20 Marla</div>
+                    <div class="lead-detail"><span class="lead-label">🛏️ Bedrooms:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">🚿 Bathrooms:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">🛋️ Furnished:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">👤 Seller:</span> <span class="seller">User 9Zi9Nl</span></div>
+                    <div class="lead-detail"><span class="lead-label">📅 Posted:</span> 21 minutes ago</div>
+                    <div class="link"><a href="https://www.olx.com.pk/item/gorgeous-20-marla-residential-plot-for-sale-available-in-margalla-valley-c-12-iid-1112419551" target="_blank">🔗 View on OLX →</a></div>
+                </div>
+            </div>
+
+            <div class="lead-card">
+                <div class="lead-image">
+                    <img src="https://images.olx.com.pk/thumbnails/603167352-800x600.webp" alt="Property Image" loading="lazy">
+                </div>
+                <div class="lead-content">
+                    <div class="lead-title">15. 5 marla commercial building on shaan bhatti road Johar town K block Nazaria-e-Pakistan road LHR</div>
+                    <div class="lead-detail"><span class="lead-label">💰 Price:</span> <span class="price">Rs 5.30 Crore</span></div>
+                    <div class="lead-detail"><span class="lead-label">📍 Location:</span> Johar Town Phase 2 - Block K, Lahore</div>
+                    <div class="lead-detail"><span class="lead-label">📞 Phone:</span> <span class="phone">03015177776</span></div>
+                    <div class="lead-detail"><span class="lead-label">🏠 Area:</span> 5 Marla</div>
+                    <div class="lead-detail"><span class="lead-label">🛏️ Bedrooms:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">🚿 Bathrooms:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">🛋️ Furnished:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">👤 Seller:</span> <span class="seller">mirza</span></div>
+                    <div class="lead-detail"><span class="lead-label">📅 Posted:</span> 25 minutes ago</div>
+                    <div class="link"><a href="https://www.olx.com.pk/item/5-marla-commercial-building-on-shaan-bhatti-road-johar-town-k-block-nazaria-e-pakistan-road-lhr-iid-1112093024" target="_blank">🔗 View on OLX →</a></div>
+                </div>
+            </div>
+
+            <div class="lead-card">
+                <div class="lead-image">
+                    <img src="https://images.olx.com.pk/thumbnails/603079904-800x600.webp" alt="Property Image" loading="lazy">
+                </div>
+                <div class="lead-content">
+                    <div class="lead-title">16. Exquisite House For Sale In F-8, Islamabad CDA Transfer</div>
+                    <div class="lead-detail"><span class="lead-label">💰 Price:</span> <span class="price">Rs 36 Crore</span></div>
+                    <div class="lead-detail"><span class="lead-label">📍 Location:</span> F-8, Islamabad</div>
+                    <div class="lead-detail"><span class="lead-label">📞 Phone:</span> <span class="phone">03335108099</span></div>
+                    <div class="lead-detail"><span class="lead-label">🏠 Area:</span> 40 marla</div>
+                    <div class="lead-detail"><span class="lead-label">🛏️ Bedrooms:</span> Bedrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🚿 Bathrooms:</span> Bathrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🛋️ Furnished:</span> Furnished</div>
+                    <div class="lead-detail"><span class="lead-label">👤 Seller:</span> <span class="seller">User 9Zi9Nl</span></div>
+                    <div class="lead-detail"><span class="lead-label">📅 Posted:</span> 29 minutes ago</div>
+                    <div class="link"><a href="https://www.olx.com.pk/item/exquisite-house-for-sale-in-f-8-islamabad-cda-transfer-iid-1112078792" target="_blank">🔗 View on OLX →</a></div>
+                </div>
+            </div>
+
+            <div class="lead-card">
+                <div class="lead-image">
+                    <img src="https://images.olx.com.pk/thumbnails/608207791-800x600.webp" alt="Property Image" loading="lazy">
+                </div>
+                <div class="lead-content">
+                    <div class="lead-title">17. Triple Storey 30 X 70 House For Sale</div>
+                    <div class="lead-detail"><span class="lead-label">💰 Price:</span> <span class="price">Rs 9.49 Crore</span></div>
+                    <div class="lead-detail"><span class="lead-label">📍 Location:</span> F-11/2, Islamabad</div>
+                    <div class="lead-detail"><span class="lead-label">📞 Phone:</span> <span class="phone">03338556602</span></div>
+                    <div class="lead-detail"><span class="lead-label">🏠 Area:</span> 10 Marla</div>
+                    <div class="lead-detail"><span class="lead-label">🛏️ Bedrooms:</span> Bedrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🚿 Bathrooms:</span> Bathrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🛋️ Furnished:</span> Furnished</div>
+                    <div class="lead-detail"><span class="lead-label">👤 Seller:</span> <span class="seller">User 2hG5cD</span></div>
+                    <div class="lead-detail"><span class="lead-label">📅 Posted:</span> 30 minutes ago</div>
+                    <div class="link"><a href="https://www.olx.com.pk/item/triple-storey-30-x-70-house-for-sale-iid-1112932181" target="_blank">🔗 View on OLX →</a></div>
+                </div>
+            </div>
+
+            <div class="lead-card">
+                <div class="lead-image">
+                    <img src="https://images.olx.com.pk/thumbnails/608206673-800x600.webp" alt="Property Image" loading="lazy">
+                </div>
+                <div class="lead-content">
+                    <div class="lead-title">18. 5 marla double story house in Johar Town R 1 block lahore</div>
+                    <div class="lead-detail"><span class="lead-label">💰 Price:</span> <span class="price">Rs 2.50 Crore</span></div>
+                    <div class="lead-detail"><span class="lead-label">📍 Location:</span> Johar Town Phase 2 - Block R1, Lahore</div>
+                    <div class="lead-detail"><span class="lead-label">📞 Phone:</span> <span class="phone">03015177776</span></div>
+                    <div class="lead-detail"><span class="lead-label">🏠 Area:</span> 5 Marla</div>
+                    <div class="lead-detail"><span class="lead-label">🛏️ Bedrooms:</span> Bedrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🚿 Bathrooms:</span> Bathrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🛋️ Furnished:</span> Furnished</div>
+                    <div class="lead-detail"><span class="lead-label">👤 Seller:</span> <span class="seller">mirza</span></div>
+                    <div class="lead-detail"><span class="lead-label">📅 Posted:</span> 41 minutes ago</div>
+                    <div class="link"><a href="https://www.olx.com.pk/item/5-marla-double-story-house-in-johar-town-r-1-block-lahore-iid-1112931987" target="_blank">🔗 View on OLX →</a></div>
+                </div>
+            </div>
+
+            <div class="lead-card">
+                <div class="lead-image">
+                    <img src="https://images.olx.com.pk/thumbnails/606882371-800x600.webp" alt="Property Image" loading="lazy">
+                </div>
+                <div class="lead-content">
+                    <div class="lead-title">19. 3 Marla Triple Storey New House Ali Town Next To Orange Line Train Raiwind Road Lahore</div>
+                    <div class="lead-detail"><span class="lead-label">💰 Price:</span> <span class="price">Rs 1.50 Crore</span></div>
+                    <div class="lead-detail"><span class="lead-label">📍 Location:</span> Ali Town, Lahore</div>
+                    <div class="lead-detail"><span class="lead-label">📞 Phone:</span> <span class="phone">03015177776</span></div>
+                    <div class="lead-detail"><span class="lead-label">🏠 Area:</span> 3 Marla</div>
+                    <div class="lead-detail"><span class="lead-label">🛏️ Bedrooms:</span> Bedrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🚿 Bathrooms:</span> Bathrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🛋️ Furnished:</span> Furnished</div>
+                    <div class="lead-detail"><span class="lead-label">👤 Seller:</span> <span class="seller">mirza</span></div>
+                    <div class="lead-detail"><span class="lead-label">📅 Posted:</span> 44 minutes ago</div>
+                    <div class="link"><a href="https://www.olx.com.pk/item/3-marla-triple-storey-new-house-ali-town-next-to-orange-line-train-raiwind-road-lahore-iid-1112711200" target="_blank">🔗 View on OLX →</a></div>
+                </div>
+            </div>
+
+            <div class="lead-card">
+                <div class="lead-image">
+                    <img src="https://images.olx.com.pk/thumbnails/607939784-800x600.webp" alt="Property Image" loading="lazy">
+                </div>
+                <div class="lead-content">
+                    <div class="lead-title">20. 05 Marla Residentional Plot in Hot Location for Sale In Park View City Pearl Block</div>
+                    <div class="lead-detail"><span class="lead-label">💰 Price:</span> <span class="price">Rs 25 Lacs</span></div>
+                    <div class="lead-detail"><span class="lead-label">📍 Location:</span> Park View City - Pearl Block, Lahore</div>
+                    <div class="lead-detail"><span class="lead-label">📞 Phone:</span> <span class="phone">03206369522</span></div>
+                    <div class="lead-detail"><span class="lead-label">🏠 Area:</span> 5 Marla</div>
+                    <div class="lead-detail"><span class="lead-label">🛏️ Bedrooms:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">🚿 Bathrooms:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">🛋️ Furnished:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">👤 Seller:</span> <span class="seller">Mian Aqib</span></div>
+                    <div class="lead-detail"><span class="lead-label">📅 Posted:</span> 9 hours ago</div>
+                    <div class="link"><a href="https://www.olx.com.pk/item/05-marla-residentional-plot-in-hot-location-for-sale-in-park-view-city-pearl-block-iid-1112887102" target="_blank">🔗 View on OLX →</a></div>
+                </div>
+            </div>
+
+            <div class="lead-card">
+                <div class="lead-image">
+                    <img src="https://images.olx.com.pk/thumbnails/604131693-800x600.webp" alt="Property Image" loading="lazy">
+                </div>
+                <div class="lead-content">
+                    <div class="lead-title">21. 7 Marla Plot Is Available For Sale In DHA Phase 4 Block JJ Lahore</div>
+                    <div class="lead-detail"><span class="lead-label">💰 Price:</span> <span class="price">Rs 1.70 Crore</span></div>
+                    <div class="lead-detail"><span class="lead-label">📍 Location:</span> DHA Phase 4 - Block JJ, Lahore</div>
+                    <div class="lead-detail"><span class="lead-label">📞 Phone:</span> <span class="phone">03133359533</span></div>
+                    <div class="lead-detail"><span class="lead-label">🏠 Area:</span> 7 Marla</div>
+                    <div class="lead-detail"><span class="lead-label">🛏️ Bedrooms:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">🚿 Bathrooms:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">🛋️ Furnished:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">👤 Seller:</span> <span class="seller">Ali</span></div>
+                    <div class="lead-detail"><span class="lead-label">📅 Posted:</span> 3 weeks ago</div>
+                    <div class="link"><a href="https://www.olx.com.pk/item/7-marla-plot-is-available-for-sale-in-dha-phase-4-block-jj-lahore-iid-1112253253" target="_blank">🔗 View on OLX →</a></div>
+                </div>
+            </div>
+
+            <div class="lead-card">
+                <div class="lead-image">
+                    <img src="https://images.olx.com.pk/thumbnails/607173346-800x600.webp" alt="Property Image" loading="lazy">
+                </div>
+                <div class="lead-content">
+                    <div class="lead-title">22. House for sale</div>
+                    <div class="lead-detail"><span class="lead-label">💰 Price:</span> <span class="price">Rs 2.25 Crore</span></div>
+                    <div class="lead-detail"><span class="lead-label">📍 Location:</span> Kohistan Enclave Sector I - Precinct 1, Wah</div>
+                    <div class="lead-detail"><span class="lead-label">📞 Phone:</span> <span class="phone">03321776769</span></div>
+                    <div class="lead-detail"><span class="lead-label">🏠 Area:</span> 5 Marla</div>
+                    <div class="lead-detail"><span class="lead-label">🛏️ Bedrooms:</span> Bedrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🚿 Bathrooms:</span> Bathrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🛋️ Furnished:</span> Furnished</div>
+                    <div class="lead-detail"><span class="lead-label">👤 Seller:</span> <span class="seller">Waleed Khalid</span></div>
+                    <div class="lead-detail"><span class="lead-label">📅 Posted:</span> 4 days ago</div>
+                    <div class="link"><a href="https://www.olx.com.pk/item/house-for-sale-iid-1112760186" target="_blank">🔗 View on OLX →</a></div>
+                </div>
+            </div>
+
+            <div class="lead-card">
+                <div class="lead-image">
+                    <img src="https://images.olx.com.pk/thumbnails/607337668-800x600.webp" alt="Property Image" loading="lazy">
+                </div>
+                <div class="lead-content">
+                    <div class="lead-title">23. Gulshan e Elahi Scheme 33</div>
+                    <div class="lead-detail"><span class="lead-label">💰 Price:</span> <span class="price">Rs 11 Lacs</span></div>
+                    <div class="lead-detail"><span class="lead-label">📍 Location:</span> Gulshan-E-Elahi, Karachi</div>
+                    <div class="lead-detail"><span class="lead-label">📞 Phone:</span> <span class="phone">03032291385</span></div>
+                    <div class="lead-detail"><span class="lead-label">🏠 Area:</span> 120 Square Yards</div>
+                    <div class="lead-detail"><span class="lead-label">🛏️ Bedrooms:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">🚿 Bathrooms:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">🛋️ Furnished:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">👤 Seller:</span> <span class="seller">OLX Userwaqas siddiq</span></div>
+                    <div class="lead-detail"><span class="lead-label">📅 Posted:</span> 2 days ago</div>
+                    <div class="link"><a href="https://www.olx.com.pk/item/gulshan-e-elahi-scheme-33-iid-1112787723" target="_blank">🔗 View on OLX →</a></div>
+                </div>
+            </div>
+
+            <div class="lead-card">
+                <div class="lead-image">
+                    <img src="https://images.olx.com.pk/thumbnails/599155061-800x600.webp" alt="Property Image" loading="lazy">
+                </div>
+                <div class="lead-content">
+                    <div class="lead-title">24. Ground Floor Rented Shop For Sale In Giga Mall Islamabad</div>
+                    <div class="lead-detail"><span class="lead-label">💰 Price:</span> <span class="price">Rs 19 Crore</span></div>
+                    <div class="lead-detail"><span class="lead-label">📍 Location:</span> GT Road, Islamabad</div>
+                    <div class="lead-detail"><span class="lead-label">📞 Phone:</span> <span class="phone">03345107777</span></div>
+                    <div class="lead-detail"><span class="lead-label">🏠 Area:</span> 1,180 Square Feet</div>
+                    <div class="lead-detail"><span class="lead-label">🛏️ Bedrooms:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">🚿 Bathrooms:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">🛋️ Furnished:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">👤 Seller:</span> <span class="seller">Shahid Imran</span></div>
+                    <div class="lead-detail"><span class="lead-label">📅 Posted:</span> 1 day ago</div>
+                    <div class="link"><a href="https://www.olx.com.pk/item/ground-floor-rented-shop-for-sale-in-giga-mall-islamabad-iid-1111435111" target="_blank">🔗 View on OLX →</a></div>
+                </div>
+            </div>
+
+            <div class="lead-card">
+                <div class="lead-image">
+                    <img src="https://images.olx.com.pk/thumbnails/607942337-800x600.webp" alt="Property Image" loading="lazy">
+                </div>
+                <div class="lead-content">
+                    <div class="lead-title">25. 5 Marla Double House In Dhoke Gujra Misrial Road</div>
+                    <div class="lead-detail"><span class="lead-label">💰 Price:</span> <span class="price">Rs 1.35 Crore</span></div>
+                    <div class="lead-detail"><span class="lead-label">📍 Location:</span> Dhok Gujran, Rawalpindi</div>
+                    <div class="lead-detail"><span class="lead-label">📞 Phone:</span> <span class="phone">03345457761</span></div>
+                    <div class="lead-detail"><span class="lead-label">🏠 Area:</span> 5 Marla</div>
+                    <div class="lead-detail"><span class="lead-label">🛏️ Bedrooms:</span> Bedrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🚿 Bathrooms:</span> Bathrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🛋️ Furnished:</span> Furnished</div>
+                    <div class="lead-detail"><span class="lead-label">👤 Seller:</span> <span class="seller">Hafiz Kamran</span></div>
+                    <div class="lead-detail"><span class="lead-label">📅 Posted:</span> 1 day ago</div>
+                    <div class="link"><a href="https://www.olx.com.pk/item/5-marla-double-house-in-dhoke-gujra-misrial-road-iid-1112588393" target="_blank">🔗 View on OLX →</a></div>
+                </div>
+            </div>
+
+            <div class="lead-card">
+                <div class="lead-image">
+                    <img src="https://images.olx.com.pk/thumbnails/603503921-800x600.webp" alt="Property Image" loading="lazy">
+                </div>
+                <div class="lead-content">
+                    <div class="lead-title">26. House For Sale In Askari 6</div>
+                    <div class="lead-detail"><span class="lead-label">💰 Price:</span> <span class="price">Rs 6.75 Crore</span></div>
+                    <div class="lead-detail"><span class="lead-label">📍 Location:</span> Askari 6, Karachi</div>
+                    <div class="lead-detail"><span class="lead-label">📞 Phone:</span> <span class="phone">03322664668</span></div>
+                    <div class="lead-detail"><span class="lead-label">🏠 Area:</span> 250 Square Yards</div>
+                    <div class="lead-detail"><span class="lead-label">🛏️ Bedrooms:</span> Bedrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🚿 Bathrooms:</span> Bathrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🛋️ Furnished:</span> Furnished</div>
+                    <div class="lead-detail"><span class="lead-label">👤 Seller:</span> <span class="seller">m ahsan</span></div>
+                    <div class="lead-detail"><span class="lead-label">📅 Posted:</span> 4 weeks ago</div>
+                    <div class="link"><a href="https://www.olx.com.pk/item/house-for-sale-in-askari-6-3-year-installment-plan-easy-payment-options-iid-1112149176" target="_blank">🔗 View on OLX →</a></div>
+                </div>
+            </div>
+
+            <div class="lead-card">
+                <div class="lead-image">
+                    <img src="https://images.olx.com.pk/thumbnails/604648188-800x600.webp" alt="Property Image" loading="lazy">
+                </div>
+                <div class="lead-content">
+                    <div class="lead-title">27. 540 Square Feet Flat Up For Sale In Allahwala Town</div>
+                    <div class="lead-detail"><span class="lead-label">💰 Price:</span> <span class="price">Rs 25 Lacs</span></div>
+                    <div class="lead-detail"><span class="lead-label">📍 Location:</span> Allahwala Town - Sector 31-G, Karachi</div>
+                    <div class="lead-detail"><span class="lead-label">📞 Phone:</span> <span class="phone">03333087143</span></div>
+                    <div class="lead-detail"><span class="lead-label">🏠 Area:</span> 540 Square Feet</div>
+                    <div class="lead-detail"><span class="lead-label">🛏️ Bedrooms:</span> Bedrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🚿 Bathrooms:</span> Bathrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🛋️ Furnished:</span> Furnished</div>
+                    <div class="lead-detail"><span class="lead-label">👤 Seller:</span> <span class="seller">Shaiekh Daniyal</span></div>
+                    <div class="lead-detail"><span class="lead-label">📅 Posted:</span> 2 days ago</div>
+                    <div class="link"><a href="https://www.olx.com.pk/item/540-square-feet-flat-up-for-sale-in-allahwala-town-sector-31-g-iid-1112340593" target="_blank">🔗 View on OLX →</a></div>
+                </div>
+            </div>
+
+            <div class="lead-card">
+                <div class="lead-image">
+                    <img src="https://images.olx.com.pk/thumbnails/608104449-800x600.webp" alt="Property Image" loading="lazy">
+                </div>
+                <div class="lead-content">
+                    <div class="lead-title">28. 2BED DD Apartment for sale</div>
+                    <div class="lead-detail"><span class="lead-label">💰 Price:</span> <span class="price">Rs 1.30 Crore</span></div>
+                    <div class="lead-detail"><span class="lead-label">📍 Location:</span> Falaknaz Harmony, Karachi</div>
+                    <div class="lead-detail"><span class="lead-label">📞 Phone:</span> <span class="phone">03212505958, 03158770916, 03333836217, 03110025340</span></div>
+                    <div class="lead-detail"><span class="lead-label">🏠 Area:</span> 1,050 Square Feet</div>
+                    <div class="lead-detail"><span class="lead-label">🛏️ Bedrooms:</span> Bedrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🚿 Bathrooms:</span> Bathrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🛋️ Furnished:</span> Furnished</div>
+                    <div class="lead-detail"><span class="lead-label">👤 Seller:</span> <span class="seller">OLX User</span></div>
+                    <div class="lead-detail"><span class="lead-label">📅 Posted:</span> 28 minutes ago</div>
+                    <div class="link"><a href="https://www.olx.com.pk/item/2bed-dd-apartment-for-sale-iid-1112914273" target="_blank">🔗 View on OLX →</a></div>
+                </div>
+            </div>
+
+            <div class="lead-card">
+                <div class="lead-image">
+                    <img src="https://images.olx.com.pk/thumbnails/607663165-800x600.webp" alt="Property Image" loading="lazy">
+                </div>
+                <div class="lead-content">
+                    <div class="lead-title">29. Huge Front 70 Ft Beautiful View Plot Near Round About</div>
+                    <div class="lead-detail"><span class="lead-label">💰 Price:</span> <span class="price">Rs 3.50 Crore</span></div>
+                    <div class="lead-detail"><span class="lead-label">📍 Location:</span> Margalla Valley - C-12, Islamabad</div>
+                    <div class="lead-detail"><span class="lead-label">📞 Phone:</span> <span class="phone">03335108099</span></div>
+                    <div class="lead-detail"><span class="lead-label">🏠 Area:</span> 1 Kanal</div>
+                    <div class="lead-detail"><span class="lead-label">🛏️ Bedrooms:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">🚿 Bathrooms:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">🛋️ Furnished:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">👤 Seller:</span> <span class="seller">User 9Zi9Nl</span></div>
+                    <div class="lead-detail"><span class="lead-label">📅 Posted:</span> 27 minutes ago</div>
+                    <div class="link"><a href="https://www.olx.com.pk/item/huge-front-70-ft-beautiful-view-plot-near-round-about-iid-1112840370" target="_blank">🔗 View on OLX →</a></div>
+                </div>
+            </div>
+
+            <div class="lead-card">
+                <div class="lead-image">
+                    <img src="https://images.olx.com.pk/thumbnails/607663113-800x600.webp" alt="Property Image" loading="lazy">
+                </div>
+                <div class="lead-content">
+                    <div class="lead-title">30. Pair Plot Best Location Plot Front Back Street Open Margalla Hills Facing</div>
+                    <div class="lead-detail"><span class="lead-label">💰 Price:</span> <span class="price">Rs 1.30 Crore</span></div>
+                    <div class="lead-detail"><span class="lead-label">📍 Location:</span> Margalla Valley - C-12, Islamabad</div>
+                    <div class="lead-detail"><span class="lead-label">📞 Phone:</span> <span class="phone">03335108099</span></div>
+                    <div class="lead-detail"><span class="lead-label">🏠 Area:</span> 10 Marla</div>
+                    <div class="lead-detail"><span class="lead-label">🛏️ Bedrooms:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">🚿 Bathrooms:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">🛋️ Furnished:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">👤 Seller:</span> <span class="seller">User 9Zi9Nl</span></div>
+                    <div class="lead-detail"><span class="lead-label">📅 Posted:</span> 27 minutes ago</div>
+                    <div class="link"><a href="https://www.olx.com.pk/item/pair-plot-best-location-plot-front-back-street-open-margalla-hills-facing-iid-1112840359" target="_blank">🔗 View on OLX →</a></div>
+                </div>
+            </div>
+
+            <div class="lead-card">
+                <div class="lead-image">
+                    <img src="https://images.olx.com.pk/thumbnails/607662701-800x600.webp" alt="Property Image" loading="lazy">
+                </div>
+                <div class="lead-content">
+                    <div class="lead-title">31. Best Location Near Round About Wow View Plot</div>
+                    <div class="lead-detail"><span class="lead-label">💰 Price:</span> <span class="price">Rs 2.14 Crore</span></div>
+                    <div class="lead-detail"><span class="lead-label">📍 Location:</span> Margalla Valley - C-12, Islamabad</div>
+                    <div class="lead-detail"><span class="lead-label">📞 Phone:</span> <span class="phone">03335108099</span></div>
+                    <div class="lead-detail"><span class="lead-label">🏠 Area:</span> 10 Marla</div>
+                    <div class="lead-detail"><span class="lead-label">🛏️ Bedrooms:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">🚿 Bathrooms:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">🛋️ Furnished:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">👤 Seller:</span> <span class="seller">User 9Zi9Nl</span></div>
+                    <div class="lead-detail"><span class="lead-label">📅 Posted:</span> 27 minutes ago</div>
+                    <div class="link"><a href="https://www.olx.com.pk/item/best-location-near-round-about-wow-view-plot-iid-1112840297" target="_blank">🔗 View on OLX →</a></div>
+                </div>
+            </div>
+
+            <div class="lead-card">
+                <div class="lead-image">
+                    <img src="https://images.olx.com.pk/thumbnails/606835104-800x600.webp" alt="Property Image" loading="lazy">
+                </div>
+                <div class="lead-content">
+                    <div class="lead-title">32. 2 BED DD Apartment Available For Sale</div>
+                    <div class="lead-detail"><span class="lead-label">💰 Price:</span> <span class="price">Rs 1.50 Crore</span></div>
+                    <div class="lead-detail"><span class="lead-label">📍 Location:</span> Aman Golf View, Karachi</div>
+                    <div class="lead-detail"><span class="lead-label">📞 Phone:</span> <span class="phone">03212505958, 03158770916, 03333836217, 03110025340</span></div>
+                    <div class="lead-detail"><span class="lead-label">🏠 Area:</span> 1,050 Square Feet</div>
+                    <div class="lead-detail"><span class="lead-label">🛏️ Bedrooms:</span> Bedrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🚿 Bathrooms:</span> Bathrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🛋️ Furnished:</span> Furnished</div>
+                    <div class="lead-detail"><span class="lead-label">👤 Seller:</span> <span class="seller">OLX User</span></div>
+                    <div class="lead-detail"><span class="lead-label">📅 Posted:</span> 27 minutes ago</div>
+                    <div class="link"><a href="https://www.olx.com.pk/item/2-bed-dd-apartment-available-for-sale-iid-1112702923" target="_blank">🔗 View on OLX →</a></div>
+                </div>
+            </div>
+
+            <div class="lead-card">
+                <div class="lead-image">
+                    <img src="https://images.olx.com.pk/thumbnails/605120915-800x600.webp" alt="Property Image" loading="lazy">
+                </div>
+                <div class="lead-content">
+                    <div class="lead-title">33. 7 Lac Rent Ground Floor Shop Main Location , Investor Price Shop, CDA Sectors, Blue Area</div>
+                    <div class="lead-detail"><span class="lead-label">💰 Price:</span> <span class="price">Rs 9 Crore</span></div>
+                    <div class="lead-detail"><span class="lead-label">📍 Location:</span> F-7, Islamabad</div>
+                    <div class="lead-detail"><span class="lead-label">📞 Phone:</span> <span class="phone">03335108099</span></div>
+                    <div class="lead-detail"><span class="lead-label">🏠 Area:</span> 800 Square Feet</div>
+                    <div class="lead-detail"><span class="lead-label">🛏️ Bedrooms:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">🚿 Bathrooms:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">🛋️ Furnished:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">👤 Seller:</span> <span class="seller">User 9Zi9Nl</span></div>
+                    <div class="lead-detail"><span class="lead-label">📅 Posted:</span> 28 minutes ago</div>
+                    <div class="link"><a href="https://www.olx.com.pk/item/7-lac-rent-ground-floor-shop-main-location-investor-price-shop-cda-sectors-blue-area-iid-1112419666" target="_blank">🔗 View on OLX →</a></div>
+                </div>
+            </div>
+
+            <div class="lead-card">
+                <div class="lead-image">
+                    <img src="https://images.olx.com.pk/thumbnails/604295414-800x600.webp" alt="Property Image" loading="lazy">
+                </div>
+                <div class="lead-content">
+                    <div class="lead-title">34. CDA Flat Investor Price Easy Instalments Plan Near Centaurus 30 D. P</div>
+                    <div class="lead-detail"><span class="lead-label">💰 Price:</span> <span class="price">Rs 8.50 Crore</span></div>
+                    <div class="lead-detail"><span class="lead-label">📍 Location:</span> Diplomatic Enclave, Islamabad</div>
+                    <div class="lead-detail"><span class="lead-label">📞 Phone:</span> <span class="phone">03335108099</span></div>
+                    <div class="lead-detail"><span class="lead-label">🏠 Area:</span> 1,500 Square Feet</div>
+                    <div class="lead-detail"><span class="lead-label">🛏️ Bedrooms:</span> Bedrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🚿 Bathrooms:</span> Bathrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🛋️ Furnished:</span> Furnished</div>
+                    <div class="lead-detail"><span class="lead-label">👤 Seller:</span> <span class="seller">User 9Zi9Nl</span></div>
+                    <div class="lead-detail"><span class="lead-label">📅 Posted:</span> 29 minutes ago</div>
+                    <div class="link"><a href="https://www.olx.com.pk/item/cda-flat-investor-price-easy-instalments-plan-near-centaurus-30-d-p-iid-1112281049" target="_blank">🔗 View on OLX →</a></div>
+                </div>
+            </div>
+
+            <div class="lead-card">
+                <div class="lead-image">
+                    <img src="https://images.olx.com.pk/thumbnails/603469053-800x600.webp" alt="Property Image" loading="lazy">
+                </div>
+                <div class="lead-content">
+                    <div class="lead-title">35. 2 Bed Renovated Investor Price Apartment</div>
+                    <div class="lead-detail"><span class="lead-label">💰 Price:</span> <span class="price">Rs 2.60 Crore</span></div>
+                    <div class="lead-detail"><span class="lead-label">📍 Location:</span> F-11, Islamabad</div>
+                    <div class="lead-detail"><span class="lead-label">📞 Phone:</span> <span class="phone">03335108099</span></div>
+                    <div class="lead-detail"><span class="lead-label">🏠 Area:</span> 1,500 Square Feet</div>
+                    <div class="lead-detail"><span class="lead-label">🛏️ Bedrooms:</span> Bedrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🚿 Bathrooms:</span> Bathrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🛋️ Furnished:</span> Furnished</div>
+                    <div class="lead-detail"><span class="lead-label">👤 Seller:</span> <span class="seller">User 9Zi9Nl</span></div>
+                    <div class="lead-detail"><span class="lead-label">📅 Posted:</span> 30 minutes ago</div>
+                    <div class="link"><a href="https://www.olx.com.pk/item/2-bed-renovated-investor-price-apartment-iid-1112143559" target="_blank">🔗 View on OLX →</a></div>
+                </div>
+            </div>
+
+            <div class="lead-card">
+                <div class="lead-image">
+                    <img src="https://images.olx.com.pk/thumbnails/605120983-800x600.webp" alt="Property Image" loading="lazy">
+                </div>
+                <div class="lead-content">
+                    <div class="lead-title">36. Commercial Plot Unique Location</div>
+                    <div class="lead-detail"><span class="lead-label">💰 Price:</span> <span class="price">Rs 130 Crore</span></div>
+                    <div class="lead-detail"><span class="lead-label">📍 Location:</span> Blue Area, Islamabad</div>
+                    <div class="lead-detail"><span class="lead-label">📞 Phone:</span> <span class="phone">03335108099</span></div>
+                    <div class="lead-detail"><span class="lead-label">🏠 Area:</span> 1 Kanal</div>
+                    <div class="lead-detail"><span class="lead-label">🛏️ Bedrooms:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">🚿 Bathrooms:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">🛋️ Furnished:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">👤 Seller:</span> <span class="seller">User 9Zi9Nl</span></div>
+                    <div class="lead-detail"><span class="lead-label">📅 Posted:</span> 32 minutes ago</div>
+                    <div class="link"><a href="https://www.olx.com.pk/item/commercial-plot-unique-location-iid-1112419674" target="_blank">🔗 View on OLX →</a></div>
+                </div>
+            </div>
+
+            <div class="lead-card">
+                <div class="lead-image">
+                    <img src="https://images.olx.com.pk/thumbnails/605120933-800x600.webp" alt="Property Image" loading="lazy">
+                </div>
+                <div class="lead-content">
+                    <div class="lead-title">37. Investor Price 2 Kanal House Urgent Sale</div>
+                    <div class="lead-detail"><span class="lead-label">💰 Price:</span> <span class="price">Rs 29 Crore</span></div>
+                    <div class="lead-detail"><span class="lead-label">📍 Location:</span> F-11, Islamabad</div>
+                    <div class="lead-detail"><span class="lead-label">📞 Phone:</span> <span class="phone">03335108099</span></div>
+                    <div class="lead-detail"><span class="lead-label">🏠 Area:</span> 2 Kanal</div>
+                    <div class="lead-detail"><span class="lead-label">🛏️ Bedrooms:</span> Bedrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🚿 Bathrooms:</span> Bathrooms</div>
+                    <div class="lead-detail"><span class="lead-label">🛋️ Furnished:</span> Furnished</div>
+                    <div class="lead-detail"><span class="lead-label">👤 Seller:</span> <span class="seller">User 9Zi9Nl</span></div>
+                    <div class="lead-detail"><span class="lead-label">📅 Posted:</span> 32 minutes ago</div>
+                    <div class="link"><a href="https://www.olx.com.pk/item/investor-price-2-kanal-house-urgent-sale-iid-1112419668" target="_blank">🔗 View on OLX →</a></div>
+                </div>
+            </div>
+
+            <div class="lead-card">
+                <div class="lead-image">
+                    <img src="https://images.olx.com.pk/thumbnails/605120181-800x600.webp" alt="Property Image" loading="lazy">
+                </div>
+                <div class="lead-content">
+                    <div class="lead-title">38. Gorgeous 20 Marla Residential Plot For Sale Available In Margalla Valley</div>
+                    <div class="lead-detail"><span class="lead-label">💰 Price:</span> <span class="price">Rs 3.50 Crore</span></div>
+                    <div class="lead-detail"><span class="lead-label">📍 Location:</span> Margalla Valley - C-12, Islamabad</div>
+                    <div class="lead-detail"><span class="lead-label">📞 Phone:</span> <span class="phone">03335108099</span></div>
+                    <div class="lead-detail"><span class="lead-label">🏠 Area:</span> 20 Marla</div>
+                    <div class="lead-detail"><span class="lead-label">🛏️ Bedrooms:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">🚿 Bathrooms:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">🛋️ Furnished:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">👤 Seller:</span> <span class="seller">User 9Zi9Nl</span></div>
+                    <div class="lead-detail"><span class="lead-label">📅 Posted:</span> 33 minutes ago</div>
+                    <div class="link"><a href="https://www.olx.com.pk/item/gorgeous-20-marla-residential-plot-for-sale-available-in-margalla-valley-c-12-iid-1112419551" target="_blank">🔗 View on OLX →</a></div>
+                </div>
+            </div>
+
+            <div class="lead-card">
+                <div class="lead-image">
+                    <img src="https://images.olx.com.pk/thumbnails/603167352-800x600.webp" alt="Property Image" loading="lazy">
+                </div>
+                <div class="lead-content">
+                    <div class="lead-title">39. 5 marla commercial building on shaan bhatti road Johar town K block Nazaria-e-Pakistan road LHR</div>
+                    <div class="lead-detail"><span class="lead-label">💰 Price:</span> <span class="price">Rs 5.30 Crore</span></div>
+                    <div class="lead-detail"><span class="lead-label">📍 Location:</span> Johar Town Phase 2 - Block K, Lahore</div>
+                    <div class="lead-detail"><span class="lead-label">📞 Phone:</span> <span class="phone">03015177776</span></div>
+                    <div class="lead-detail"><span class="lead-label">🏠 Area:</span> 5 Marla</div>
+                    <div class="lead-detail"><span class="lead-label">🛏️ Bedrooms:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">🚿 Bathrooms:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">🛋️ Furnished:</span> nan</div>
+                    <div class="lead-detail"><span class="lead-label">👤 Seller:</span> <span class="seller">mirza</span></div>
+                    <div class="lead-detail"><span class="lead-label">📅 Posted:</span> 37 minutes ago</div>
+                    <div class="link"><a href="https://www.olx.com.pk/item/5-marla-commercial-building-on-shaan-bhatti-road-johar-town-k-block-nazaria-e-pakistan-road-lhr-iid-1112093024" target="_blank">🔗 View on OLX →</a></div>
+                </div>
+            </div>
+
+        </div>
+        <div class="footer">
+            Generated by Real Estate Lead Engine | 2026-04-05 01:44:47<br>
+            Data includes 39 property leads with contact information
+        </div>
+    </div>
+</body>
+</html>

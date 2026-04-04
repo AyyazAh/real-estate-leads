@@ -1,0 +1,12 @@
+2026/04/05-01:40:49.489 3a28 Reusing MANIFEST C:\Users\NEECA\PycharmProjects\real_estate_lead_engine\chrome_profile\Default\IndexedDB\https_www.olx.com.pk_0.indexeddb.leveldb/MANIFEST-000001
+2026/04/05-01:40:49.490 3a28 Recovering log #24
+2026/04/05-01:40:49.525 3a28 Reusing old log C:\Users\NEECA\PycharmProjects\real_estate_lead_engine\chrome_profile\Default\IndexedDB\https_www.olx.com.pk_0.indexeddb.leveldb/000024.log 
+2026/04/05-01:40:57.750 c0f4 Level-0 table #29: started
+2026/04/05-01:40:57.777 c0f4 Level-0 table #29: 1390996 bytes OK
+2026/04/05-01:40:57.782 c0f4 Delete type=0 #24
+2026/04/05-01:41:20.119 c0f4 Compacting 1@1 + 1@2 files
+2026/04/05-01:41:20.142 c0f4 Generated table #30@1: 217 keys, 8183 bytes
+2026/04/05-01:41:20.143 c0f4 Compacted 1@1 + 1@2 files => 8183 bytes
+2026/04/05-01:41:20.146 c0f4 compacted to: files[ 0 0 1 0 0 0 0 ]
+2026/04/05-01:41:20.147 c0f4 Delete type=2 #26
+2026/04/05-01:41:20.147 c0f4 Delete type=2 #29

@@ -1,0 +1,10 @@
+2026/04/05-01:40:48.862 c710 Reusing MANIFEST C:\Users\NEECA\PycharmProjects\real_estate_lead_engine\chrome_profile\Default\Local Storage\leveldb/MANIFEST-000001
+2026/04/05-01:40:48.873 c710 Recovering log #92
+2026/04/05-01:40:48.873 c710 Level-0 table #95: started
+2026/04/05-01:40:48.880 c710 Level-0 table #95: 27522 bytes OK
+2026/04/05-01:40:48.881 c710 Recovering log #94
+2026/04/05-01:40:48.884 c710 Reusing old log C:\Users\NEECA\PycharmProjects\real_estate_lead_engine\chrome_profile\Default\Local Storage\leveldb/000094.log 
+2026/04/05-01:40:48.898 c710 Delete type=0 #92
+2026/04/05-01:42:49.829 783c Level-0 table #97: started
+2026/04/05-01:42:49.877 783c Level-0 table #97: 27597 bytes OK
+2026/04/05-01:42:49.881 783c Delete type=0 #94

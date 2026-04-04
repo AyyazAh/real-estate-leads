@@ -1,0 +1,14 @@
+2026/04/05-01:46:05.827 a6f0 Reusing MANIFEST C:\Users\NEECA\PycharmProjects\real_estate_lead_engine\chrome_profile\Default\Local Storage\leveldb/MANIFEST-000001
+2026/04/05-01:46:05.833 a6f0 Recovering log #96
+2026/04/05-01:46:05.834 a6f0 Level-0 table #99: started
+2026/04/05-01:46:05.840 a6f0 Level-0 table #99: 27515 bytes OK
+2026/04/05-01:46:05.846 a6f0 Delete type=0 #96
+2026/04/05-01:46:05.847 bb3c Compacting 4@0 + 1@1 files
+2026/04/05-01:46:05.853 bb3c Generated table #101@0: 13 keys, 9630 bytes
+2026/04/05-01:46:05.853 bb3c Compacted 4@0 + 1@1 files => 9630 bytes
+2026/04/05-01:46:05.856 bb3c compacted to: files[ 0 1 1 0 0 0 0 ]
+2026/04/05-01:46:05.857 bb3c Delete type=2 #90
+2026/04/05-01:46:05.857 bb3c Delete type=2 #93
+2026/04/05-01:46:05.857 bb3c Delete type=2 #95
+2026/04/05-01:46:05.858 bb3c Delete type=2 #97
+2026/04/05-01:46:05.858 bb3c Delete type=2 #99
