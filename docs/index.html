@@ -231,6 +231,12 @@
             opacity: 0.9;
         }
         
+        /* Sort indicator */
+        .sort-active {
+            background: #667eea !important;
+            color: white !important;
+        }
+        
         /* Leads Grid */
         .leads-grid {
             display: grid;
@@ -530,6 +536,14 @@
                 </select>
             </div>
             <div class="filter-group">
+                <label>📅 Sort by:</label>
+                <select id="sortFilter">
+                    <option value="default">Default (Price)</option>
+                    <option value="recent">Most Recent First</option>
+                    <option value="oldest">Oldest First</option>
+                </select>
+            </div>
+            <div class="filter-group">
                 <label>📊 Per page:</label>
                 <select id="perPage">
                     <option value="12">12</option>
@@ -563,6 +577,52 @@
         // Point to your JSON file
         const DATA_URL = 'https://raw.githubusercontent.com/AyyazAh/real-estate-leads/main/docs/leads_data.json';
         
+        // Parse time string to minutes for sorting
+        function parseTimeToMinutes(timeStr) {
+            if (!timeStr) return 999999;
+            const match = timeStr.match(/(\d+)\s*(minute|hour|day|week|month)/i);
+            if (match) {
+                const value = parseInt(match[1]);
+                const unit = match[2].toLowerCase();
+                if (unit === 'minute') return value;
+                if (unit === 'hour') return value * 60;
+                if (unit === 'day') return value * 1440;
+                if (unit === 'week') return value * 10080;
+                if (unit === 'month') return value * 43200;
+            }
+            // If it contains "ago" but no number, it's likely very old
+            if (timeStr.includes('ago')) return 999999;
+            return 999999;
+        }
+        
+        // Sort leads by recency
+        function sortByRecency(leads, order = 'recent') {
+            return [...leads].sort((a, b) => {
+                const timeA = parseTimeToMinutes(a.Posted);
+                const timeB = parseTimeToMinutes(b.Posted);
+                if (order === 'recent') {
+                    return timeA - timeB;  // smaller = more recent
+                } else {
+                    return timeB - timeA;  // larger = older
+                }
+            });
+        }
+        
+        // Extract numeric price for sorting
+        function extractPriceValue(priceStr) {
+            if (!priceStr) return 0;
+            const match = priceStr.match(/(\d+(?:\.\d+)?)\s*(Crore|Lac)/i);
+            if (match) {
+                let value = parseFloat(match[1]);
+                if (match[2].toLowerCase() === 'crore') {
+                    return value * 10000000;
+                } else if (match[2].toLowerCase() === 'lac') {
+                    return value * 100000;
+                }
+            }
+            return 0;
+        }
+        
         // Scroll to top button
         window.onscroll = function() {
             const btn = document.getElementById('scrollTopBtn');
@@ -577,32 +637,14 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
         
-        function parseTimeValue(timeStr) {
-            if (!timeStr) return 999999;
-            const match = timeStr.match(/(\d+)\s*(minute|hour|day|week|month)/i);
-            if (match) {
-                const value = parseInt(match[1]);
-                const unit = match[2].toLowerCase();
-                if (unit === 'minute') return value;
-                if (unit === 'hour') return value * 60;
-                if (unit === 'day') return value * 1440;
-                if (unit === 'week') return value * 10080;
-            }
-            return 999999;
-        }
-        
         // Function to scroll to a specific ad and highlight it
         function scrollToAd(link) {
-            // Find the card with matching link
             const cards = document.querySelectorAll('.lead-card');
             for (const card of cards) {
                 const adLink = card.querySelector('.lead-link a');
                 if (adLink && adLink.href === link) {
-                    // Remove highlight from all cards
                     cards.forEach(c => c.classList.remove('highlight'));
-                    // Add highlight to this card
                     card.classList.add('highlight');
-                    // Scroll to the card
                     card.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     break;
                 }
@@ -622,6 +664,7 @@
             const search = document.getElementById('searchInput').value;
             const price = document.getElementById('priceFilter').value;
             const furnished = document.getElementById('furnishedFilter').value;
+            const sortBy = document.getElementById('sortFilter').value;
             const perPage = parseInt(document.getElementById('perPage').value);
             
             document.getElementById('leadsContainer').innerHTML = '<div class="loading">📡 Loading leads...</div>';
@@ -640,12 +683,12 @@
                     const posted = lead.Posted || '';
                     return posted.includes('minute') || posted.includes('hour');
                 }).sort((a, b) => {
-                    return parseTimeValue(a.Posted) - parseTimeValue(b.Posted);
+                    return parseTimeToMinutes(a.Posted) - parseTimeToMinutes(b.Posted);
                 }).slice(0, 6);
                 
                 renderRecentAds(recent);
                 
-                // Apply filters to main list
+                // Apply filters
                 let filtered = [...allLeads];
                 if (search) {
                     filtered = filtered.filter(lead => 
@@ -661,6 +704,18 @@
                 }
                 if (furnished !== 'all') {
                     filtered = filtered.filter(lead => lead.Furnished === furnished);
+                }
+                
+                // Apply sorting
+                if (sortBy === 'recent') {
+                    filtered = sortByRecency(filtered, 'recent');
+                } else if (sortBy === 'oldest') {
+                    filtered = sortByRecency(filtered, 'oldest');
+                } else {
+                    // Default sort by price (highest to lowest)
+                    filtered.sort((a, b) => {
+                        return extractPriceValue(b.Price) - extractPriceValue(a.Price);
+                    });
                 }
                 
                 currentFilteredLeads = filtered;
@@ -727,7 +782,6 @@
         
         // Global function to handle scrolling from recent ad clicks
         function scrollToAdByLink(link) {
-            // Reset to page 1 first to ensure we find the ad
             currentPage = 1;
             loadLeads(link);
         }
@@ -835,6 +889,7 @@
             document.getElementById('searchInput').value = '';
             document.getElementById('priceFilter').value = 'all';
             document.getElementById('furnishedFilter').value = 'all';
+            document.getElementById('sortFilter').value = 'default';
             loadLeads();
         }
         
@@ -857,6 +912,7 @@
         
         document.getElementById('priceFilter').addEventListener('change', () => { currentPage = 1; loadLeads(); });
         document.getElementById('furnishedFilter').addEventListener('change', () => { currentPage = 1; loadLeads(); });
+        document.getElementById('sortFilter').addEventListener('change', () => { currentPage = 1; loadLeads(); });
         document.getElementById('perPage').addEventListener('change', () => { currentPage = 1; loadLeads(); });
         
         // Initial load
