@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Real Estate Lead Engine | Live Property Leads Dashboard</title>
     <meta name="description" content="Real-time property leads from OLX Pakistan. Find houses, apartments, plots and commercial properties with contact numbers.">
     <meta name="keywords" content="real estate, property leads, OLX Pakistan, houses for sale, plots, apartments">
@@ -10,6 +10,11 @@
     <meta property="og:description" content="Live property leads dashboard with phone numbers">
     <meta property="og:type" content="website">
     <link rel="icon" href="https://img.icons8.com/color/48/real-estate.png">
+    
+    <!-- Leaflet CSS and JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
     <style>
         * {
             margin: 0;
@@ -94,6 +99,58 @@
             color: #666;
             font-size: 14px;
             margin-top: 5px;
+        }
+        
+        /* Map Section */
+        .map-section {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .map-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-left: 4px solid #667eea;
+            padding-left: 12px;
+        }
+        
+        #map {
+            height: 450px;
+            border-radius: 12px;
+            z-index: 1;
+        }
+        
+        /* Custom popup styling */
+        .custom-popup .popup-title {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+        
+        .custom-popup .popup-price {
+            color: #e74c3c;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        
+        .custom-popup .popup-phone {
+            color: #27ae60;
+            font-size: 11px;
+        }
+        
+        .custom-popup a {
+            color: #3498db;
+            text-decoration: none;
+            font-size: 11px;
         }
         
         /* Recent Ads Section */
@@ -229,12 +286,6 @@
         
         button:hover {
             opacity: 0.9;
-        }
-        
-        /* Sort indicator */
-        .sort-active {
-            background: #667eea !important;
-            color: white !important;
         }
         
         /* Leads Grid */
@@ -466,6 +517,9 @@
                 width: 80px;
                 height: 80px;
             }
+            #map {
+                height: 350px;
+            }
         }
     </style>
 </head>
@@ -502,6 +556,17 @@
                 <div class="stat-number">-</div>
                 <div class="stat-label">Recent (24h)</div>
             </div>
+        </div>
+        
+        <!-- Map Section -->
+        <div class="map-section">
+            <div class="map-title">
+                <span>🗺️</span> Property Locations Map
+            </div>
+            <div id="map"></div>
+            <p style="font-size: 11px; color: #666; margin-top: 10px; text-align: center;">
+                📍 Click on any marker to view property details. Zoom in for exact locations.
+            </p>
         </div>
         
         <!-- Recent Ads Section -->
@@ -573,9 +638,141 @@
         let totalPages = 1;
         let allLeads = [];
         let currentFilteredLeads = [];
+        let map = null;
+        let markers = [];
         
         // Point to your JSON file
         const DATA_URL = 'https://raw.githubusercontent.com/AyyazAh/real-estate-leads/main/docs/leads_data.json';
+        
+        // City coordinates for Pakistan (fallback when exact location unknown)
+        const cityCoordinates = {
+            'Karachi': { lat: 24.8607, lng: 67.0011 },
+            'Lahore': { lat: 31.5497, lng: 74.3436 },
+            'Islamabad': { lat: 33.6844, lng: 73.0479 },
+            'Rawalpindi': { lat: 33.5651, lng: 73.0169 },
+            'Multan': { lat: 30.1575, lng: 71.5249 },
+            'Faisalabad': { lat: 31.4504, lng: 73.1350 },
+            'Peshawar': { lat: 34.0151, lng: 71.5249 },
+            'Quetta': { lat: 30.1798, lng: 66.9750 },
+            'Gujranwala': { lat: 32.1877, lng: 74.1945 },
+            'Sialkot': { lat: 32.4945, lng: 74.5229 },
+            'Bahawalpur': { lat: 29.3956, lng: 71.6836 },
+            'Sukkur': { lat: 27.7052, lng: 68.8574 },
+            'Hyderabad': { lat: 25.3960, lng: 68.3578 }
+        };
+        
+        // Extract city from location string
+        function extractCity(location) {
+            if (!location) return 'Islamabad';
+            for (const city of Object.keys(cityCoordinates)) {
+                if (location.includes(city)) {
+                    return city;
+                }
+            }
+            return 'Islamabad';
+        }
+        
+        // Get coordinates for a location
+        function getCoordinates(location) {
+            const city = extractCity(location);
+            return cityCoordinates[city] || { lat: 33.6844, lng: 73.0479 };
+        }
+        
+        // Initialize map
+        function initMap() {
+            map = L.map('map').setView([30.3753, 69.3451], 6);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; CartoDB',
+                subdomains: 'abcd',
+                maxZoom: 19,
+                minZoom: 5
+            }).addTo(map);
+        }
+        
+        // Clear all markers from map
+        function clearMarkers() {
+            markers.forEach(marker => {
+                map.removeLayer(marker);
+            });
+            markers = [];
+        }
+        
+        // Add markers to map
+        function addMarkersToMap(leads) {
+            clearMarkers();
+            
+            // Group leads by location to avoid overlapping markers
+            const locationGroups = {};
+            leads.forEach(lead => {
+                const key = lead.Location;
+                if (!locationGroups[key]) {
+                    locationGroups[key] = [];
+                }
+                locationGroups[key].push(lead);
+            });
+            
+            // Add marker for each unique location
+            for (const [location, properties] of Object.entries(locationGroups)) {
+                const coords = getCoordinates(location);
+                const count = properties.length;
+                
+                // Create custom popup content
+                let popupContent = `
+                    <div class="custom-popup" style="min-width: 200px;">
+                        <div class="popup-title">📍 ${escapeHtml(location)}</div>
+                        <div class="popup-price">🏠 ${count} property${count > 1 ? 's' : ''}</div>
+                `;
+                
+                // Show first 3 properties in popup
+                properties.slice(0, 3).forEach(prop => {
+                    const title = prop.Title ? prop.Title.substring(0, 50) : 'N/A';
+                    const price = prop.Price || 'N/A';
+                    const phone = prop.Phone || 'N/A';
+                    popupContent += `
+                        <div style="margin-top: 8px; padding-top: 5px; border-top: 1px solid #eee;">
+                            <div style="font-weight: bold; font-size: 11px;">${escapeHtml(title)}</div>
+                            <div style="color: #e74c3c; font-size: 10px;">💰 ${escapeHtml(price)}</div>
+                            <div style="color: #27ae60; font-size: 9px;">📞 ${escapeHtml(phone)}</div>
+                            <a href="${prop.Link}" target="_blank" style="font-size: 9px;">View on OLX →</a>
+                        </div>
+                    `;
+                });
+                
+                if (properties.length > 3) {
+                    popupContent += `<div style="margin-top: 5px; font-style: italic; font-size: 9px;">... and ${properties.length - 3} more properties</div>`;
+                }
+                
+                popupContent += `</div>`;
+                
+                // Determine marker color based on property type
+                let markerColor = 'blue';
+                if (properties.some(p => p.Title?.toLowerCase().includes('plot'))) {
+                    markerColor = 'green';
+                } else if (properties.some(p => p.Title?.toLowerCase().includes('apartment') || p.Title?.toLowerCase().includes('flat'))) {
+                    markerColor = 'orange';
+                } else if (properties.some(p => p.Price?.includes('Crore') && parseFloat(p.Price) > 5)) {
+                    markerColor = 'red';
+                }
+                
+                // Create custom icon
+                const icon = L.divIcon({
+                    html: `<div style="background-color: ${markerColor === 'red' ? '#e74c3c' : markerColor === 'green' ? '#27ae60' : markerColor === 'orange' ? '#f39c12' : '#3498db'}; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; box-shadow: 0 1px 3px rgba(0,0,0,0.3);"></div>`,
+                    className: 'custom-marker',
+                    iconSize: [16, 16],
+                    popupAnchor: [0, -8]
+                });
+                
+                const marker = L.marker([coords.lat, coords.lng], { icon: icon }).addTo(map);
+                marker.bindPopup(popupContent);
+                markers.push(marker);
+            }
+            
+            // Fit bounds to show all markers
+            if (markers.length > 0) {
+                const group = L.featureGroup(markers);
+                map.fitBounds(group.getBounds().pad(0.2));
+            }
+        }
         
         // Parse time string to minutes for sorting
         function parseTimeToMinutes(timeStr) {
@@ -590,8 +787,6 @@
                 if (unit === 'week') return value * 10080;
                 if (unit === 'month') return value * 43200;
             }
-            // If it contains "ago" but no number, it's likely very old
-            if (timeStr.includes('ago')) return 999999;
             return 999999;
         }
         
@@ -601,9 +796,9 @@
                 const timeA = parseTimeToMinutes(a.Posted);
                 const timeB = parseTimeToMinutes(b.Posted);
                 if (order === 'recent') {
-                    return timeA - timeB;  // smaller = more recent
+                    return timeA - timeB;
                 } else {
-                    return timeB - timeA;  // larger = older
+                    return timeB - timeA;
                 }
             });
         }
@@ -712,13 +907,15 @@
                 } else if (sortBy === 'oldest') {
                     filtered = sortByRecency(filtered, 'oldest');
                 } else {
-                    // Default sort by price (highest to lowest)
                     filtered.sort((a, b) => {
                         return extractPriceValue(b.Price) - extractPriceValue(a.Price);
                     });
                 }
                 
                 currentFilteredLeads = filtered;
+                
+                // Update map with filtered leads
+                addMarkersToMap(filtered);
                 
                 // If we need to scroll to a specific ad, find its page
                 if (scrollToLink) {
@@ -915,7 +1112,8 @@
         document.getElementById('sortFilter').addEventListener('change', () => { currentPage = 1; loadLeads(); });
         document.getElementById('perPage').addEventListener('change', () => { currentPage = 1; loadLeads(); });
         
-        // Initial load
+        // Initialize map and load data
+        initMap();
         loadLeads();
         
         // Auto-refresh every 10 minutes
