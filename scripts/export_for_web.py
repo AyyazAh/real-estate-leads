@@ -2,27 +2,78 @@
 import pandas as pd
 import json
 import os
-from datetime import datetime
+import re
+from datetime import datetime, timedelta
 
+def parse_posted_to_timestamp(posted_str):
+    """Convert relative time string to actual timestamp."""
+    if not posted_str or posted_str == 'Unknown' or pd.isna(posted_str):
+        return datetime.now().isoformat()
+    
+    posted_str = str(posted_str).lower()
+    now = datetime.now()
+    
+    # Parse "X minutes ago"
+    match = re.match(r'(\d+)\s*minutes?\s*ago', posted_str)
+    if match:
+        minutes = int(match.group(1))
+        return (now - timedelta(minutes=minutes)).isoformat()
+    
+    # Parse "X hours ago"
+    match = re.match(r'(\d+)\s*hours?\s*ago', posted_str)
+    if match:
+        hours = int(match.group(1))
+        return (now - timedelta(hours=hours)).isoformat()
+    
+    # Parse "X days ago"
+    match = re.match(r'(\d+)\s*days?\s*ago', posted_str)
+    if match:
+        days = int(match.group(1))
+        return (now - timedelta(days=days)).isoformat()
+    
+    # Parse "X weeks ago"
+    match = re.match(r'(\d+)\s*weeks?\s*ago', posted_str)
+    if match:
+        weeks = int(match.group(1))
+        return (now - timedelta(weeks=weeks)).isoformat()
+    
+    # Parse "X months ago" (approximate)
+    match = re.match(r'(\d+)\s*months?\s*ago', posted_str)
+    if match:
+        months = int(match.group(1))
+        return (now - timedelta(days=months*30)).isoformat()
+    
+    # If it's already a date format, try to parse it
+    try:
+        parsed = pd.to_datetime(posted_str)
+        return parsed.isoformat()
+    except:
+        pass
+    
+    # Default to current time
+    return now.isoformat()
 
 def export_to_json():
-    """Convert CSV leads to JSON format for web dashboard."""
-
+    """Convert CSV leads to JSON format with original timestamps."""
+    
     leads_file = "data/final_leads.csv"
     output_file = "data/leads_data.json"
-
+    
     if not os.path.exists(leads_file):
-        print("❌ No leads found. Run pipeline first.")
+        print(f"❌ No leads found at {leads_file}. Run pipeline first.")
         return False
-
+    
     df = pd.read_csv(leads_file)
-
-    # Clean data for JSON
     df = df.fillna('')
-
-    # Convert to list of dictionaries
+    
+    print(f"📊 Processing {len(df)} leads...")
+    
     leads = []
     for _, row in df.iterrows():
+        posted_str = str(row.get('Posted', ''))
+        # Store original timestamp for dynamic calculation
+        original_timestamp = parse_posted_to_timestamp(posted_str)
+        
         lead = {
             "Title": str(row.get('Title', '')),
             "Price": str(row.get('Price', '')),
@@ -33,58 +84,34 @@ def export_to_json():
             "Area": str(row.get('Area', '')),
             "Bedrooms": str(row.get('Bedrooms', '')),
             "Bathrooms": str(row.get('Bathrooms', '')),
-            "Posted": str(row.get('Posted', '')),
+            "Posted": posted_str,
+            "PostedTimestamp": original_timestamp,  # NEW: store actual timestamp
             "ImageURL": str(row.get('ImageURL', '')),
             "Link": str(row.get('Link', ''))
         }
         leads.append(lead)
-
-    # Create data package
+    
     data = {
-        "last_updated": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "last_updated": datetime.now().isoformat(),
         "total_leads": len(leads),
         "leads": leads
     }
-
-    # Save to JSON
+    
     with open(output_file, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
-
-    print(f"✅ Exported {len(leads)} leads to {output_file}")
-
-    # Also copy to docs folder for GitHub Pages
+    
+    print(f"✅ Exported {len(leads)} leads with timestamps to {output_file}")
+    
+    # Copy to docs folder
     docs_dir = "docs"
     if not os.path.exists(docs_dir):
         os.makedirs(docs_dir)
-
-    # Copy JSON to docs folder
+    
     import shutil
     shutil.copy(output_file, os.path.join(docs_dir, "leads_data.json"))
     print(f"✅ Copied to {docs_dir}/leads_data.json")
-
+    
     return True
-
-
-def update_github_pages():
-    """Prepare files for GitHub Pages deployment."""
-
-    # Ensure docs folder has all files
-    docs_dir = "docs"
-
-    # Copy index.html if not exists
-    if not os.path.exists(os.path.join(docs_dir, "index.html")):
-        print("⚠️ index.html not found in docs folder. Please create it.")
-
-    print("\n📁 Files ready for GitHub Pages:")
-    print(f"   - {docs_dir}/index.html")
-    print(f"   - {docs_dir}/leads_data.json")
-    print("\n🚀 To deploy:")
-    print("   1. git add docs/")
-    print("   2. git commit -m 'Update dashboard data'")
-    print("   3. git push origin main")
-    print("   4. Enable GitHub Pages in repository settings (branch: main, folder: /docs)")
-
 
 if __name__ == "__main__":
     export_to_json()
-    update_github_pages()
