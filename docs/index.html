@@ -324,4 +324,56 @@
                 else if (price === 'lac') filtered = filtered.filter(l => (l.Price || '').includes('Lac'));
                 if (furnished !== 'all') filtered = filtered.filter(l => l.Furnished === furnished);
                 
-                if (sortByType === 'recent') filtered = sortByRecency(filtered,
+                if (sortByType === 'recent') filtered = sortByRecency(filtered, 'recent');
+                else if (sortByType === 'oldest') filtered = sortByRecency(filtered, 'oldest');
+                else filtered.sort((a,b) => extractPriceValue(b.Price) - extractPriceValue(a.Price));
+                
+                currentFilteredLeads = filtered;
+                addMarkersToMap(filtered);
+                if (scrollToLink) currentPage = findPageForLead(scrollToLink, filtered, perPage);
+                
+                totalPages = Math.ceil(filtered.length / perPage);
+                const paginated = filtered.slice((currentPage-1)*perPage, currentPage*perPage);
+                document.getElementById('leadsContainer').innerHTML = `<div class="leads-grid">${paginated.map(lead => {
+                    const postedTime = getRelativeTime(lead.PostedTimestamp);
+                    const isNew = isRecent(lead.PostedTimestamp);
+                    return `<div class="lead-card" data-link="${lead.Link.replace(/'/g, "\\'")}">
+                        <div class="lead-image">${lead.ImageURL ? `<img src="${lead.ImageURL}" loading="lazy" onerror="this.src='https://placehold.co/400x200/e0e0e0/999?text=No+Image'">` : '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#999;">📷 No Image</div>'}</div>
+                        <div class="lead-content">
+                            <div class="lead-title">${escapeHtml(lead.Title?.substring(0,70) || 'N/A')}</div>
+                            <div class="lead-price">💰 ${escapeHtml(lead.Price || 'N/A')}</div>
+                            <div class="lead-phone">📞 ${escapeHtml(lead.Phone || 'N/A')}</div>
+                            <div class="lead-location">📍 ${escapeHtml(lead.Location || 'N/A')}</div>
+                            <div class="lead-seller">👤 ${escapeHtml(lead.Seller || 'N/A')} ${lead.Furnished === 'Furnished' ? '<span class="badge badge-furnished">Furnished</span>' : ''}</div>
+                            <div class="lead-posted">📅 ${escapeHtml(postedTime)} ${isNew ? '<span class="badge badge-new">🆕 NEW</span>' : ''}</div>
+                            <div class="lead-link">🔗 <a href="${lead.Link}" target="_blank">View on OLX</a></div>
+                        </div>
+                    </div>`}).join('')}</div>`;
+                
+                let pageHtml = '';
+                const startPage = Math.max(1, currentPage-2), endPage = Math.min(totalPages, startPage+4);
+                if (startPage > 1) pageHtml += `<button class="page-btn" onclick="goToPage(1)">1</button>${startPage > 2 ? '<span style="padding:8px;">...</span>' : ''}`;
+                for (let i = startPage; i <= endPage; i++) pageHtml += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+                if (endPage < totalPages) pageHtml += `${endPage < totalPages-1 ? '<span style="padding:8px;">...</span>' : ''}<button class="page-btn" onclick="goToPage(${totalPages})">${totalPages}</button>`;
+                document.getElementById('pagination').innerHTML = pageHtml;
+                if (scrollToLink) setTimeout(() => scrollToAd(scrollToLink), 300);
+            } catch (error) { document.getElementById('leadsContainer').innerHTML = '<div class="no-results">⚠️ Error loading data</div>'; }
+        }
+        
+        function goToPage(page) { currentPage = page; loadLeads(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+        function resetAndRefresh() { currentPage = 1; document.getElementById('searchInput').value = ''; document.getElementById('priceFilter').value = 'all'; document.getElementById('furnishedFilter').value = 'all'; document.getElementById('sortFilter').value = 'default'; loadLeads(); }
+        function escapeHtml(text) { if (!text) return ''; const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+        
+        let searchTimeout;
+        document.getElementById('searchInput').addEventListener('input', () => { clearTimeout(searchTimeout); searchTimeout = setTimeout(() => { currentPage = 1; loadLeads(); }, 300); });
+        document.getElementById('priceFilter').addEventListener('change', () => { currentPage = 1; loadLeads(); });
+        document.getElementById('furnishedFilter').addEventListener('change', () => { currentPage = 1; loadLeads(); });
+        document.getElementById('sortFilter').addEventListener('change', () => { currentPage = 1; loadLeads(); });
+        document.getElementById('perPage').addEventListener('change', () => { currentPage = 1; loadLeads(); });
+        
+        initMap();
+        loadLeads();
+        setInterval(() => loadLeads(), 600000);
+    </script>
+</body>
+</html>
