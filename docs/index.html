@@ -5,835 +5,263 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Real Estate Lead Engine | Live Property Leads Dashboard</title>
     <meta name="description" content="Real-time property leads from OLX Pakistan. Find houses, apartments, plots and commercial properties with contact numbers.">
-    <meta name="keywords" content="real estate, property leads, OLX Pakistan, houses for sale, plots, apartments">
-    <meta property="og:title" content="Real Estate Lead Engine">
-    <meta property="og:description" content="Live property leads dashboard with phone numbers">
-    <meta property="og:type" content="website">
     <link rel="icon" href="https://img.icons8.com/color/48/real-estate.png">
-    
-    <!-- Leaflet CSS and JS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-        }
-        
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        /* Header */
-        .header {
-            background: rgba(255,255,255,0.95);
-            border-radius: 16px;
-            padding: 25px;
-            margin-bottom: 25px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-        }
-        
-        .header h1 {
-            font-size: 28px;
-            color: #2c3e50;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .header p {
-            color: #666;
-            margin-top: 8px;
-        }
-        
-        .last-updated {
-            background: #e8f4f8;
-            display: inline-block;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            margin-top: 10px;
-        }
-        
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        
-        .stat-card {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
-        }
-        
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
-        
-        .stat-number {
-            font-size: 36px;
-            font-weight: bold;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        
-        .stat-label {
-            color: #666;
-            font-size: 14px;
-            margin-top: 5px;
-        }
-        
-        /* Map Section */
-        .map-section {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        
-        .map-title {
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 15px;
-            color: #2c3e50;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border-left: 4px solid #667eea;
-            padding-left: 12px;
-        }
-        
-        #map {
-            height: 450px;
-            border-radius: 12px;
-            z-index: 1;
-        }
-        
-        /* Custom popup styling */
-        .custom-popup .popup-title {
-            font-weight: bold;
-            font-size: 14px;
-            margin-bottom: 5px;
-            color: #2c3e50;
-        }
-        
-        .custom-popup .popup-price {
-            color: #e74c3c;
-            font-weight: bold;
-            font-size: 12px;
-        }
-        
-        .custom-popup .popup-phone {
-            color: #27ae60;
-            font-size: 11px;
-        }
-        
-        .custom-popup a {
-            color: #3498db;
-            text-decoration: none;
-            font-size: 11px;
-        }
-        
-        /* Recent Ads Section */
-        .recent-section {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        
-        .recent-title {
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 15px;
-            color: #2c3e50;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border-left: 4px solid #667eea;
-            padding-left: 12px;
-        }
-        
-        .recent-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 15px;
-        }
-        
-        .recent-card {
-            display: flex;
-            background: #f8f9fa;
-            border-radius: 12px;
-            overflow: hidden;
-            transition: all 0.3s;
-            border: 1px solid #eee;
-            cursor: pointer;
-        }
-        
-        .recent-card:hover {
-            transform: translateX(5px);
-            background: #e9ecef;
-            border-color: #667eea;
-        }
-        
-        .recent-image {
-            width: 100px;
-            height: 100px;
-            object-fit: cover;
-            background: #e0e0e0;
-        }
-        
-        .recent-info {
-            flex: 1;
-            padding: 12px;
-        }
-        
-        .recent-title-text {
-            font-weight: bold;
-            font-size: 13px;
-            margin-bottom: 6px;
-            color: #2c3e50;
-            line-height: 1.3;
-        }
-        
-        .recent-price {
-            color: #e74c3c;
-            font-weight: bold;
-            font-size: 14px;
-            margin-bottom: 4px;
-        }
-        
-        .recent-location {
-            font-size: 11px;
-            color: #666;
-            margin-bottom: 4px;
-        }
-        
-        .recent-time {
-            font-size: 10px;
-            color: #27ae60;
-            font-weight: bold;
-        }
-        
-        /* Filters */
-        .filters {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 25px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            align-items: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        
-        .filter-group {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .filter-group label {
-            font-weight: 600;
-            color: #555;
-            font-size: 13px;
-        }
-        
-        select, input {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 13px;
-            outline: none;
-        }
-        
-        select:focus, input:focus {
-            border-color: #667eea;
-        }
-        
-        button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 600;
-            transition: opacity 0.3s;
-        }
-        
-        button:hover {
-            opacity: 0.9;
-        }
-        
-        /* Leads Grid */
-        .leads-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 20px;
-        }
-        
-        .lead-card {
-            background: white;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-            scroll-margin-top: 20px;
-        }
-        
-        .lead-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-        }
-        
-        .lead-card.highlight {
-            animation: highlight 2s ease-in-out;
-            border: 2px solid #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
-        }
-        
-        @keyframes highlight {
-            0% {
-                background-color: rgba(102, 126, 234, 0.2);
-                transform: scale(1);
-            }
-            50% {
-                background-color: rgba(102, 126, 234, 0.4);
-                transform: scale(1.02);
-            }
-            100% {
-                background-color: rgba(102, 126, 234, 0);
-                transform: scale(1);
-            }
-        }
-        
-        .lead-image {
-            height: 180px;
-            background: #f5f5f5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-        
-        .lead-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .lead-content {
-            padding: 16px;
-        }
-        
-        .lead-title {
-            font-weight: bold;
-            font-size: 14px;
-            margin-bottom: 10px;
-            line-height: 1.4;
-            height: 40px;
-            overflow: hidden;
-            color: #2c3e50;
-        }
-        
-        .lead-price {
-            color: #e74c3c;
-            font-weight: bold;
-            font-size: 18px;
-            margin-bottom: 8px;
-        }
-        
-        .lead-phone {
-            color: #27ae60;
-            font-weight: bold;
-            font-size: 14px;
-            margin-bottom: 8px;
-            word-break: break-all;
-        }
-        
-        .lead-location {
-            color: #666;
-            font-size: 12px;
-            margin-bottom: 6px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        
-        .lead-seller {
-            color: #8e44ad;
-            font-size: 12px;
-            margin-bottom: 6px;
-        }
-        
-        .lead-posted {
-            font-size: 11px;
-            color: #999;
-            margin-bottom: 10px;
-        }
-        
-        .badge {
-            display: inline-block;
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 10px;
-            font-weight: bold;
-            margin-right: 5px;
-        }
-        
-        .badge-furnished {
-            background: #d4edda;
-            color: #155724;
-        }
-        
-        .badge-new {
-            background: #ffc107;
-            color: #856404;
-        }
-        
-        .lead-link a {
-            color: #3498db;
-            text-decoration: none;
-            font-size: 12px;
-        }
-        
-        .lead-link a:hover {
-            text-decoration: underline;
-        }
-        
-        /* Pagination */
-        .pagination {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 30px;
-            flex-wrap: wrap;
-        }
-        
-        .page-btn {
-            background: white;
-            color: #333;
-            border: 1px solid #ddd;
-            padding: 8px 14px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 13px;
-        }
-        
-        .page-btn.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-        }
-        
-        .page-btn:hover:not(.active) {
-            background: #f0f0f0;
-        }
-        
-        /* Scroll to top button */
-        .scroll-top {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            font-size: 24px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            display: none;
-            transition: all 0.3s;
-            z-index: 1000;
-        }
-        
-        .scroll-top:hover {
-            transform: scale(1.1);
-        }
-        
-        .loading {
-            text-align: center;
-            padding: 60px;
-            background: white;
-            border-radius: 16px;
-        }
-        
-        .no-results {
-            text-align: center;
-            padding: 60px;
-            background: white;
-            border-radius: 16px;
-            color: #999;
-        }
-        
-        .footer {
-            text-align: center;
-            margin-top: 30px;
-            padding: 20px;
-            color: rgba(255,255,255,0.8);
-            font-size: 12px;
-        }
-        
-        @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
-            .leads-grid, .recent-grid {
-                grid-template-columns: 1fr;
-            }
-            .filters {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .filter-group {
-                justify-content: space-between;
-            }
-            .recent-image {
-                width: 80px;
-                height: 80px;
-            }
-            #map {
-                height: 350px;
-            }
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        .header { background: rgba(255,255,255,0.95); border-radius: 16px; padding: 25px; margin-bottom: 25px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
+        .header h1 { font-size: 28px; color: #2c3e50; display: flex; align-items: center; gap: 10px; }
+        .header p { color: #666; margin-top: 8px; }
+        .last-updated { background: #e8f4f8; display: inline-block; padding: 5px 12px; border-radius: 20px; font-size: 12px; margin-top: 10px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: white; border-radius: 16px; padding: 20px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.3s; }
+        .stat-card:hover { transform: translateY(-5px); }
+        .stat-number { font-size: 36px; font-weight: bold; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .stat-label { color: #666; font-size: 14px; margin-top: 5px; }
+        .map-section { background: white; border-radius: 16px; padding: 20px; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .map-title { font-size: 20px; font-weight: bold; margin-bottom: 15px; color: #2c3e50; display: flex; align-items: center; gap: 10px; border-left: 4px solid #667eea; padding-left: 12px; }
+        #map { height: 450px; border-radius: 12px; z-index: 1; }
+        .recent-section { background: white; border-radius: 16px; padding: 20px; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .recent-title { font-size: 20px; font-weight: bold; margin-bottom: 15px; color: #2c3e50; display: flex; align-items: center; gap: 10px; border-left: 4px solid #667eea; padding-left: 12px; }
+        .recent-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 15px; }
+        .recent-card { display: flex; background: #f8f9fa; border-radius: 12px; overflow: hidden; transition: all 0.3s; border: 1px solid #eee; cursor: pointer; }
+        .recent-card:hover { transform: translateX(5px); background: #e9ecef; border-color: #667eea; }
+        .recent-image { width: 100px; height: 100px; object-fit: cover; background: #e0e0e0; }
+        .recent-info { flex: 1; padding: 12px; }
+        .recent-title-text { font-weight: bold; font-size: 13px; margin-bottom: 6px; color: #2c3e50; line-height: 1.3; }
+        .recent-price { color: #e74c3c; font-weight: bold; font-size: 14px; margin-bottom: 4px; }
+        .recent-location { font-size: 11px; color: #666; margin-bottom: 4px; }
+        .recent-time { font-size: 10px; color: #27ae60; font-weight: bold; }
+        .filters { background: white; border-radius: 16px; padding: 20px; margin-bottom: 25px; display: flex; flex-wrap: wrap; gap: 15px; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .filter-group { display: flex; align-items: center; gap: 8px; }
+        .filter-group label { font-weight: 600; color: #555; font-size: 13px; }
+        select, input { padding: 8px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 13px; outline: none; }
+        select:focus, input:focus { border-color: #667eea; }
+        button { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 8px 20px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; transition: opacity 0.3s; }
+        button:hover { opacity: 0.9; }
+        .leads-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+        .lead-card { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s; scroll-margin-top: 20px; }
+        .lead-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
+        .lead-card.highlight { animation: highlight 2s ease-in-out; border: 2px solid #667eea; box-shadow: 0 0 0 3px rgba(102,126,234,0.3); }
+        @keyframes highlight { 0% { background-color: rgba(102,126,234,0.2); transform: scale(1); } 50% { background-color: rgba(102,126,234,0.4); transform: scale(1.02); } 100% { background-color: rgba(102,126,234,0); transform: scale(1); } }
+        .lead-image { height: 180px; background: #f5f5f5; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .lead-image img { width: 100%; height: 100%; object-fit: cover; }
+        .lead-content { padding: 16px; }
+        .lead-title { font-weight: bold; font-size: 14px; margin-bottom: 10px; line-height: 1.4; height: 40px; overflow: hidden; color: #2c3e50; }
+        .lead-price { color: #e74c3c; font-weight: bold; font-size: 18px; margin-bottom: 8px; }
+        .lead-phone { color: #27ae60; font-weight: bold; font-size: 14px; margin-bottom: 8px; word-break: break-all; }
+        .lead-location { color: #666; font-size: 12px; margin-bottom: 6px; display: flex; align-items: center; gap: 4px; }
+        .lead-seller { color: #8e44ad; font-size: 12px; margin-bottom: 6px; }
+        .lead-posted { font-size: 11px; color: #999; margin-bottom: 10px; }
+        .badge { display: inline-block; padding: 3px 8px; border-radius: 12px; font-size: 10px; font-weight: bold; margin-right: 5px; }
+        .badge-furnished { background: #d4edda; color: #155724; }
+        .badge-new { background: #ffc107; color: #856404; }
+        .lead-link a { color: #3498db; text-decoration: none; font-size: 12px; }
+        .lead-link a:hover { text-decoration: underline; }
+        .pagination { display: flex; justify-content: center; gap: 8px; margin-top: 30px; flex-wrap: wrap; }
+        .page-btn { background: white; color: #333; border: 1px solid #ddd; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 13px; }
+        .page-btn.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; }
+        .page-btn:hover:not(.active) { background: #f0f0f0; }
+        .scroll-top { position: fixed; bottom: 30px; right: 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 50%; width: 50px; height: 50px; font-size: 24px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: none; transition: all 0.3s; z-index: 1000; }
+        .scroll-top:hover { transform: scale(1.1); }
+        .loading { text-align: center; padding: 60px; background: white; border-radius: 16px; }
+        .no-results { text-align: center; padding: 60px; background: white; border-radius: 16px; color: #999; }
+        .footer { text-align: center; margin-top: 30px; padding: 20px; color: rgba(255,255,255,0.8); font-size: 12px; }
+        @media (max-width: 768px) { .container { padding: 10px; } .leads-grid, .recent-grid { grid-template-columns: 1fr; } .filters { flex-direction: column; align-items: stretch; } .filter-group { justify-content: space-between; } .recent-image { width: 80px; height: 80px; } #map { height: 350px; } }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>
-                <span>🏠</span> Real Estate Lead Engine
-            </h1>
+            <h1><span>🏠</span> Real Estate Lead Engine</h1>
             <p>Live property leads from OLX Pakistan | Updated daily with phone numbers</p>
-            <div class="last-updated" id="lastUpdated">
-                <span>🔄</span> Loading data...
-            </div>
+            <div class="last-updated" id="lastUpdated"><span>🔄</span> Loading data...</div>
         </div>
         
         <div class="stats-grid" id="stats">
-            <div class="stat-card">
-                <div class="stat-number">-</div>
-                <div class="stat-label">Total Leads</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">-</div>
-                <div class="stat-label">With Phone</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">-</div>
-                <div class="stat-label">Unique Locations</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">-</div>
-                <div class="stat-label">Furnished</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">-</div>
-                <div class="stat-label">Recent (24h)</div>
-            </div>
+            <div class="stat-card"><div class="stat-number">-</div><div class="stat-label">Total Leads</div></div>
+            <div class="stat-card"><div class="stat-number">-</div><div class="stat-label">With Phone</div></div>
+            <div class="stat-card"><div class="stat-number">-</div><div class="stat-label">Unique Locations</div></div>
+            <div class="stat-card"><div class="stat-number">-</div><div class="stat-label">Furnished</div></div>
+            <div class="stat-card"><div class="stat-number">-</div><div class="stat-label">Recent (24h)</div></div>
         </div>
         
-        <!-- Map Section -->
         <div class="map-section">
-            <div class="map-title">
-                <span>🗺️</span> Property Locations Map
-            </div>
+            <div class="map-title"><span>🗺️</span> Property Locations Map</div>
             <div id="map"></div>
-            <p style="font-size: 11px; color: #666; margin-top: 10px; text-align: center;">
-                📍 Click on any marker to view property details. Zoom in for exact locations.
-            </p>
+            <p style="font-size: 11px; color: #666; margin-top: 10px; text-align: center;">📍 Click on any marker to view property details. Zoom in for exact locations.</p>
         </div>
         
-        <!-- Recent Ads Section -->
         <div class="recent-section" id="recentSection">
-            <div class="recent-title">
-                <span>🆕</span> Recently Posted (Last 24 Hours)
-            </div>
-            <div id="recentAds" class="recent-grid">
-                <div class="loading">Loading recent ads...</div>
-            </div>
+            <div class="recent-title"><span>🆕</span> Recently Posted (Last 24 Hours)</div>
+            <div id="recentAds" class="recent-grid"><div class="loading">Loading recent ads...</div></div>
         </div>
         
         <div class="filters">
-            <div class="filter-group">
-                <label>🔍 Search:</label>
-                <input type="text" id="searchInput" placeholder="Title, location, seller..." style="width: 180px;">
-            </div>
-            <div class="filter-group">
-                <label>💰 Price:</label>
-                <select id="priceFilter">
-                    <option value="all">All</option>
-                    <option value="crore">> 1 Crore</option>
-                    <option value="lac">< 1 Crore</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label>🛋️ Furnished:</label>
-                <select id="furnishedFilter">
-                    <option value="all">All</option>
-                    <option value="Furnished">Furnished</option>
-                    <option value="Unfurnished">Unfurnished</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label>📅 Sort by:</label>
-                <select id="sortFilter">
-                    <option value="default">Default (Price)</option>
-                    <option value="recent">Most Recent First</option>
-                    <option value="oldest">Oldest First</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label>📊 Per page:</label>
-                <select id="perPage">
-                    <option value="12">12</option>
-                    <option value="24">24</option>
-                    <option value="48">48</option>
-                </select>
-            </div>
+            <div class="filter-group"><label>🔍 Search:</label><input type="text" id="searchInput" placeholder="Title, location, seller..." style="width: 180px;"></div>
+            <div class="filter-group"><label>💰 Price:</label><select id="priceFilter"><option value="all">All</option><option value="crore">> 1 Crore</option><option value="lac">< 1 Crore</option></select></div>
+            <div class="filter-group"><label>🛋️ Furnished:</label><select id="furnishedFilter"><option value="all">All</option><option value="Furnished">Furnished</option><option value="Unfurnished">Unfurnished</option></select></div>
+            <div class="filter-group"><label>📅 Sort by:</label><select id="sortFilter"><option value="default">Default (Price)</option><option value="recent">Most Recent First</option><option value="oldest">Oldest First</option></select></div>
+            <div class="filter-group"><label>📊 Per page:</label><select id="perPage"><option value="12">12</option><option value="24">24</option><option value="48">48</option></select></div>
             <button onclick="resetAndRefresh()">🔄 Refresh</button>
         </div>
         
-        <div id="leadsContainer">
-            <div class="loading">📡 Loading leads from server...</div>
-        </div>
-        
+        <div id="leadsContainer"><div class="loading">📡 Loading leads from server...</div></div>
         <div id="pagination" class="pagination"></div>
         
-        <div class="footer">
-            <p>Data sourced from OLX Pakistan | Updated daily</p>
-            <p>© 2025 Real Estate Lead Engine | For research purposes only</p>
-        </div>
+        <div class="footer"><p>Data sourced from OLX Pakistan | Updated daily</p><p>© 2025 Real Estate Lead Engine | For research purposes only</p></div>
     </div>
     
     <button class="scroll-top" id="scrollTopBtn" onclick="scrollToTop()">↑</button>
     
     <script>
-        let currentPage = 1;
-        let totalPages = 1;
-        let allLeads = [];
-        let currentFilteredLeads = [];
-        let map = null;
-        let markers = [];
-        
-        // Point to your JSON file
+        let currentPage = 1, totalPages = 1, allLeads = [], currentFilteredLeads = [], map = null, markers = [];
         const DATA_URL = 'https://raw.githubusercontent.com/AyyazAh/real-estate-leads/main/docs/leads_data.json';
         
-        // City coordinates for Pakistan (fallback when exact location unknown)
+        // ========== DYNAMIC TIME CALCULATION ==========
+        function getRelativeTime(timestamp) {
+            if (!timestamp) return 'Unknown';
+            const now = new Date();
+            const past = new Date(timestamp);
+            const diffMs = now - past;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+            const diffWeeks = Math.floor(diffDays / 7);
+            const diffMonths = Math.floor(diffDays / 30);
+            
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return `${diffMins} minute${diffMins !== 1 ? 's' : ''} ago`;
+            if (diffHours < 24) return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`;
+            if (diffDays < 7) return `${diffDays} day${diffDays !== 1 ? 's' : ''} ago`;
+            if (diffWeeks < 4) return `${diffWeeks} week${diffWeeks !== 1 ? 's' : ''} ago`;
+            return `${diffMonths} month${diffMonths !== 1 ? 's' : ''} ago`;
+        }
+        
+        function isRecent(postedTimestamp) {
+            if (!postedTimestamp) return false;
+            const now = new Date();
+            const posted = new Date(postedTimestamp);
+            const diffHours = (now - posted) / 3600000;
+            return diffHours < 24;
+        }
+        
+        // ========== CITY COORDINATES ==========
         const cityCoordinates = {
-            'Karachi': { lat: 24.8607, lng: 67.0011 },
-            'Lahore': { lat: 31.5497, lng: 74.3436 },
-            'Islamabad': { lat: 33.6844, lng: 73.0479 },
-            'Rawalpindi': { lat: 33.5651, lng: 73.0169 },
-            'Multan': { lat: 30.1575, lng: 71.5249 },
-            'Faisalabad': { lat: 31.4504, lng: 73.1350 },
-            'Peshawar': { lat: 34.0151, lng: 71.5249 },
-            'Quetta': { lat: 30.1798, lng: 66.9750 },
-            'Gujranwala': { lat: 32.1877, lng: 74.1945 },
-            'Sialkot': { lat: 32.4945, lng: 74.5229 },
-            'Bahawalpur': { lat: 29.3956, lng: 71.6836 },
-            'Sukkur': { lat: 27.7052, lng: 68.8574 },
-            'Hyderabad': { lat: 25.3960, lng: 68.3578 }
+            'Karachi': { lat: 24.8607, lng: 67.0011 }, 'Lahore': { lat: 31.5497, lng: 74.3436 },
+            'Islamabad': { lat: 33.6844, lng: 73.0479 }, 'Rawalpindi': { lat: 33.5651, lng: 73.0169 },
+            'Multan': { lat: 30.1575, lng: 71.5249 }, 'Faisalabad': { lat: 31.4504, lng: 73.1350 },
+            'Peshawar': { lat: 34.0151, lng: 71.5249 }, 'Quetta': { lat: 30.1798, lng: 66.9750 },
+            'Gujranwala': { lat: 32.1877, lng: 74.1945 }, 'Sialkot': { lat: 32.4945, lng: 74.5229 }
         };
         
-        // Extract city from location string
         function extractCity(location) {
             if (!location) return 'Islamabad';
             for (const city of Object.keys(cityCoordinates)) {
-                if (location.includes(city)) {
-                    return city;
-                }
+                if (location.includes(city)) return city;
             }
             return 'Islamabad';
         }
         
-        // Get coordinates for a location
         function getCoordinates(location) {
             const city = extractCity(location);
             return cityCoordinates[city] || { lat: 33.6844, lng: 73.0479 };
         }
         
-        // Initialize map
+        // ========== MAP FUNCTIONS ==========
         function initMap() {
             map = L.map('map').setView([30.3753, 69.3451], 6);
             L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; CartoDB',
-                subdomains: 'abcd',
-                maxZoom: 19,
-                minZoom: 5
+                subdomains: 'abcd', maxZoom: 19, minZoom: 5
             }).addTo(map);
         }
         
-        // Clear all markers from map
-        function clearMarkers() {
-            markers.forEach(marker => {
-                map.removeLayer(marker);
+        function clearMarkers() { markers.forEach(m => map.removeLayer(m)); markers = []; }
+        
+        function addMarkersToMap(leads) {
+            clearMarkers();
+            const usedCoordinates = new Map();
+            leads.forEach(lead => {
+                let coords = getCoordinates(lead.Location);
+                const locationKey = `${coords.lat},${coords.lng}`;
+                if (usedCoordinates.has(locationKey)) {
+                    usedCoordinates.set(locationKey, usedCoordinates.get(locationKey) + 1);
+                    const latOffset = (Math.random() - 0.5) * 0.04;
+                    const lngOffset = (Math.random() - 0.5) * 0.04;
+                    coords = { lat: coords.lat + latOffset, lng: coords.lng + lngOffset };
+                } else {
+                    usedCoordinates.set(locationKey, 1);
+                }
+                
+                const title = lead.Title ? lead.Title.substring(0, 60) : 'N/A';
+                const price = lead.Price || 'N/A';
+                const phone = lead.Phone || 'N/A';
+                const location = lead.Location || 'N/A';
+                const seller = lead.Seller || 'N/A';
+                const postedTime = getRelativeTime(lead.PostedTimestamp);
+                
+                let markerColor = '#3498db';
+                if (title.toLowerCase().includes('plot')) markerColor = '#27ae60';
+                else if (title.toLowerCase().includes('apartment') || title.toLowerCase().includes('flat')) markerColor = '#f39c12';
+                else if (price.includes('Crore') && parseFloat(price) > 5) markerColor = '#e74c3c';
+                
+                const icon = L.divIcon({
+                    html: `<div style="background-color: ${markerColor}; width: 14px; height: 14px; border-radius: 50%; border: 2px solid white; box-shadow: 0 1px 3px rgba(0,0,0,0.3);"></div>`,
+                    className: 'custom-marker', iconSize: [18, 18], popupAnchor: [0, -9]
+                });
+                
+                const popupContent = `<div style="min-width: 220px; max-width: 260px;"><div style="font-weight: bold; font-size: 12px; margin-bottom: 8px;">🏠 ${escapeHtml(title)}</div><div style="color: #e74c3c; font-weight: bold;">💰 ${escapeHtml(price)}</div><div style="color: #27ae60; margin: 4px 0;">📞 ${escapeHtml(phone)}</div><div>📍 ${escapeHtml(location)}</div><div>👤 ${escapeHtml(seller)}</div><div style="color: #999;">📅 ${escapeHtml(postedTime)}</div><a href="${lead.Link}" target="_blank" style="font-size: 10px;">🔗 View on OLX →</a></div>`;
+                
+                const marker = L.marker([coords.lat, coords.lng], { icon: icon }).addTo(map);
+                marker.bindPopup(popupContent);
+                markers.push(marker);
             });
-            markers = [];
+            if (markers.length > 0) map.fitBounds(L.featureGroup(markers).getBounds().pad(0.1));
         }
         
-        // Add markers to map with random offsets for better visibility
-function addMarkersToMap(leads) {
-    clearMarkers();
-    
-    // Track used coordinates to add offsets
-    const usedCoordinates = new Map();
-    
-    leads.forEach(lead => {
-        const location = lead.Location || 'Unknown';
-        let coords = getCoordinates(location);
-        
-        // Create a unique key for this exact location
-        const locationKey = `${coords.lat},${coords.lng}`;
-        
-        // If we already have properties at these coordinates, add a small random offset
-        if (usedCoordinates.has(locationKey)) {
-            const offsetCount = usedCoordinates.get(locationKey);
-            // Add random offset between -0.02 and 0.02 degrees (approx 1-2 km)
-            const latOffset = (Math.random() - 0.5) * 0.04;
-            const lngOffset = (Math.random() - 0.5) * 0.04;
-            coords = {
-                lat: coords.lat + latOffset,
-                lng: coords.lng + lngOffset
-            };
-            usedCoordinates.set(locationKey, offsetCount + 1);
-        } else {
-            usedCoordinates.set(locationKey, 1);
-        }
-        
-        // Create popup content for this single property
-        const title = lead.Title ? lead.Title.substring(0, 60) : 'N/A';
-        const price = lead.Price || 'N/A';
-        const phone = lead.Phone || 'N/A';
-        const posted = lead.Posted || 'Unknown';
-        const seller = lead.Seller || 'N/A';
-        
-        let popupContent = `
-            <div class="custom-popup" style="min-width: 220px; max-width: 260px;">
-                <div style="font-weight: bold; font-size: 12px; margin-bottom: 8px; color: #2c3e50;">🏠 ${escapeHtml(title)}</div>
-                <div style="color: #e74c3c; font-weight: bold; font-size: 13px;">💰 ${escapeHtml(price)}</div>
-                <div style="color: #27ae60; font-size: 11px; margin: 4px 0;">📞 ${escapeHtml(phone)}</div>
-                <div style="color: #666; font-size: 10px;">📍 ${escapeHtml(location)}</div>
-                <div style="color: #8e44ad; font-size: 10px;">👤 ${escapeHtml(seller)}</div>
-                <div style="color: #999; font-size: 9px;">📅 ${escapeHtml(posted)}</div>
-                <a href="${lead.Link}" target="_blank" style="font-size: 10px; display: inline-block; margin-top: 6px;">🔗 View on OLX →</a>
-            </div>
-        `;
-        
-        // Determine marker color based on property type and price
-        let markerColor = '#3498db'; // default blue
-        if (title.toLowerCase().includes('plot')) {
-            markerColor = '#27ae60'; // green for plots
-        } else if (title.toLowerCase().includes('apartment') || title.toLowerCase().includes('flat')) {
-            markerColor = '#f39c12'; // orange for apartments
-        } else if (price.includes('Crore') && parseFloat(price) > 5) {
-            markerColor = '#e74c3c'; // red for luxury
-        }
-        
-        // Create custom icon
-        const icon = L.divIcon({
-            html: `<div style="background-color: ${markerColor}; width: 14px; height: 14px; border-radius: 50%; border: 2px solid white; box-shadow: 0 1px 3px rgba(0,0,0,0.3);"></div>`,
-            className: 'custom-marker',
-            iconSize: [18, 18],
-            popupAnchor: [0, -9]
-        });
-        
-        const marker = L.marker([coords.lat, coords.lng], { icon: icon }).addTo(map);
-        marker.bindPopup(popupContent);
-        markers.push(marker);
-    });
-    
-    // Fit bounds to show all markers
-    if (markers.length > 0) {
-        const group = L.featureGroup(markers);
-        map.fitBounds(group.getBounds().pad(0.1));
-    }
-}
-        
-        // Parse time string to minutes for sorting
+        // ========== SORTING & FILTERING ==========
         function parseTimeToMinutes(timeStr) {
             if (!timeStr) return 999999;
             const match = timeStr.match(/(\d+)\s*(minute|hour|day|week|month)/i);
             if (match) {
-                const value = parseInt(match[1]);
-                const unit = match[2].toLowerCase();
+                const value = parseInt(match[1]), unit = match[2].toLowerCase();
                 if (unit === 'minute') return value;
                 if (unit === 'hour') return value * 60;
                 if (unit === 'day') return value * 1440;
                 if (unit === 'week') return value * 10080;
-                if (unit === 'month') return value * 43200;
             }
             return 999999;
         }
         
-        // Sort leads by recency
         function sortByRecency(leads, order = 'recent') {
             return [...leads].sort((a, b) => {
-                const timeA = parseTimeToMinutes(a.Posted);
-                const timeB = parseTimeToMinutes(b.Posted);
-                if (order === 'recent') {
-                    return timeA - timeB;
-                } else {
-                    return timeB - timeA;
-                }
+                const timeA = a.PostedTimestamp ? new Date(a.PostedTimestamp).getTime() : 0;
+                const timeB = b.PostedTimestamp ? new Date(b.PostedTimestamp).getTime() : 0;
+                return order === 'recent' ? timeB - timeA : timeA - timeB;
             });
         }
         
-        // Extract numeric price for sorting
         function extractPriceValue(priceStr) {
             if (!priceStr) return 0;
             const match = priceStr.match(/(\d+(?:\.\d+)?)\s*(Crore|Lac)/i);
             if (match) {
                 let value = parseFloat(match[1]);
-                if (match[2].toLowerCase() === 'crore') {
-                    return value * 10000000;
-                } else if (match[2].toLowerCase() === 'lac') {
-                    return value * 100000;
-                }
+                return match[2].toLowerCase() === 'crore' ? value * 10000000 : value * 100000;
             }
             return 0;
         }
         
-        // Scroll to top button
+        // ========== UI FUNCTIONS ==========
         window.onscroll = function() {
             const btn = document.getElementById('scrollTopBtn');
-            if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
-                btn.style.display = 'block';
-            } else {
-                btn.style.display = 'none';
-            }
+            if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) btn.style.display = 'block';
+            else btn.style.display = 'none';
         };
-        
-        function scrollToTop() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-        
-        // Function to scroll to a specific ad and highlight it
+        function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
         function scrollToAd(link) {
             const cards = document.querySelectorAll('.lead-card');
             for (const card of cards) {
@@ -846,279 +274,54 @@ function addMarkersToMap(leads) {
                 }
             }
         }
-        
-        // Function to find which page contains a specific lead
         function findPageForLead(leadLink, leads, perPage) {
             const index = leads.findIndex(lead => lead.Link === leadLink);
-            if (index !== -1) {
-                return Math.floor(index / perPage) + 1;
-            }
-            return 1;
+            return index !== -1 ? Math.floor(index / perPage) + 1 : 1;
         }
+        function scrollToAdByLink(link) { currentPage = 1; loadLeads(link); }
         
         async function loadLeads(scrollToLink = null) {
-            const search = document.getElementById('searchInput').value;
+            const search = document.getElementById('searchInput').value.toLowerCase();
             const price = document.getElementById('priceFilter').value;
             const furnished = document.getElementById('furnishedFilter').value;
-            const sortBy = document.getElementById('sortFilter').value;
+            const sortByType = document.getElementById('sortFilter').value;
             const perPage = parseInt(document.getElementById('perPage').value);
-            
             document.getElementById('leadsContainer').innerHTML = '<div class="loading">📡 Loading leads...</div>';
             
             try {
                 const response = await fetch(DATA_URL + '?t=' + new Date().getTime());
                 if (!response.ok) throw new Error('Failed to load data');
                 const data = await response.json();
-                
                 allLeads = data.leads || [];
-                updateStats(data);
-                document.getElementById('lastUpdated').innerHTML = `🔄 Last updated: ${data.last_updated || 'Unknown'}`;
                 
-                // Display recent ads (last 24 hours)
-                const recent = allLeads.filter(lead => {
-                    const posted = lead.Posted || '';
-                    return posted.includes('minute') || posted.includes('hour');
-                }).sort((a, b) => {
-                    return parseTimeToMinutes(a.Posted) - parseTimeToMinutes(b.Posted);
-                }).slice(0, 6);
+                document.getElementById('lastUpdated').innerHTML = `🔄 Last updated: ${new Date(data.last_updated).toLocaleString()}`;
+                const withPhone = allLeads.filter(l => l.Phone && l.Phone !== 'none').length;
+                const uniqueLocations = new Set(allLeads.map(l => l.Location)).size;
+                const furnishedCount = allLeads.filter(l => l.Furnished === 'Furnished').length;
+                const recentCount = allLeads.filter(l => isRecent(l.PostedTimestamp)).length;
+                document.querySelectorAll('.stat-card')[0].querySelector('.stat-number').textContent = allLeads.length;
+                document.querySelectorAll('.stat-card')[1].querySelector('.stat-number').textContent = withPhone;
+                document.querySelectorAll('.stat-card')[2].querySelector('.stat-number').textContent = uniqueLocations;
+                document.querySelectorAll('.stat-card')[3].querySelector('.stat-number').textContent = furnishedCount;
+                document.querySelectorAll('.stat-card')[4].querySelector('.stat-number').textContent = recentCount;
                 
-                renderRecentAds(recent);
-                
-                // Apply filters
-                let filtered = [...allLeads];
-                if (search) {
-                    filtered = filtered.filter(lead => 
-                        (lead.Title || '').toLowerCase().includes(search.toLowerCase()) ||
-                        (lead.Location || '').toLowerCase().includes(search.toLowerCase()) ||
-                        (lead.Seller || '').toLowerCase().includes(search.toLowerCase())
-                    );
-                }
-                if (price === 'crore') {
-                    filtered = filtered.filter(lead => (lead.Price || '').includes('Crore'));
-                } else if (price === 'lac') {
-                    filtered = filtered.filter(lead => (lead.Price || '').includes('Lac'));
-                }
-                if (furnished !== 'all') {
-                    filtered = filtered.filter(lead => lead.Furnished === furnished);
-                }
-                
-                // Apply sorting
-                if (sortBy === 'recent') {
-                    filtered = sortByRecency(filtered, 'recent');
-                } else if (sortBy === 'oldest') {
-                    filtered = sortByRecency(filtered, 'oldest');
-                } else {
-                    filtered.sort((a, b) => {
-                        return extractPriceValue(b.Price) - extractPriceValue(a.Price);
-                    });
-                }
-                
-                currentFilteredLeads = filtered;
-                
-                // Update map with filtered leads
-                addMarkersToMap(filtered);
-                
-                // If we need to scroll to a specific ad, find its page
-                if (scrollToLink) {
-                    const targetPage = findPageForLead(scrollToLink, filtered, perPage);
-                    if (targetPage !== currentPage) {
-                        currentPage = targetPage;
-                    }
-                }
-                
-                const total = filtered.length;
-                totalPages = Math.ceil(total / perPage);
-                const start = (currentPage - 1) * perPage;
-                const paginated = filtered.slice(start, start + perPage);
-                
-                renderLeads(paginated);
-                renderPagination();
-                
-                // After rendering, scroll to the ad if needed
-                if (scrollToLink) {
-                    setTimeout(() => {
-                        scrollToAd(scrollToLink);
-                    }, 300);
-                }
-                
-            } catch (error) {
-                console.error('Error loading data:', error);
-                document.getElementById('leadsContainer').innerHTML = '<div class="no-results">⚠️ Error loading data. Please try again later.</div>';
-            }
-        }
-        
-        function renderRecentAds(recent) {
-            const container = document.getElementById('recentAds');
-            if (!recent || recent.length === 0) {
-                container.innerHTML = '<div class="no-results">No new ads in the last 24 hours</div>';
-                return;
-            }
-            
-            let html = '';
-            for (const ad of recent) {
-                const title = ad.Title || 'N/A';
-                const price = ad.Price || 'N/A';
-                const location = ad.Location || 'N/A';
-                const posted = ad.Posted || 'Unknown';
-                const image = ad.ImageURL || '';
-                const link = ad.Link || '#';
-                
-                html += `
-                    <div class="recent-card" onclick="scrollToAdByLink('${link.replace(/'/g, "\\'")}')">
-                        ${image ? `<img src="${image}" alt="Property" class="recent-image" onerror="this.style.display='none'">` : ''}
+                const recent = allLeads.filter(l => isRecent(l.PostedTimestamp)).sort((a,b) => new Date(b.PostedTimestamp) - new Date(a.PostedTimestamp)).slice(0,6);
+                document.getElementById('recentAds').innerHTML = recent.map(ad => `
+                    <div class="recent-card" onclick="scrollToAdByLink('${ad.Link.replace(/'/g, "\\'")}')">
+                        ${ad.ImageURL ? `<img src="${ad.ImageURL}" class="recent-image" onerror="this.style.display='none'">` : ''}
                         <div class="recent-info">
-                            <div class="recent-title-text">${escapeHtml(title.substring(0, 60))}</div>
-                            <div class="recent-price">💰 ${escapeHtml(price)}</div>
-                            <div class="recent-location">📍 ${escapeHtml(location)}</div>
-                            <div class="recent-time">🕐 ${escapeHtml(posted)}</div>
+                            <div class="recent-title-text">${escapeHtml(ad.Title?.substring(0,60) || 'N/A')}</div>
+                            <div class="recent-price">💰 ${escapeHtml(ad.Price || 'N/A')}</div>
+                            <div class="recent-location">📍 ${escapeHtml(ad.Location || 'N/A')}</div>
+                            <div class="recent-time">🕐 ${getRelativeTime(ad.PostedTimestamp)}</div>
                         </div>
                     </div>
-                `;
-            }
-            container.innerHTML = html;
-        }
-        
-        // Global function to handle scrolling from recent ad clicks
-        function scrollToAdByLink(link) {
-            currentPage = 1;
-            loadLeads(link);
-        }
-        
-        function updateStats(data) {
-            const leads = data.leads || [];
-            const withPhone = leads.filter(l => l.Phone && l.Phone !== 'none' && l.Phone !== '').length;
-            const uniqueLocations = new Set(leads.map(l => l.Location)).size;
-            const furnished = leads.filter(l => l.Furnished === 'Furnished').length;
-            const recent = leads.filter(l => {
-                const posted = l.Posted || '';
-                return posted.includes('minute') || posted.includes('hour');
-            }).length;
-            
-            const statDivs = document.querySelectorAll('.stat-card');
-            if (statDivs.length >= 5) {
-                statDivs[0].querySelector('.stat-number').textContent = leads.length;
-                statDivs[1].querySelector('.stat-number').textContent = withPhone;
-                statDivs[2].querySelector('.stat-number').textContent = uniqueLocations;
-                statDivs[3].querySelector('.stat-number').textContent = furnished;
-                statDivs[4].querySelector('.stat-number').textContent = recent;
-            }
-        }
-        
-        function renderLeads(leads) {
-            const container = document.getElementById('leadsContainer');
-            
-            if (leads.length === 0) {
-                container.innerHTML = '<div class="no-results">🔍 No leads found matching your criteria</div>';
-                return;
-            }
-            
-            let html = '<div class="leads-grid">';
-            for (const lead of leads) {
-                const title = lead.Title || 'N/A';
-                const price = lead.Price || 'N/A';
-                const phone = lead.Phone || 'N/A';
-                const location = lead.Location || 'N/A';
-                const seller = lead.Seller || 'N/A';
-                const furnished = lead.Furnished || '';
-                const posted = lead.Posted || 'Unknown';
-                const image = lead.ImageURL || '';
-                const link = lead.Link || '#';
+                `).join('');
                 
-                const furnishedBadge = furnished === 'Furnished' ? '<span class="badge badge-furnished">Furnished</span>' : '';
-                const newBadge = (posted.includes('minute') || posted.includes('hour')) ? '<span class="badge badge-new">🆕 NEW</span>' : '';
+                let filtered = [...allLeads];
+                if (search) filtered = filtered.filter(l => (l.Title || '').toLowerCase().includes(search) || (l.Location || '').toLowerCase().includes(search) || (l.Seller || '').toLowerCase().includes(search));
+                if (price === 'crore') filtered = filtered.filter(l => (l.Price || '').includes('Crore'));
+                else if (price === 'lac') filtered = filtered.filter(l => (l.Price || '').includes('Lac'));
+                if (furnished !== 'all') filtered = filtered.filter(l => l.Furnished === furnished);
                 
-                html += `
-                    <div class="lead-card" data-link="${link.replace(/'/g, "\\'")}">
-                        <div class="lead-image">
-                            ${image ? `<img src="${image}" alt="Property" loading="lazy" onerror="this.src='https://placehold.co/400x200/e0e0e0/999?text=No+Image'">` : '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#999;">📷 No Image</div>'}
-                        </div>
-                        <div class="lead-content">
-                            <div class="lead-title">${escapeHtml(title.substring(0, 70))}</div>
-                            <div class="lead-price">💰 ${escapeHtml(price)}</div>
-                            <div class="lead-phone">📞 ${escapeHtml(phone)}</div>
-                            <div class="lead-location">📍 ${escapeHtml(location)}</div>
-                            <div class="lead-seller">👤 ${escapeHtml(seller)} ${furnishedBadge}</div>
-                            <div class="lead-posted">📅 ${escapeHtml(posted)} ${newBadge}</div>
-                            <div class="lead-link">🔗 <a href="${link}" target="_blank" rel="noopener noreferrer">View on OLX</a></div>
-                        </div>
-                    </div>
-                `;
-            }
-            html += '</div>';
-            container.innerHTML = html;
-        }
-        
-        function renderPagination() {
-            const container = document.getElementById('pagination');
-            if (totalPages <= 1) {
-                container.innerHTML = '';
-                return;
-            }
-            
-            let html = '';
-            const startPage = Math.max(1, currentPage - 2);
-            const endPage = Math.min(totalPages, startPage + 4);
-            
-            if (startPage > 1) {
-                html += `<button class="page-btn" onclick="goToPage(1)">1</button>`;
-                if (startPage > 2) html += `<span style="padding: 8px;">...</span>`;
-            }
-            
-            for (let i = startPage; i <= endPage; i++) {
-                html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
-            }
-            
-            if (endPage < totalPages) {
-                if (endPage < totalPages - 1) html += `<span style="padding: 8px;">...</span>`;
-                html += `<button class="page-btn" onclick="goToPage(${totalPages})">${totalPages}</button>`;
-            }
-            
-            container.innerHTML = html;
-        }
-        
-        function goToPage(page) {
-            currentPage = page;
-            loadLeads();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-        
-        function resetAndRefresh() {
-            currentPage = 1;
-            document.getElementById('searchInput').value = '';
-            document.getElementById('priceFilter').value = 'all';
-            document.getElementById('furnishedFilter').value = 'all';
-            document.getElementById('sortFilter').value = 'default';
-            loadLeads();
-        }
-        
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-        
-        // Debounced search
-        let searchTimeout;
-        document.getElementById('searchInput').addEventListener('input', function() {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                currentPage = 1;
-                loadLeads();
-            }, 300);
-        });
-        
-        document.getElementById('priceFilter').addEventListener('change', () => { currentPage = 1; loadLeads(); });
-        document.getElementById('furnishedFilter').addEventListener('change', () => { currentPage = 1; loadLeads(); });
-        document.getElementById('sortFilter').addEventListener('change', () => { currentPage = 1; loadLeads(); });
-        document.getElementById('perPage').addEventListener('change', () => { currentPage = 1; loadLeads(); });
-        
-        // Initialize map and load data
-        initMap();
-        loadLeads();
-        
-        // Auto-refresh every 10 minutes
-        setInterval(() => loadLeads(), 600000);
-    </script>
-</body>
-</html>
+                if (sortByType === 'recent') filtered = sortByRecency(filtered,
