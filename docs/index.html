@@ -203,7 +203,6 @@
             display: flex;
             gap: 12px;
             transition: all 0.3s;
-            cursor: pointer;
         }
 
         .recent-card:hover {
@@ -358,6 +357,41 @@
             opacity: 0.9;
         }
 
+        /* Lead Score Badge Styles */
+        .score-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .score-hot {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+
+        .score-warm {
+            background: rgba(241, 196, 15, 0.2);
+            color: #f1c40f;
+            border: 1px solid rgba(241, 196, 15, 0.3);
+        }
+
+        .score-cool {
+            background: rgba(52, 152, 219, 0.2);
+            color: #3498db;
+            border: 1px solid rgba(52, 152, 219, 0.3);
+        }
+
+        .score-cold {
+            background: rgba(149, 165, 166, 0.2);
+            color: #95a5a6;
+            border: 1px solid rgba(149, 165, 166, 0.3);
+        }
+
         .leads-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
@@ -387,7 +421,6 @@
             border-radius: 20px;
             overflow: hidden;
             transition: all 0.3s;
-            cursor: pointer;
         }
 
         .lead-card:hover {
@@ -425,10 +458,11 @@
         .lead-details {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 8px;
             margin-bottom: 8px;
             font-size: 12px;
             color: rgba(255,255,255,0.6);
+            align-items: center;
         }
 
         .lead-phone {
@@ -568,6 +602,10 @@
                 <div class="stat-number" id="totalLeads">--</div>
                 <div class="stat-label">active leads</div>
             </div>
+            <div class="stat-card">
+                <div class="stat-number" id="hotLeads">--</div>
+                <div class="stat-label">🔥 Hot Leads</div>
+            </div>
         </div>
 
         <div class="sync-info">
@@ -609,6 +647,11 @@
                     <option value="Furnished">Furnished</option>
                     <option value="Unfurnished">Unfurnished</option>
                 </select>
+                <select id="scoreFilter" class="filter-select">
+                    <option value="all">All Scores</option>
+                    <option value="hot">🔥 Hot Only</option>
+                    <option value="warm">⭐ Warm Only</option>
+                </select>
                 <select id="perPage" class="filter-select">
                     <option value="12">12 per page</option>
                     <option value="24">24 per page</option>
@@ -638,6 +681,108 @@
         let allLeads = [];
 
         const DATA_URL = 'https://raw.githubusercontent.com/AyyazAh/real-estate-leads/main/docs/leads_data.json';
+
+        // ========== LEAD SCORING FUNCTION ==========
+        function calculateLeadScore(lead) {
+            let score = 0;
+            let reasons = [];
+
+            // 1. Recency Score (max 50 points)
+            const postedTime = lead.PostedTimestamp;
+            if (postedTime) {
+                const now = new Date();
+                const posted = new Date(postedTime);
+                const diffHours = (now - posted) / 3600000;
+
+                if (diffHours < 1) {
+                    score += 50;
+                    reasons.push("🆕 Posted within last hour");
+                } else if (diffHours < 6) {
+                    score += 40;
+                    reasons.push("⏰ Posted within 6 hours");
+                } else if (diffHours < 12) {
+                    score += 30;
+                    reasons.push("📅 Posted within 12 hours");
+                } else if (diffHours < 24) {
+                    score += 20;
+                    reasons.push("🌙 Posted within 24 hours");
+                } else if (diffHours < 48) {
+                    score += 10;
+                    reasons.push("📆 Posted within 2 days");
+                } else {
+                    score += 5;
+                    reasons.push("📌 Posted recently");
+                }
+            }
+
+            // 2. Price Score (max 30 points)
+            const priceStr = lead.Price || '';
+            if (priceStr.includes('Lac')) {
+                const match = priceStr.match(/(\d+(?:\.\d+)?)/);
+                if (match) {
+                    const price = parseFloat(match[1]);
+                    if (price < 50) {
+                        score += 30;
+                        reasons.push("💰 Great value under 50 Lac");
+                    } else if (price < 100) {
+                        score += 20;
+                        reasons.push("💵 Good value under 1 Crore");
+                    } else {
+                        score += 10;
+                        reasons.push("🏠 Premium property");
+                    }
+                }
+            } else if (priceStr.includes('Crore')) {
+                const match = priceStr.match(/(\d+(?:\.\d+)?)/);
+                if (match) {
+                    const price = parseFloat(match[1]);
+                    if (price < 2) {
+                        score += 20;
+                        reasons.push("🏡 Affordable luxury under 2 Crore");
+                    } else if (price < 5) {
+                        score += 10;
+                        reasons.push("✨ Premium property");
+                    } else {
+                        score += 5;
+                        reasons.push("👑 Luxury estate");
+                    }
+                }
+            }
+
+            // 3. Furnished Bonus (max 10 points)
+            if (lead.Furnished === 'Furnished') {
+                score += 10;
+                reasons.push("🛋️ Ready to move in (Furnished)");
+            }
+
+            // 4. Active Ads Score (seller reputation, max 10 points)
+            if (lead.ActiveAds) {
+                const activeCount = parseInt(lead.ActiveAds);
+                if (!isNaN(activeCount)) {
+                    if (activeCount > 20) {
+                        score += 10;
+                        reasons.push("🏢 Professional seller (20+ active ads)");
+                    } else if (activeCount > 5) {
+                        score += 5;
+                        reasons.push("🤝 Active seller");
+                    }
+                }
+            }
+
+            return { score, reasons };
+        }
+
+        function getScoreBadge(score) {
+            if (score >= 70) {
+                return { class: 'score-hot', icon: '🔥', text: 'HOT' };
+            } else if (score >= 50) {
+                return { class: 'score-warm', icon: '⭐', text: 'WARM' };
+            } else if (score >= 30) {
+                return { class: 'score-cool', icon: '💙', text: 'COOL' };
+            } else {
+                return { class: 'score-cold', icon: '❄️', text: 'COLD' };
+            }
+        }
 
         function getRelativeTime(timestamp) {
             if (!timestamp) return 'Unknown';
@@ -686,6 +831,7 @@
             const search = document.getElementById('searchInput').value.toLowerCase();
             const price = document.getElementById('priceFilter').value;
             const furnished = document.getElementById('furnishedFilter').value;
+            const scoreFilter = document.getElementById('scoreFilter').value;
             const perPage = parseInt(document.getElementById('perPage').value);
 
             document.getElementById('leadsContainer').innerHTML = '<div class="loading">Loading live data feed...</div>';
@@ -697,7 +843,16 @@
                 const data = await response.json();
                 allLeads = data.leads || [];
 
+                // Calculate scores for all leads
+                allLeads = allLeads.map(lead => {
+                    const { score, reasons } = calculateLeadScore(lead);
+                    return { ...lead, score, scoreReasons: reasons };
+                });
+
                 document.getElementById('totalLeads').textContent = allLeads.length;
+                const hotCount = allLeads.filter(l => l.score >= 70).length;
+                document.getElementById('hotLeads').textContent = hotCount;
+
                 const syncDate = new Date(data.last_updated);
                 document.getElementById('lastSync').innerHTML = syncDate.toLocaleString();
 
@@ -708,7 +863,9 @@
                 if (recent.length === 0) {
                     document.getElementById('recentAds').innerHTML = '<div class="loading">No new ads in the last 24 hours</div>';
                 } else {
-                    document.getElementById('recentAds').innerHTML = recent.map(ad => `
+                    document.getElementById('recentAds').innerHTML = recent.map(ad => {
+                        const badge = getScoreBadge(ad.score);
+                        return `
                         <div class="recent-card">
                             ${ad.ImageURL ? `<img src="${ad.ImageURL}" class="recent-image" onerror="this.style.display='none'">` : '<div class="recent-image" style="display:flex;align-items:center;justify-content:center;">📷</div>'}
                             <div class="recent-info">
@@ -717,8 +874,9 @@
                                 <div class="recent-location">📍 ${escapeHtml(ad.Location?.substring(0, 35) || 'N/A')}</div>
                                 <div class="recent-time">🕐 ${getRelativeTime(ad.PostedTimestamp)}</div>
                             </div>
+                            <div class="score-badge ${badge.class}" style="align-self: flex-start;">${badge.icon} ${badge.text}</div>
                         </div>
-                    `).join('');
+                    `}).join('');
                 }
 
                 let filtered = [...allLeads];
@@ -737,8 +895,13 @@
                 if (furnished !== 'all') {
                     filtered = filtered.filter(lead => lead.Furnished === furnished);
                 }
+                if (scoreFilter === 'hot') {
+                    filtered = filtered.filter(lead => lead.score >= 70);
+                } else if (scoreFilter === 'warm') {
+                    filtered = filtered.filter(lead => lead.score >= 50 && lead.score < 70);
+                }
 
-                filtered.sort((a, b) => extractPriceValue(b.Price) - extractPriceValue(a.Price));
+                filtered.sort((a, b) => b.score - a.score);
 
                 totalPages = Math.ceil(filtered.length / perPage);
                 const start = (currentPage - 1) * perPage;
@@ -760,6 +923,7 @@
                                 const imageUrl = lead.ImageURL || '';
                                 const furnishedBadge = lead.Furnished === 'Furnished' ? '<span class="badge-furnished">Furnished</span>' : '';
                                 const newBadge = isNew ? '<span class="badge-new">NEW</span>' : '';
+                                const badge = getScoreBadge(lead.score);
 
                                 return `
                                     <div class="lead-card">
@@ -770,6 +934,7 @@
                                             <div class="lead-details">
                                                 <span>📍 ${escapeHtml(location.substring(0, 40))}</span>
                                                 ${furnishedBadge}
+                                                <span class="score-badge ${badge.class}">${badge.icon} ${badge.text} ${lead.score}</span>
                                             </div>
                                             <div class="lead-phone">📞 ${escapeHtml(phone)}</div>
                                             <div class="lead-meta">
@@ -822,6 +987,7 @@
             document.getElementById('searchInput').value = '';
             document.getElementById('priceFilter').value = 'all';
             document.getElementById('furnishedFilter').value = 'all';
+            document.getElementById('scoreFilter').value = 'all';
             loadLeads();
         }
 
@@ -844,11 +1010,16 @@
             loadLeads();
         });
 
+        document.getElementById('scoreFilter').addEventListener('change', () => {
+            currentPage = 1;
+            loadLeads();
+        });
+
         document.getElementById('perPage').addEventListener('change', () => {
             currentPage = 1;
             loadLeads();
         });
-        
+
         loadLeads();
         setInterval(loadLeads, 300000);
     </script>
