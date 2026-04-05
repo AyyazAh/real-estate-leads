@@ -2,590 +2,546 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Real Estate Lead Engine | Live Property Leads Dashboard</title>
-    <meta name="description" content="Real-time property leads from OLX Pakistan. Find houses, apartments, plots and commercial properties with contact numbers.">
-    <link rel="icon" href="https://img.icons8.com/color/48/real-estate.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Estate Lead Engine | Live Data Feed</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
             min-height: 100vh;
+            color: #fff;
         }
-        
+
+        /* Animated background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            background: radial-gradient(circle, rgba(102,126,234,0.1) 0%, rgba(118,75,162,0.05) 100%);
+            animation: rotate 40s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 40px 24px;
         }
-        
+
         /* Header */
         .header {
-            background: rgba(255,255,255,0.95);
-            border-radius: 16px;
-            padding: 25px;
-            margin-bottom: 25px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-        }
-        
-        .header h1 {
-            font-size: 28px;
-            color: #2c3e50;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .header p {
-            color: #666;
-            margin-top: 8px;
-        }
-        
-        .last-updated {
-            background: #e8f4f8;
-            display: inline-block;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            margin-top: 10px;
-        }
-        
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        
-        .stat-card {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
             text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
+            margin-bottom: 60px;
         }
-        
-        .stat-card:hover {
-            transform: translateY(-5px);
+
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            padding: 12px 28px;
+            border-radius: 60px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
         }
-        
-        .stat-number {
-            font-size: 36px;
-            font-weight: bold;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+        .logo-icon {
+            font-size: 28px;
+        }
+
+        .logo-text {
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #a0a0ff;
+        }
+
+        h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #fff 0%, #a0a0ff 100%);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
         }
-        
-        .stat-label {
-            color: #666;
-            font-size: 14px;
-            margin-top: 5px;
+
+        .subtitle {
+            font-size: 18px;
+            color: rgba(255,255,255,0.7);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.5;
         }
-        
-        /* Recent Ads Section */
-        .recent-section {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        
-        .recent-title {
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 15px;
-            color: #2c3e50;
+
+        /* Stats Cards */
+        .stats-container {
             display: flex;
-            align-items: center;
-            gap: 10px;
-            border-left: 4px solid #667eea;
-            padding-left: 12px;
-        }
-        
-        .recent-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 15px;
-        }
-        
-        .recent-card {
-            display: flex;
-            background: #f8f9fa;
-            border-radius: 12px;
-            overflow: hidden;
-            transition: all 0.3s;
-            border: 1px solid #eee;
-            cursor: pointer;
-        }
-        
-        .recent-card:hover {
-            transform: translateX(5px);
-            background: #e9ecef;
-            border-color: #667eea;
-        }
-        
-        .recent-image {
-            width: 100px;
-            height: 100px;
-            object-fit: cover;
-            background: #e0e0e0;
-        }
-        
-        .recent-info {
-            flex: 1;
-            padding: 12px;
-        }
-        
-        .recent-title-text {
-            font-weight: bold;
-            font-size: 13px;
-            margin-bottom: 6px;
-            color: #2c3e50;
-            line-height: 1.3;
-        }
-        
-        .recent-price {
-            color: #e74c3c;
-            font-weight: bold;
-            font-size: 14px;
-            margin-bottom: 4px;
-        }
-        
-        .recent-location {
-            font-size: 11px;
-            color: #666;
-            margin-bottom: 4px;
-        }
-        
-        .recent-time {
-            font-size: 10px;
-            color: #27ae60;
-            font-weight: bold;
-        }
-        
-        /* Filters */
-        .filters {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 25px;
-            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 50px;
             flex-wrap: wrap;
-            gap: 15px;
-            align-items: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
-        
-        .filter-group {
+
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 24px;
+            padding: 28px 48px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        .stat-number {
+            font-size: 56px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff 0%, #a0a0ff 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: rgba(255,255,255,0.6);
+            margin-top: 8px;
+            letter-spacing: 1px;
+        }
+
+        .sync-info {
+            text-align: center;
+            margin-bottom: 60px;
+            font-size: 13px;
+            color: rgba(255,255,255,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .sync-badge {
+            background: rgba(39,174,96,0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            color: #2ecc71;
+            font-size: 12px;
+        }
+
+        .sync-time {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
-        
-        .filter-group label {
+
+        /* Live Feed Section */
+        .feed-section {
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 32px;
+            padding: 32px;
+            margin-bottom: 60px;
+        }
+
+        .feed-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .feed-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .live-dot {
+            width: 10px;
+            height: 10px;
+            background: #2ecc71;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0.3; transform: scale(1.2); }
+        }
+
+        .feed-title h2 {
+            font-size: 20px;
             font-weight: 600;
-            color: #555;
-            font-size: 13px;
         }
-        
-        select, input {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 13px;
+
+        .feed-badge {
+            background: rgba(255,255,255,0.1);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: rgba(255,255,255,0.7);
+        }
+
+        /* Filter Bar */
+        .filter-bar {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 28px;
+        }
+
+        .filter-input {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 40px;
+            padding: 12px 20px;
+            color: white;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-input:focus {
+            border-color: #667eea;
+            background: rgba(255,255,255,0.12);
+        }
+
+        .filter-input::placeholder {
+            color: rgba(255,255,255,0.4);
+        }
+
+        .filter-select {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 40px;
+            padding: 12px 20px;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
             outline: none;
         }
-        
-        select:focus, input:focus {
-            border-color: #667eea;
+
+        .filter-select option {
+            background: #1a1a2e;
         }
-        
-        button {
+
+        .refresh-btn {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
             border: none;
-            padding: 8px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 13px;
+            border-radius: 40px;
+            padding: 12px 28px;
+            color: white;
             font-weight: 600;
+            cursor: pointer;
             transition: opacity 0.3s;
         }
-        
-        button:hover {
+
+        .refresh-btn:hover {
             opacity: 0.9;
         }
-        
+
         /* Leads Grid */
         .leads-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
             gap: 20px;
+            max-height: 600px;
+            overflow-y: auto;
+            padding-right: 8px;
         }
-        
+
+        .leads-grid::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .leads-grid::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+        }
+
+        .leads-grid::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+        }
+
         .lead-card {
-            background: white;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-            scroll-margin-top: 20px;
-        }
-        
-        .lead-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-        }
-        
-        .lead-card.highlight {
-            animation: highlight 2s ease-in-out;
-            border: 2px solid #667eea;
-            box-shadow: 0 0 0 3px rgba(102,126,234,0.3);
-        }
-        
-        @keyframes highlight {
-            0% { background-color: rgba(102,126,234,0.2); transform: scale(1); }
-            50% { background-color: rgba(102,126,234,0.4); transform: scale(1.02); }
-            100% { background-color: rgba(102,126,234,0); transform: scale(1); }
-        }
-        
-        /* Image Container with Hover Zoom */
-        .image-container {
-            position: relative;
-            height: 180px;
-            background: #f5f5f5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 18px;
+            transition: all 0.3s;
             cursor: pointer;
         }
-        
-        .lead-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s ease;
+
+        .lead-card:hover {
+            background: rgba(255,255,255,0.08);
+            transform: translateX(5px);
+            border-color: rgba(102,126,234,0.5);
         }
-        
-        /* Hover Zoom Preview */
-        .image-preview {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            max-width: 80vw;
-            max-height: 80vh;
-            width: auto;
-            height: auto;
-            z-index: 10000;
-            border-radius: 12px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-            display: none;
-            pointer-events: none;
-            background: white;
-            padding: 5px;
-        }
-        
-        .image-preview img {
-            max-width: 100%;
-            max-height: 80vh;
-            border-radius: 8px;
-        }
-        
-        .image-preview.show {
-            display: block;
-            animation: fadeIn 0.2s ease;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translate(-50%, -50%) scale(0.95); }
-            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-        }
-        
-        .lead-content {
-            padding: 16px;
-        }
-        
+
         .lead-title {
-            font-weight: bold;
-            font-size: 14px;
+            font-weight: 600;
+            font-size: 15px;
             margin-bottom: 10px;
+            color: #fff;
             line-height: 1.4;
-            height: 40px;
-            overflow: hidden;
-            color: #2c3e50;
         }
-        
+
         .lead-price {
-            color: #e74c3c;
-            font-weight: bold;
-            font-size: 18px;
+            font-size: 20px;
+            font-weight: 700;
+            color: #a0a0ff;
             margin-bottom: 8px;
         }
-        
-        .lead-phone {
-            color: #27ae60;
-            font-weight: bold;
-            font-size: 14px;
-            margin-bottom: 8px;
-            word-break: break-all;
-        }
-        
-        .lead-location {
-            color: #666;
-            font-size: 12px;
-            margin-bottom: 6px;
+
+        .lead-details {
             display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        
-        .lead-seller {
-            color: #8e44ad;
-            font-size: 12px;
-            margin-bottom: 6px;
-        }
-        
-        .lead-posted {
-            font-size: 11px;
-            color: #999;
+            flex-wrap: wrap;
+            gap: 12px;
             margin-bottom: 10px;
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
         }
-        
-        .badge {
-            display: inline-block;
-            padding: 3px 8px;
+
+        .lead-phone {
+            color: #2ecc71;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .lead-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: rgba(255,255,255,0.4);
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .badge-new {
+            background: rgba(46,204,113,0.2);
+            padding: 2px 8px;
             border-radius: 12px;
             font-size: 10px;
-            font-weight: bold;
-            margin-right: 5px;
+            color: #2ecc71;
         }
-        
+
         .badge-furnished {
-            background: #d4edda;
-            color: #155724;
+            background: rgba(102,126,234,0.2);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            color: #a0a0ff;
         }
-        
-        .badge-new {
-            background: #ffc107;
-            color: #856404;
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: rgba(255,255,255,0.5);
         }
-        
-        .lead-link a {
-            color: #3498db;
-            text-decoration: none;
-            font-size: 12px;
-        }
-        
-        .lead-link a:hover {
-            text-decoration: underline;
-        }
-        
+
         /* Pagination */
         .pagination {
             display: flex;
             justify-content: center;
             gap: 8px;
-            margin-top: 30px;
+            margin-top: 28px;
             flex-wrap: wrap;
         }
-        
+
         .page-btn {
-            background: white;
-            color: #333;
-            border: 1px solid #ddd;
-            padding: 8px 14px;
-            border-radius: 8px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 40px;
+            padding: 8px 16px;
+            color: white;
             cursor: pointer;
+            transition: all 0.3s;
             font-size: 13px;
         }
-        
+
+        .page-btn:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
         .page-btn.active {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
+            border-color: transparent;
         }
-        
-        .page-btn:hover:not(.active) {
-            background: #f0f0f0;
-        }
-        
-        /* Scroll to top button */
-        .scroll-top {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            font-size: 24px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            display: none;
-            transition: all 0.3s;
-            z-index: 1000;
-        }
-        
-        .scroll-top:hover {
-            transform: scale(1.1);
-        }
-        
-        .loading {
-            text-align: center;
-            padding: 60px;
-            background: white;
-            border-radius: 16px;
-        }
-        
-        .no-results {
-            text-align: center;
-            padding: 60px;
-            background: white;
-            border-radius: 16px;
-            color: #999;
-        }
-        
+
+        /* Footer */
         .footer {
             text-align: center;
-            margin-top: 30px;
-            padding: 20px;
-            color: rgba(255,255,255,0.8);
-            font-size: 12px;
+            padding-top: 40px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            margin-top: 20px;
         }
-        
+
+        .footer p {
+            color: rgba(255,255,255,0.4);
+            font-size: 13px;
+        }
+
+        .footer a {
+            color: rgba(255,255,255,0.6);
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            color: #a0a0ff;
+        }
+
         @media (max-width: 768px) {
             .container {
-                padding: 10px;
+                padding: 20px 16px;
             }
-            .leads-grid, .recent-grid {
+            h1 {
+                font-size: 32px;
+            }
+            .stat-card {
+                padding: 20px 32px;
+            }
+            .stat-number {
+                font-size: 40px;
+            }
+            .feed-section {
+                padding: 20px;
+            }
+            .leads-grid {
                 grid-template-columns: 1fr;
-            }
-            .filters {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .filter-group {
-                justify-content: space-between;
-            }
-            .recent-image {
-                width: 80px;
-                height: 80px;
-            }
-            .image-preview {
-                max-width: 95vw;
-                max-height: 70vh;
+                max-height: 500px;
             }
         }
     </style>
 </head>
 <body>
+    <div class="bg-animation"></div>
+    
     <div class="container">
+        <!-- Header -->
         <div class="header">
-            <h1><span>🏠</span> Real Estate Lead Engine</h1>
-            <p>Live property leads from OLX Pakistan | Updated daily with phone numbers</p>
-            <div class="last-updated" id="lastUpdated"><span>🔄</span> Loading data...</div>
+            <div class="logo">
+                <span class="logo-icon">⚡</span>
+                <span class="logo-text">LIVE DATA FEED</span>
+            </div>
+            <h1>Real Estate Lead Engine</h1>
+            <p class="subtitle">
+                High-frequency property intelligence from OLX Pakistan. 
+                Live leads with verified contact numbers — updated continuously.
+            </p>
         </div>
-        
-        <div class="stats-grid" id="stats">
-            <div class="stat-card"><div class="stat-number">-</div><div class="stat-label">Total Leads</div></div>
-            <div class="stat-card"><div class="stat-number">-</div><div class="stat-label">With Phone</div></div>
-            <div class="stat-card"><div class="stat-number">-</div><div class="stat-label">Unique Locations</div></div>
-            <div class="stat-card"><div class="stat-number">-</div><div class="stat-label">Furnished</div></div>
-            <div class="stat-card"><div class="stat-number">-</div><div class="stat-label">Recent (24h)</div></div>
+
+        <!-- Stats -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-number" id="totalLeads">--</div>
+                <div class="stat-label">active leads</div>
+            </div>
         </div>
-        
-        <!-- Recent Ads Section -->
-        <div class="recent-section" id="recentSection">
-            <div class="recent-title"><span>🆕</span> Recently Posted (Last 24 Hours)</div>
-            <div id="recentAds" class="recent-grid"><div class="loading">Loading recent ads...</div></div>
+
+        <div class="sync-info">
+            <span class="sync-badge">● LIVE</span>
+            <span class="sync-time">Last sync: <span id="lastSync">--</span></span>
         </div>
-        
-        <div class="filters">
-            <div class="filter-group"><label>🔍 Search:</label><input type="text" id="searchInput" placeholder="Title, location, seller..." style="width: 180px;"></div>
-            <div class="filter-group"><label>💰 Price:</label><select id="priceFilter"><option value="all">All</option><option value="crore">> 1 Crore</option><option value="lac">< 1 Crore</option></select></div>
-            <div class="filter-group"><label>🛋️ Furnished:</label><select id="furnishedFilter"><option value="all">All</option><option value="Furnished">Furnished</option><option value="Unfurnished">Unfurnished</option></select></div>
-            <div class="filter-group"><label>📅 Sort by:</label><select id="sortFilter"><option value="default">Default (Price)</option><option value="recent">Most Recent First</option><option value="oldest">Oldest First</option></select></div>
-            <div class="filter-group"><label>📊 Per page:</label><select id="perPage"><option value="12">12</option><option value="24">24</option><option value="48">48</option></select></div>
-            <button onclick="resetAndRefresh()">🔄 Refresh</button>
+
+        <!-- Live Feed Section -->
+        <div class="feed-section">
+            <div class="feed-header">
+                <div class="feed-title">
+                    <div class="live-dot"></div>
+                    <h2>Live data feed</h2>
+                </div>
+                <div class="feed-badge">Fully functional, live feeds for all your business needs.</div>
+            </div>
+
+            <!-- Filters -->
+            <div class="filter-bar">
+                <input type="text" id="searchInput" class="filter-input" placeholder="Search by title, location, or seller...">
+                <select id="priceFilter" class="filter-select">
+                    <option value="all">All Prices</option>
+                    <option value="crore">> 1 Crore</option>
+                    <option value="lac">< 1 Crore</option>
+                </select>
+                <select id="furnishedFilter" class="filter-select">
+                    <option value="all">All Properties</option>
+                    <option value="Furnished">Furnished</option>
+                    <option value="Unfurnished">Unfurnished</option>
+                </select>
+                <select id="perPage" class="filter-select">
+                    <option value="12">12 per page</option>
+                    <option value="24">24 per page</option>
+                    <option value="48">48 per page</option>
+                </select>
+                <button class="refresh-btn" onclick="resetAndRefresh()">⟳ Refresh</button>
+            </div>
+
+            <!-- Leads Container -->
+            <div id="leadsContainer">
+                <div class="loading">Loading live data feed...</div>
+            </div>
+
+            <!-- Pagination -->
+            <div id="pagination" class="pagination"></div>
         </div>
-        
-        <div id="leadsContainer"><div class="loading">📡 Loading leads from server...</div></div>
-        <div id="pagination" class="pagination"></div>
-        
-        <div class="footer"><p>Data sourced from OLX Pakistan | Updated daily</p><p>© 2025 Real Estate Lead Engine | For research purposes only</p></div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>
+                Contact us at <a href="mailto:support@example.com">support@example.com</a> 
+                or visit our website at <a href="#">www.example.com</a>
+            </p>
+        </div>
     </div>
-    
-    <!-- Image Preview Modal (Hover Zoom) -->
-    <div id="imagePreview" class="image-preview">
-        <img id="previewImage" src="" alt="Property preview">
-    </div>
-    
-    <button class="scroll-top" id="scrollTopBtn" onclick="scrollToTop()">↑</button>
-    
+
     <script>
-        let currentPage = 1, totalPages = 1, allLeads = [], currentFilteredLeads = [];
-        let hoverTimer = null;
-        let currentPreviewImage = null;
+        let currentPage = 1;
+        let totalPages = 1;
+        let allLeads = [];
         
         const DATA_URL = 'https://raw.githubusercontent.com/AyyazAh/real-estate-leads/main/docs/leads_data.json';
-        const previewDiv = document.getElementById('imagePreview');
-        const previewImg = document.getElementById('previewImage');
         
-        // ========== IMAGE HOVER ZOOM ==========
-        function showImagePreview(src, event) {
-            clearTimeout(hoverTimer);
-            hoverTimer = setTimeout(() => {
-                if (previewImg) {
-                    previewImg.src = src;
-                    previewDiv.classList.add('show');
-                    // Position near mouse
-                    if (event) {
-                        const x = event.clientX + 20;
-                        const y = event.clientY - 100;
-                        previewDiv.style.left = Math.min(x, window.innerWidth - 300) + 'px';
-                        previewDiv.style.top = Math.max(20, y) + 'px';
-                        previewDiv.style.transform = 'none';
-                    }
-                }
-            }, 500);
-        }
-        
-        function hideImagePreview() {
-            clearTimeout(hoverTimer);
-            if (previewDiv) {
-                previewDiv.classList.remove('show');
-            }
-        }
-        
-        // Update preview position on mousemove
-        function updatePreviewPosition(event) {
-            if (previewDiv.classList.contains('show')) {
-                const x = event.clientX + 20;
-                const y = event.clientY - 100;
-                previewDiv.style.left = Math.min(x, window.innerWidth - 300) + 'px';
-                previewDiv.style.top = Math.max(20, y) + 'px';
-                previewDiv.style.transform = 'none';
-            }
-        }
-        
-        document.addEventListener('mousemove', updatePreviewPosition);
-        
-        // ========== DYNAMIC TIME CALCULATION ==========
+        // Helper Functions
         function getRelativeTime(timestamp) {
             if (!timestamp) return 'Unknown';
             const now = new Date();
@@ -595,31 +551,21 @@
             const diffHours = Math.floor(diffMs / 3600000);
             const diffDays = Math.floor(diffMs / 86400000);
             const diffWeeks = Math.floor(diffDays / 7);
-            const diffMonths = Math.floor(diffDays / 30);
             
             if (diffMins < 1) return 'Just now';
-            if (diffMins < 60) return `${diffMins} minute${diffMins !== 1 ? 's' : ''} ago`;
-            if (diffHours < 24) return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`;
-            if (diffDays < 7) return `${diffDays} day${diffDays !== 1 ? 's' : ''} ago`;
-            if (diffWeeks < 4) return `${diffWeeks} week${diffWeeks !== 1 ? 's' : ''} ago`;
-            return `${diffMonths} month${diffMonths !== 1 ? 's' : ''} ago`;
+            if (diffMins < 60) return `${diffMins}m ago`;
+            if (diffHours < 24) return `${diffHours}h ago`;
+            if (diffDays < 7) return `${diffDays}d ago`;
+            if (diffWeeks < 4) return `${diffWeeks}w ago`;
+            return `${Math.floor(diffDays / 30)}mo ago`;
         }
         
-        function isRecent(postedTimestamp) {
-            if (!postedTimestamp) return false;
+        function isRecent(timestamp) {
+            if (!timestamp) return false;
             const now = new Date();
-            const posted = new Date(postedTimestamp);
+            const posted = new Date(timestamp);
             const diffHours = (now - posted) / 3600000;
             return diffHours < 24;
-        }
-        
-        // ========== SORTING & FILTERING ==========
-        function sortByRecency(leads, order = 'recent') {
-            return [...leads].sort((a, b) => {
-                const timeA = a.PostedTimestamp ? new Date(a.PostedTimestamp).getTime() : 0;
-                const timeB = b.PostedTimestamp ? new Date(b.PostedTimestamp).getTime() : 0;
-                return order === 'recent' ? timeB - timeA : timeA - timeB;
-            });
         }
         
         function extractPriceValue(priceStr) {
@@ -632,42 +578,20 @@
             return 0;
         }
         
-        // ========== UI FUNCTIONS ==========
-        window.onscroll = function() {
-            const btn = document.getElementById('scrollTopBtn');
-            if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) btn.style.display = 'block';
-            else btn.style.display = 'none';
-        };
-        
-        function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
-        
-        function scrollToAd(link) {
-            const cards = document.querySelectorAll('.lead-card');
-            for (const card of cards) {
-                const adLink = card.querySelector('.lead-link a');
-                if (adLink && adLink.href === link) {
-                    cards.forEach(c => c.classList.remove('highlight'));
-                    card.classList.add('highlight');
-                    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    break;
-                }
-            }
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
         
-        function findPageForLead(leadLink, leads, perPage) {
-            const index = leads.findIndex(lead => lead.Link === leadLink);
-            return index !== -1 ? Math.floor(index / perPage) + 1 : 1;
-        }
-        
-        function scrollToAdByLink(link) { currentPage = 1; loadLeads(link); }
-        
-        async function loadLeads(scrollToLink = null) {
+        async function loadLeads() {
             const search = document.getElementById('searchInput').value.toLowerCase();
             const price = document.getElementById('priceFilter').value;
             const furnished = document.getElementById('furnishedFilter').value;
-            const sortByType = document.getElementById('sortFilter').value;
             const perPage = parseInt(document.getElementById('perPage').value);
-            document.getElementById('leadsContainer').innerHTML = '<div class="loading">📡 Loading leads...</div>';
+            
+            document.getElementById('leadsContainer').innerHTML = '<div class="loading">Loading live data feed...</div>';
             
             try {
                 const response = await fetch(DATA_URL + '?t=' + new Date().getTime());
@@ -675,89 +599,155 @@
                 const data = await response.json();
                 allLeads = data.leads || [];
                 
-                document.getElementById('lastUpdated').innerHTML = `🔄 Last updated: ${new Date(data.last_updated).toLocaleString()}`;
-                const withPhone = allLeads.filter(l => l.Phone && l.Phone !== 'none').length;
-                const uniqueLocations = new Set(allLeads.map(l => l.Location)).size;
-                const furnishedCount = allLeads.filter(l => l.Furnished === 'Furnished').length;
-                const recentCount = allLeads.filter(l => isRecent(l.PostedTimestamp)).length;
-                document.querySelectorAll('.stat-card')[0].querySelector('.stat-number').textContent = allLeads.length;
-                document.querySelectorAll('.stat-card')[1].querySelector('.stat-number').textContent = withPhone;
-                document.querySelectorAll('.stat-card')[2].querySelector('.stat-number').textContent = uniqueLocations;
-                document.querySelectorAll('.stat-card')[3].querySelector('.stat-number').textContent = furnishedCount;
-                document.querySelectorAll('.stat-card')[4].querySelector('.stat-number').textContent = recentCount;
+                // Update stats
+                document.getElementById('totalLeads').textContent = allLeads.length;
+                const syncDate = new Date(data.last_updated);
+                document.getElementById('lastSync').textContent = syncDate.toLocaleString();
                 
-                const recent = allLeads.filter(l => isRecent(l.PostedTimestamp)).sort((a,b) => new Date(b.PostedTimestamp) - new Date(a.PostedTimestamp)).slice(0,6);
-                document.getElementById('recentAds').innerHTML = recent.map(ad => `
-                    <div class="recent-card" onclick="scrollToAdByLink('${ad.Link.replace(/'/g, "\\'")}')">
-                        ${ad.ImageURL ? `<img src="${ad.ImageURL}" class="recent-image" onerror="this.style.display='none'">` : ''}
-                        <div class="recent-info">
-                            <div class="recent-title-text">${escapeHtml(ad.Title?.substring(0,60) || 'N/A')}</div>
-                            <div class="recent-price">💰 ${escapeHtml(ad.Price || 'N/A')}</div>
-                            <div class="recent-location">📍 ${escapeHtml(ad.Location || 'N/A')}</div>
-                            <div class="recent-time">🕐 ${getRelativeTime(ad.PostedTimestamp)}</div>
-                        </div>
-                    </div>
-                `).join('');
-                
+                // Apply filters
                 let filtered = [...allLeads];
-                if (search) filtered = filtered.filter(l => (l.Title || '').toLowerCase().includes(search) || (l.Location || '').toLowerCase().includes(search) || (l.Seller || '').toLowerCase().includes(search));
-                if (price === 'crore') filtered = filtered.filter(l => (l.Price || '').includes('Crore'));
-                else if (price === 'lac') filtered = filtered.filter(l => (l.Price || '').includes('Lac'));
-                if (furnished !== 'all') filtered = filtered.filter(l => l.Furnished === furnished);
+                if (search) {
+                    filtered = filtered.filter(lead => 
+                        (lead.Title || '').toLowerCase().includes(search) ||
+                        (lead.Location || '').toLowerCase().includes(search) ||
+                        (lead.Seller || '').toLowerCase().includes(search)
+                    );
+                }
+                if (price === 'crore') {
+                    filtered = filtered.filter(lead => (lead.Price || '').includes('Crore'));
+                } else if (price === 'lac') {
+                    filtered = filtered.filter(lead => (lead.Price || '').includes('Lac'));
+                }
+                if (furnished !== 'all') {
+                    filtered = filtered.filter(lead => lead.Furnished === furnished);
+                }
                 
-                if (sortByType === 'recent') filtered = sortByRecency(filtered, 'recent');
-                else if (sortByType === 'oldest') filtered = sortByRecency(filtered, 'oldest');
-                else filtered.sort((a,b) => extractPriceValue(b.Price) - extractPriceValue(a.Price));
+                // Sort by price (highest first)
+                filtered.sort((a, b) => extractPriceValue(b.Price) - extractPriceValue(a.Price));
                 
-                currentFilteredLeads = filtered;
-                if (scrollToLink) currentPage = findPageForLead(scrollToLink, filtered, perPage);
-                
+                // Pagination
                 totalPages = Math.ceil(filtered.length / perPage);
-                const paginated = filtered.slice((currentPage-1)*perPage, currentPage*perPage);
-                document.getElementById('leadsContainer').innerHTML = `<div class="leads-grid">${paginated.map(lead => {
-                    const postedTime = getRelativeTime(lead.PostedTimestamp);
-                    const isNew = isRecent(lead.PostedTimestamp);
-                    const imageUrl = lead.ImageURL || '';
-                    return `<div class="lead-card" data-link="${lead.Link.replace(/'/g, "\\'")}">
-                        <div class="image-container" 
-                             onmouseenter="showImagePreview('${imageUrl}', event)" 
-                             onmouseleave="hideImagePreview()">
-                            ${imageUrl ? `<img src="${imageUrl}" class="lead-image" loading="lazy" onerror="this.parentElement.innerHTML='<div style=\\'display:flex;align-items:center;justify-content:center;height:100%;color:#999;\\'>📷 No Image</div>'">` : '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#999;">📷 No Image</div>'}
-                        </div>
-                        <div class="lead-content">
-                            <div class="lead-title">${escapeHtml(lead.Title?.substring(0,70) || 'N/A')}</div>
-                            <div class="lead-price">💰 ${escapeHtml(lead.Price || 'N/A')}</div>
-                            <div class="lead-phone">📞 ${escapeHtml(lead.Phone || 'N/A')}</div>
-                            <div class="lead-location">📍 ${escapeHtml(lead.Location || 'N/A')}</div>
-                            <div class="lead-seller">👤 ${escapeHtml(lead.Seller || 'N/A')} ${lead.Furnished === 'Furnished' ? '<span class="badge badge-furnished">Furnished</span>' : ''}</div>
-                            <div class="lead-posted">📅 ${escapeHtml(postedTime)} ${isNew ? '<span class="badge badge-new">🆕 NEW</span>' : ''}</div>
-                            <div class="lead-link">🔗 <a href="${lead.Link}" target="_blank">View on OLX</a></div>
-                        </div>
-                    </div>`}).join('')}</div>`;
+                const start = (currentPage - 1) * perPage;
+                const paginated = filtered.slice(start, start + perPage);
                 
-                let pageHtml = '';
-                const startPage = Math.max(1, currentPage-2), endPage = Math.min(totalPages, startPage+4);
-                if (startPage > 1) pageHtml += `<button class="page-btn" onclick="goToPage(1)">1</button>${startPage > 2 ? '<span style="padding:8px;">...</span>' : ''}`;
-                for (let i = startPage; i <= endPage; i++) pageHtml += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
-                if (endPage < totalPages) pageHtml += `${endPage < totalPages-1 ? '<span style="padding:8px;">...</span>' : ''}<button class="page-btn" onclick="goToPage(${totalPages})">${totalPages}</button>`;
-                document.getElementById('pagination').innerHTML = pageHtml;
-                if (scrollToLink) setTimeout(() => scrollToAd(scrollToLink), 300);
-            } catch (error) { document.getElementById('leadsContainer').innerHTML = '<div class="no-results">⚠️ Error loading data. Please try again later.</div>'; }
+                // Render leads
+                if (paginated.length === 0) {
+                    document.getElementById('leadsContainer').innerHTML = '<div class="loading">No leads found matching your criteria</div>';
+                } else {
+                    document.getElementById('leadsContainer').innerHTML = `
+                        <div class="leads-grid">
+                            ${paginated.map(lead => {
+                                const postedTime = getRelativeTime(lead.PostedTimestamp);
+                                const isNew = isRecent(lead.PostedTimestamp);
+                                const phone = lead.Phone || 'N/A';
+                                const location = lead.Location || 'N/A';
+                                const seller = lead.Seller || 'N/A';
+                                const price = lead.Price || 'N/A';
+                                const title = lead.Title || 'N/A';
+                                const furnishedBadge = lead.Furnished === 'Furnished' ? '<span class="badge-furnished">Furnished</span>' : '';
+                                const newBadge = isNew ? '<span class="badge-new">NEW</span>' : '';
+                                
+                                return `
+                                    <div class="lead-card" onclick="window.open('${lead.Link}', '_blank')">
+                                        <div class="lead-title">${escapeHtml(title.substring(0, 80))}</div>
+                                        <div class="lead-price">💰 ${escapeHtml(price)}</div>
+                                        <div class="lead-details">
+                                            <span>📍 ${escapeHtml(location.substring(0, 40))}</span>
+                                            ${furnishedBadge}
+                                        </div>
+                                        <div class="lead-phone">📞 ${escapeHtml(phone)}</div>
+                                        <div class="lead-meta">
+                                            <span>👤 ${escapeHtml(seller.substring(0, 30))}</span>
+                                            <span>🕐 ${escapeHtml(postedTime)} ${newBadge}</span>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    `;
+                }
+                
+                // Render pagination
+                renderPagination();
+                
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('leadsContainer').innerHTML = '<div class="loading">⚠️ Error loading data. Please try again later.</div>';
+            }
         }
         
-        function goToPage(page) { currentPage = page; loadLeads(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
-        function resetAndRefresh() { currentPage = 1; document.getElementById('searchInput').value = ''; document.getElementById('priceFilter').value = 'all'; document.getElementById('furnishedFilter').value = 'all'; document.getElementById('sortFilter').value = 'default'; loadLeads(); }
-        function escapeHtml(text) { if (!text) return ''; const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+        function renderPagination() {
+            const container = document.getElementById('pagination');
+            if (totalPages <= 1) {
+                container.innerHTML = '';
+                return;
+            }
+            
+            let html = '';
+            const startPage = Math.max(1, currentPage - 2);
+            const endPage = Math.min(totalPages, startPage + 4);
+            
+            if (startPage > 1) {
+                html += `<button class="page-btn" onclick="goToPage(1)">1</button>`;
+                if (startPage > 2) html += `<span style="padding: 8px;">...</span>`;
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+            }
+            
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) html += `<span style="padding: 8px;">...</span>`;
+                html += `<button class="page-btn" onclick="goToPage(${totalPages})">${totalPages}</button>`;
+            }
+            
+            container.innerHTML = html;
+        }
         
+        function goToPage(page) {
+            currentPage = page;
+            loadLeads();
+            window.scrollTo({ top: 400, behavior: 'smooth' });
+        }
+        
+        function resetAndRefresh() {
+            currentPage = 1;
+            document.getElementById('searchInput').value = '';
+            document.getElementById('priceFilter').value = 'all';
+            document.getElementById('furnishedFilter').value = 'all';
+            loadLeads();
+        }
+        
+        // Event listeners
         let searchTimeout;
-        document.getElementById('searchInput').addEventListener('input', () => { clearTimeout(searchTimeout); searchTimeout = setTimeout(() => { currentPage = 1; loadLeads(); }, 300); });
-        document.getElementById('priceFilter').addEventListener('change', () => { currentPage = 1; loadLeads(); });
-        document.getElementById('furnishedFilter').addEventListener('change', () => { currentPage = 1; loadLeads(); });
-        document.getElementById('sortFilter').addEventListener('change', () => { currentPage = 1; loadLeads(); });
-        document.getElementById('perPage').addEventListener('change', () => { currentPage = 1; loadLeads(); });
+        document.getElementById('searchInput').addEventListener('input', () => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                currentPage = 1;
+                loadLeads();
+            }, 300);
+        });
         
+        document.getElementById('priceFilter').addEventListener('change', () => {
+            currentPage = 1;
+            loadLeads();
+        });
+        
+        document.getElementById('furnishedFilter').addEventListener('change', () => {
+            currentPage = 1;
+            loadLeads();
+        });
+        
+        document.getElementById('perPage').addEventListener('change', () => {
+            currentPage = 1;
+            loadLeads();
+        });
+        
+        // Initial load
         loadLeads();
-        setInterval(() => loadLeads(), 600000);
+        
+        // Auto-refresh every 5 minutes
+        setInterval(loadLeads, 300000);
     </script>
 </body>
 </html>
