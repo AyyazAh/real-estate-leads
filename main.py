@@ -15,7 +15,11 @@ print(f"Started at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
 # ============================================================
 print("1. Scraping fresh property links from OLX search...")
 print("-" * 50)
+<<<<<<< Updated upstream
 scrape_links(pages=2, headless=True)
+=======
+scrape_links(pages=1, headless=True)
+>>>>>>> Stashed changes
 
 # Check if we have links
 links_file = "data/raw_links.csv"

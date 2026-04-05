@@ -556,7 +556,11 @@
 </head>
 <body>
     <div class="bg-animation"></div>
+<<<<<<< Updated upstream
     
+=======
+
+>>>>>>> Stashed changes
     <div class="container">
         <!-- Header -->
         <div class="header">
@@ -566,7 +570,11 @@
             </div>
             <h1>Real Estate Lead Engine</h1>
             <p class="subtitle">
+<<<<<<< Updated upstream
                 High-frequency property intelligence from OLX Pakistan. 
+=======
+                High-frequency property intelligence from OLX Pakistan.
+>>>>>>> Stashed changes
                 Live leads with verified contact numbers — updated continuously.
             </p>
         </div>
@@ -641,7 +649,11 @@
         <!-- Footer -->
         <div class="footer">
             <p>
+<<<<<<< Updated upstream
                 Contact us at <a href="mailto:support@example.com">support@example.com</a> 
+=======
+                Contact us at <a href="mailto:support@example.com">support@example.com</a>
+>>>>>>> Stashed changes
                 or visit our website at <a href="#">www.example.com</a>
             </p>
         </div>
@@ -651,9 +663,15 @@
         let currentPage = 1;
         let totalPages = 1;
         let allLeads = [];
+<<<<<<< Updated upstream
         
         const DATA_URL = 'https://raw.githubusercontent.com/AyyazAh/real-estate-leads/main/docs/leads_data.json';
         
+=======
+
+        const DATA_URL = 'https://raw.githubusercontent.com/AyyazAh/real-estate-leads/main/docs/leads_data.json';
+
+>>>>>>> Stashed changes
         function getRelativeTime(timestamp) {
             if (!timestamp) return 'Unknown';
             const now = new Date();
@@ -663,7 +681,11 @@
             const diffHours = Math.floor(diffMs / 3600000);
             const diffDays = Math.floor(diffMs / 86400000);
             const diffWeeks = Math.floor(diffDays / 7);
+<<<<<<< Updated upstream
             
+=======
+
+>>>>>>> Stashed changes
             if (diffMins < 1) return 'Just now';
             if (diffMins < 60) return `${diffMins}m ago`;
             if (diffHours < 24) return `${diffHours}h ago`;
@@ -671,7 +693,11 @@
             if (diffWeeks < 4) return `${diffWeeks}w ago`;
             return `${Math.floor(diffDays / 30)}mo ago`;
         }
+<<<<<<< Updated upstream
         
+=======
+
+>>>>>>> Stashed changes
         function isRecent(timestamp) {
             if (!timestamp) return false;
             const now = new Date();
@@ -679,7 +705,11 @@
             const diffHours = (now - posted) / 3600000;
             return diffHours < 24;
         }
+<<<<<<< Updated upstream
         
+=======
+
+>>>>>>> Stashed changes
         function extractPriceValue(priceStr) {
             if (!priceStr) return 0;
             const match = priceStr.match(/(\d+(?:\.\d+)?)\s*(Crore|Lac)/i);
@@ -689,39 +719,66 @@
             }
             return 0;
         }
+<<<<<<< Updated upstream
         
+=======
+
+>>>>>>> Stashed changes
         function escapeHtml(text) {
             if (!text) return '';
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         }
+<<<<<<< Updated upstream
         
+=======
+
+>>>>>>> Stashed changes
         async function loadLeads() {
             const search = document.getElementById('searchInput').value.toLowerCase();
             const price = document.getElementById('priceFilter').value;
             const furnished = document.getElementById('furnishedFilter').value;
             const perPage = parseInt(document.getElementById('perPage').value);
+<<<<<<< Updated upstream
             
             document.getElementById('leadsContainer').innerHTML = '<div class="loading">Loading live data feed...</div>';
             document.getElementById('recentAds').innerHTML = '<div class="loading">Loading recent ads...</div>';
             
+=======
+
+            document.getElementById('leadsContainer').innerHTML = '<div class="loading">Loading live data feed...</div>';
+            document.getElementById('recentAds').innerHTML = '<div class="loading">Loading recent ads...</div>';
+
+>>>>>>> Stashed changes
             try {
                 const response = await fetch(DATA_URL + '?t=' + new Date().getTime());
                 if (!response.ok) throw new Error('Failed to load data');
                 const data = await response.json();
                 allLeads = data.leads || [];
+<<<<<<< Updated upstream
                 
+=======
+
+>>>>>>> Stashed changes
                 // Update stats
                 document.getElementById('totalLeads').textContent = allLeads.length;
                 const syncDate = new Date(data.last_updated);
                 document.getElementById('lastSync').innerHTML = syncDate.toLocaleString();
+<<<<<<< Updated upstream
                 
+=======
+
+>>>>>>> Stashed changes
                 // Display recent ads (last 24 hours)
                 const recent = allLeads.filter(l => isRecent(l.PostedTimestamp))
                     .sort((a, b) => new Date(b.PostedTimestamp) - new Date(a.PostedTimestamp))
                     .slice(0, 6);
+<<<<<<< Updated upstream
                 
+=======
+
+>>>>>>> Stashed changes
                 if (recent.length === 0) {
                     document.getElementById('recentAds').innerHTML = '<div class="loading">No new ads in the last 24 hours</div>';
                 } else {
@@ -737,11 +794,19 @@
                         </div>
                     `).join('');
                 }
+<<<<<<< Updated upstream
                 
                 // Apply filters
                 let filtered = [...allLeads];
                 if (search) {
                     filtered = filtered.filter(lead => 
+=======
+
+                // Apply filters
+                let filtered = [...allLeads];
+                if (search) {
+                    filtered = filtered.filter(lead =>
+>>>>>>> Stashed changes
                         (lead.Title || '').toLowerCase().includes(search) ||
                         (lead.Location || '').toLowerCase().includes(search) ||
                         (lead.Seller || '').toLowerCase().includes(search)
@@ -755,15 +820,26 @@
                 if (furnished !== 'all') {
                     filtered = filtered.filter(lead => lead.Furnished === furnished);
                 }
+<<<<<<< Updated upstream
                 
                 // Sort by price (highest first)
                 filtered.sort((a, b) => extractPriceValue(b.Price) - extractPriceValue(a.Price));
                 
+=======
+
+                // Sort by price (highest first)
+                filtered.sort((a, b) => extractPriceValue(b.Price) - extractPriceValue(a.Price));
+
+>>>>>>> Stashed changes
                 // Pagination
                 totalPages = Math.ceil(filtered.length / perPage);
                 const start = (currentPage - 1) * perPage;
                 const paginated = filtered.slice(start, start + perPage);
+<<<<<<< Updated upstream
                 
+=======
+
+>>>>>>> Stashed changes
                 // Render leads
                 if (paginated.length === 0) {
                     document.getElementById('leadsContainer').innerHTML = '<div class="loading">No leads found matching your criteria</div>';
@@ -781,7 +857,11 @@
                                 const imageUrl = lead.ImageURL || '';
                                 const furnishedBadge = lead.Furnished === 'Furnished' ? '<span class="badge-furnished">Furnished</span>' : '';
                                 const newBadge = isNew ? '<span class="badge-new">NEW</span>' : '';
+<<<<<<< Updated upstream
                                 
+=======
+
+>>>>>>> Stashed changes
                                 return `
                                     <div class="lead-card" onclick="window.open('${lead.Link}', '_blank')">
                                         ${imageUrl ? `<img src="${imageUrl}" class="lead-image" onerror="this.style.display='none'">` : '<div class="lead-image" style="display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.3);">📷 No Image</div>'}
@@ -804,51 +884,89 @@
                         </div>
                     `;
                 }
+<<<<<<< Updated upstream
                 
                 // Render pagination
                 renderPagination();
                 
+=======
+
+                // Render pagination
+                renderPagination();
+
+>>>>>>> Stashed changes
             } catch (error) {
                 console.error('Error:', error);
                 document.getElementById('leadsContainer').innerHTML = '<div class="loading">⚠️ Error loading data. Please try again later.</div>';
                 document.getElementById('recentAds').innerHTML = '<div class="loading">⚠️ Unable to load recent ads</div>';
             }
         }
+<<<<<<< Updated upstream
         
+=======
+
+>>>>>>> Stashed changes
         function renderPagination() {
             const container = document.getElementById('pagination');
             if (totalPages <= 1) {
                 container.innerHTML = '';
                 return;
             }
+<<<<<<< Updated upstream
             
             let html = '';
             const startPage = Math.max(1, currentPage - 2);
             const endPage = Math.min(totalPages, startPage + 4);
             
+=======
+
+            let html = '';
+            const startPage = Math.max(1, currentPage - 2);
+            const endPage = Math.min(totalPages, startPage + 4);
+
+>>>>>>> Stashed changes
             if (startPage > 1) {
                 html += `<button class="page-btn" onclick="goToPage(1)">1</button>`;
                 if (startPage > 2) html += `<span style="padding: 8px;">...</span>`;
             }
+<<<<<<< Updated upstream
             
             for (let i = startPage; i <= endPage; i++) {
                 html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
             }
             
+=======
+
+            for (let i = startPage; i <= endPage; i++) {
+                html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+            }
+
+>>>>>>> Stashed changes
             if (endPage < totalPages) {
                 if (endPage < totalPages - 1) html += `<span style="padding: 8px;">...</span>`;
                 html += `<button class="page-btn" onclick="goToPage(${totalPages})">${totalPages}</button>`;
             }
+<<<<<<< Updated upstream
             
             container.innerHTML = html;
         }
         
+=======
+
+            container.innerHTML = html;
+        }
+
+>>>>>>> Stashed changes
         function goToPage(page) {
             currentPage = page;
             loadLeads();
             window.scrollTo({ top: 500, behavior: 'smooth' });
         }
+<<<<<<< Updated upstream
         
+=======
+
+>>>>>>> Stashed changes
         function resetAndRefresh() {
             currentPage = 1;
             document.getElementById('searchInput').value = '';
@@ -856,7 +974,11 @@
             document.getElementById('furnishedFilter').value = 'all';
             loadLeads();
         }
+<<<<<<< Updated upstream
         
+=======
+
+>>>>>>> Stashed changes
         // Event listeners
         let searchTimeout;
         document.getElementById('searchInput').addEventListener('input', () => {
@@ -866,25 +988,44 @@
                 loadLeads();
             }, 300);
         });
+<<<<<<< Updated upstream
         
+=======
+
+>>>>>>> Stashed changes
         document.getElementById('priceFilter').addEventListener('change', () => {
             currentPage = 1;
             loadLeads();
         });
+<<<<<<< Updated upstream
         
+=======
+
+>>>>>>> Stashed changes
         document.getElementById('furnishedFilter').addEventListener('change', () => {
             currentPage = 1;
             loadLeads();
         });
+<<<<<<< Updated upstream
         
+=======
+
+>>>>>>> Stashed changes
         document.getElementById('perPage').addEventListener('change', () => {
             currentPage = 1;
             loadLeads();
         });
+<<<<<<< Updated upstream
         
         // Initial load
         loadLeads();
         
+=======
+
+        // Initial load
+        loadLeads();
+
+>>>>>>> Stashed changes
         // Auto-refresh every 5 minutes
         setInterval(loadLeads, 300000);
     </script>

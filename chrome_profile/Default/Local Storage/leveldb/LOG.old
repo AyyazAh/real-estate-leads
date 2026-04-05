@@ -1,10 +1,24 @@
-2026/04/05-01:40:48.862 c710 Reusing MANIFEST C:\Users\NEECA\PycharmProjects\real_estate_lead_engine\chrome_profile\Default\Local Storage\leveldb/MANIFEST-000001
-2026/04/05-01:40:48.873 c710 Recovering log #92
-2026/04/05-01:40:48.873 c710 Level-0 table #95: started
-2026/04/05-01:40:48.880 c710 Level-0 table #95: 27522 bytes OK
-2026/04/05-01:40:48.881 c710 Recovering log #94
-2026/04/05-01:40:48.884 c710 Reusing old log C:\Users\NEECA\PycharmProjects\real_estate_lead_engine\chrome_profile\Default\Local Storage\leveldb/000094.log 
-2026/04/05-01:40:48.898 c710 Delete type=0 #92
-2026/04/05-01:42:49.829 783c Level-0 table #97: started
-2026/04/05-01:42:49.877 783c Level-0 table #97: 27597 bytes OK
-2026/04/05-01:42:49.881 783c Delete type=0 #94
+2026/04/05-14:26:16.276 ca4c Reusing MANIFEST C:\Users\NEECA\PycharmProjects\real_estate_lead_engine\chrome_profile\Default\Local Storage\leveldb/MANIFEST-000001
+2026/04/05-14:26:16.302 ca4c Recovering log #126
+2026/04/05-14:26:16.303 ca4c Level-0 table #129: started
+2026/04/05-14:26:16.320 ca4c Level-0 table #129: 27707 bytes OK
+2026/04/05-14:26:16.323 ca4c Recovering log #128
+2026/04/05-14:26:16.334 ca4c Reusing old log C:\Users\NEECA\PycharmProjects\real_estate_lead_engine\chrome_profile\Default\Local Storage\leveldb/000128.log 
+2026/04/05-14:26:16.341 ca4c Delete type=0 #126
+2026/04/05-14:28:18.644 10b48 Level-0 table #131: started
+2026/04/05-14:28:18.682 10b48 Level-0 table #131: 27693 bytes OK
+2026/04/05-14:28:18.691 10b48 Delete type=0 #128
+2026/04/05-14:31:18.634 10b48 Level-0 table #133: started
+2026/04/05-14:31:18.683 10b48 Level-0 table #133: 27633 bytes OK
+2026/04/05-14:31:18.692 10b48 Delete type=0 #130
+2026/04/05-14:31:18.695 10b48 Compacting 4@0 + 1@1 files
+2026/04/05-14:31:18.711 10b48 Generated table #134@0: 13 keys, 9673 bytes
+2026/04/05-14:31:18.711 10b48 Compacted 4@0 + 1@1 files => 9673 bytes
+2026/04/05-14:31:18.714 10b48 compacted to: files[ 0 1 1 0 0 0 0 ]
+2026/04/05-14:31:18.717 10b48 Delete type=2 #125
+2026/04/05-14:31:18.717 10b48 Delete type=2 #127
+2026/04/05-14:31:18.717 10b48 Delete type=2 #129
+2026/04/05-14:31:18.718 10b48 Delete type=2 #131
+2026/04/05-14:31:18.718 10b48 Delete type=2 #133
+2026/04/05-14:33:07.037 10f28 Level-0 table #136: started
+2026/04/05-14:33:07.064 10f28 Level-0 table #136: 27701 bytes OK

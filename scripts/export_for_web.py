@@ -5,54 +5,59 @@ import os
 import re
 from datetime import datetime, timedelta
 
+
 def parse_posted_to_timestamp(posted_str):
     """Convert relative time string to actual timestamp."""
     if not posted_str or posted_str == 'Unknown' or pd.isna(posted_str):
         return datetime.now().isoformat()
-    
+
     posted_str = str(posted_str).lower()
     now = datetime.now()
-    
+
     # Parse "X minutes ago"
     match = re.match(r'(\d+)\s*minutes?\s*ago', posted_str)
     if match:
         minutes = int(match.group(1))
         return (now - timedelta(minutes=minutes)).isoformat()
-    
+
     # Parse "X hours ago"
     match = re.match(r'(\d+)\s*hours?\s*ago', posted_str)
     if match:
         hours = int(match.group(1))
         return (now - timedelta(hours=hours)).isoformat()
-    
+
     # Parse "X days ago"
     match = re.match(r'(\d+)\s*days?\s*ago', posted_str)
     if match:
         days = int(match.group(1))
         return (now - timedelta(days=days)).isoformat()
-    
+
     # Parse "X weeks ago"
     match = re.match(r'(\d+)\s*weeks?\s*ago', posted_str)
     if match:
         weeks = int(match.group(1))
         return (now - timedelta(weeks=weeks)).isoformat()
-    
+
     # Parse "X months ago" (approximate)
     match = re.match(r'(\d+)\s*months?\s*ago', posted_str)
     if match:
         months = int(match.group(1))
-        return (now - timedelta(days=months*30)).isoformat()
-    
+        return (now - timedelta(days=months * 30)).isoformat()
+
     # If it's already a date format, try to parse it
     try:
         parsed = pd.to_datetime(posted_str)
         return parsed.isoformat()
     except:
         pass
-    
+
     # Default to current time
     return now.isoformat()
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 def is_older_than_weeks(timestamp_str, weeks=2):
     """Check if a timestamp is older than specified weeks."""
     try:
@@ -62,40 +67,64 @@ def is_older_than_weeks(timestamp_str, weeks=2):
     except:
         return False
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 def export_to_json(max_age_weeks=2):
     """
     Convert CSV leads to JSON format with original timestamps.
     Removes ads older than max_age_weeks.
+<<<<<<< Updated upstream
     
     Args:
         max_age_weeks: Remove ads older than this many weeks (default: 2)
     """
     
+=======
+
+    Args:
+        max_age_weeks: Remove ads older than this many weeks (default: 2)
+    """
+
+>>>>>>> Stashed changes
     leads_file = "data/final_leads.csv"
     output_file = "data/leads_data.json"
-    
+
     if not os.path.exists(leads_file):
         print(f"❌ No leads found at {leads_file}. Run pipeline first.")
         return False
-    
+
     df = pd.read_csv(leads_file)
     df = df.fillna('')
-    
+
     print(f"📊 Processing {len(df)} leads...")
-    
+
     leads = []
     removed_count = 0
+<<<<<<< Updated upstream
     
+=======
+
+>>>>>>> Stashed changes
     for _, row in df.iterrows():
         posted_str = str(row.get('Posted', ''))
         # Store original timestamp for dynamic calculation
         original_timestamp = parse_posted_to_timestamp(posted_str)
+<<<<<<< Updated upstream
         
+=======
+
+>>>>>>> Stashed changes
         # Check if ad is older than 2 weeks
         if is_older_than_weeks(original_timestamp, max_age_weeks):
             removed_count += 1
             continue  # Skip this ad (don't include in JSON)
+<<<<<<< Updated upstream
         
+=======
+
+>>>>>>> Stashed changes
         lead = {
             "Title": str(row.get('Title', '')),
             "Price": str(row.get('Price', '')),
@@ -112,12 +141,20 @@ def export_to_json(max_age_weeks=2):
             "Link": str(row.get('Link', ''))
         }
         leads.append(lead)
+<<<<<<< Updated upstream
     
+=======
+
+>>>>>>> Stashed changes
     # Calculate age of oldest remaining ad
     oldest_timestamp = None
     if leads:
         oldest_timestamp = min(lead['PostedTimestamp'] for lead in leads)
+<<<<<<< Updated upstream
     
+=======
+
+>>>>>>> Stashed changes
     data = {
         "last_updated": datetime.now().isoformat(),
         "total_leads": len(leads),
@@ -126,23 +163,31 @@ def export_to_json(max_age_weeks=2):
         "max_age_weeks": max_age_weeks,
         "leads": leads
     }
-    
+
     with open(output_file, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
+<<<<<<< Updated upstream
     
     print(f"✅ Exported {len(leads)} leads (removed {removed_count} ads older than {max_age_weeks} weeks)")
     print(f"   Oldest remaining ad: {oldest_timestamp}")
     
+=======
+
+    print(f"✅ Exported {len(leads)} leads (removed {removed_count} ads older than {max_age_weeks} weeks)")
+    print(f"   Oldest remaining ad: {oldest_timestamp}")
+
+>>>>>>> Stashed changes
     # Copy to docs folder
     docs_dir = "docs"
     if not os.path.exists(docs_dir):
         os.makedirs(docs_dir)
-    
+
     import shutil
     shutil.copy(output_file, os.path.join(docs_dir, "leads_data.json"))
     print(f"✅ Copied to {docs_dir}/leads_data.json")
-    
+
     return True
+
 
 if __name__ == "__main__":
     export_to_json(max_age_weeks=2)
