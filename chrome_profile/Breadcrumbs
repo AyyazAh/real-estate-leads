@@ -1,68 +1,52 @@
-0:07:59 Tab1 StartNav562 #renderer-script #auto_subframe
-0:07:59 Tab1 StartNav563 #renderer-script #auto_subframe
-0:07:59 Tab1 FinishNav562
-0:07:59 Tab1 PageLoad
-0:07:59 Tab1 FinishNav563
-0:07:59 Tab1 PageLoad
-0:08:00 Tab1 PageLoad
-0:08:00 Tab1 StartNav564 #renderer-script #auto_subframe
-0:08:00 Tab1 StartNav565 #google #renderer-script #auto_subframe
-0:08:00 Tab1 FinishNav564
-0:08:00 Tab1 PageLoad
-0:08:00 Tab1 FinishNav565
-0:08:00 Tab1 PageLoad #google
-0:08:00 Tab1 StartNav566 #renderer-script #auto_subframe
-0:08:00 Tab1 FinishNav566
-0:08:00 Tab1 PageLoad
-0:08:02 Tab1 StartNav567 #renderer-script #auto_subframe
-0:08:02 Tab1 FinishNav567
-0:08:02 Tab1 PageLoad
-0:08:03 Tab1 StartNav568 #renderer-script #auto_subframe
-0:08:03 Tab1 FinishNav568
-0:08:03 Tab1 PageLoad
-0:08:06 Tab1 StartNav569 #typed
-0:08:07 Tab1 FinishNav569
-0:08:08 Tab1 StartNav570 #renderer-script #auto_subframe
-0:08:08 Tab1 FinishNav570
-0:08:08 Tab1 PageLoad
-0:08:08 Tab1 StartNav571 #renderer-script #auto_subframe
-0:08:08 Tab1 FinishNav571
-0:08:08 Tab1 PageLoad
-0:08:08 Tab1 StartNav572 #renderer-script #auto_subframe
-0:08:08 Tab1 FinishNav572
-0:08:08 Tab1 PageLoad
-0:08:09 Tab1 StartNav573 #renderer-script #auto_subframe
-0:08:09 Tab1 FinishNav573
-0:08:09 Tab1 PageLoad
-0:08:09 Tab1 StartNav574 #renderer-script #auto_subframe
-0:08:09 Tab1 FinishNav574
-0:08:09 Tab1 PageLoad
-0:08:09 Tab1 StartNav575 #renderer-script #auto_subframe
-0:08:09 Tab1 StartNav576 #renderer-script #auto_subframe
-0:08:09 Tab1 FinishNav575
-0:08:09 Tab1 FinishNav576
-0:08:09 Tab1 PageLoad
-0:08:09 Tab1 PageLoad
-0:08:10 Tab1 PageLoad
-0:08:10 Tab1 StartNav577 #renderer-script #auto_subframe
-0:08:10 Tab1 StartNav578 #google #renderer-script #auto_subframe
-0:08:10 Tab1 FinishNav577
-0:08:10 Tab1 PageLoad
-0:08:10 Tab1 FinishNav578
-0:08:10 Tab1 PageLoad #google
-0:08:10 Tab1 StartNav579 #renderer-script #auto_subframe
-0:08:10 Tab1 FinishNav579
-0:08:10 Tab1 PageLoad
-0:08:12 Tab1 StartNav580 #renderer-script #auto_subframe
-0:08:12 Tab1 FinishNav580
-0:08:12 Tab1 PageLoad
-0:08:12 Tab1 StartNav581 #renderer-script #auto_subframe
-0:08:12 Tab1 FinishNav581
-0:08:12 Tab1 PageLoad
-0:08:13 Tab1 StartNav582 #renderer-script #auto_subframe
-0:08:13 Tab1 FinishNav582
-0:08:13 Tab1 PageLoad
-0:08:13 Tab1 StartNav583 #renderer-script #auto_subframe
-0:08:13 Tab1 FinishNav583
-0:08:13 Tab1 PageLoad
-0:08:17 Browser1 Close Tab1 at 0
+0:08:36 Tab1 FinishNav678
+0:08:37 Tab1 StartNav679 #renderer-script #auto_subframe
+0:08:37 Tab1 FinishNav679
+0:08:37 Tab1 PageLoad
+0:08:37 Tab1 StartNav680 #renderer-script #auto_subframe
+0:08:37 Tab1 FinishNav680
+0:08:37 Tab1 PageLoad
+0:08:41 Tab1 StartNav681 #typed
+0:08:41 Tab1 FinishNav681
+0:08:45 Tab1 StartNav682 #renderer-script #auto_subframe
+0:08:45 Tab1 FinishNav682
+0:08:45 Tab1 PageLoad
+0:08:45 Tab1 StartNav683 #renderer-script #auto_subframe
+0:08:45 Tab1 FinishNav683
+0:08:45 Tab1 PageLoad
+0:08:46 Tab1 StartNav684 #renderer-script #auto_subframe
+0:08:46 Tab1 FinishNav684
+0:08:46 Tab1 PageLoad
+0:08:47 Tab1 StartNav685 #renderer-script #auto_subframe
+0:08:47 Tab1 FinishNav685
+0:08:47 Tab1 PageLoad
+0:08:47 Tab1 StartNav686 #renderer-script #auto_subframe
+0:08:47 Tab1 FinishNav686
+0:08:47 Tab1 PageLoad
+0:08:47 Tab1 StartNav687 #renderer-script #auto_subframe
+0:08:47 Tab1 StartNav688 #renderer-script #auto_subframe
+0:08:47 Tab1 FinishNav687
+0:08:47 Tab1 PageLoad
+0:08:47 Tab1 FinishNav688
+0:08:47 Tab1 PageLoad
+0:08:47 Tab1 PageLoad
+0:08:47 Tab1 StartNav689 #renderer-script #auto_subframe
+0:08:47 Tab1 StartNav690 #google #renderer-script #auto_subframe
+0:08:47 Tab1 FinishNav689
+0:08:47 Tab1 PageLoad
+0:08:47 Tab1 FinishNav690
+0:08:47 Tab1 PageLoad #google
+0:08:47 Tab1 StartNav691 #renderer-script #auto_subframe
+0:08:47 Tab1 FinishNav691
+0:08:47 Tab1 PageLoad
+0:08:49 Tab1 StartNav692 #renderer-script #auto_subframe
+0:08:49 Tab1 FinishNav692
+0:08:49 Tab1 PageLoad
+0:08:49 Tab1 StartNav693 #renderer-script #auto_subframe
+0:08:49 Tab1 FinishNav693
+0:08:50 Tab1 StartNav694 #renderer-script #auto_subframe
+0:08:50 Tab1 FinishNav694
+0:08:50 Tab1 PageLoad
+0:08:50 Tab1 StartNav695 #renderer-script #auto_subframe
+0:08:50 Tab1 FinishNav695
+0:08:50 Tab1 PageLoad
+0:08:54 Browser1 Close Tab1 at 0

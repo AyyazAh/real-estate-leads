@@ -1,3 +1,12 @@
-2026/04/05-14:26:18.041 aaec Reusing MANIFEST C:\Users\NEECA\PycharmProjects\real_estate_lead_engine\chrome_profile\Default\IndexedDB\https_www.olx.com.pk_0.indexeddb.leveldb/MANIFEST-000001
-2026/04/05-14:26:18.042 aaec Recovering log #36
-2026/04/05-14:26:18.082 aaec Reusing old log C:\Users\NEECA\PycharmProjects\real_estate_lead_engine\chrome_profile\Default\IndexedDB\https_www.olx.com.pk_0.indexeddb.leveldb/000036.log 
+2026/04/05-14:42:11.466 feec Reusing MANIFEST C:\Users\NEECA\PycharmProjects\real_estate_lead_engine\chrome_profile\Default\IndexedDB\https_www.olx.com.pk_0.indexeddb.leveldb/MANIFEST-000001
+2026/04/05-14:42:11.467 feec Recovering log #36
+2026/04/05-14:42:11.526 feec Reusing old log C:\Users\NEECA\PycharmProjects\real_estate_lead_engine\chrome_profile\Default\IndexedDB\https_www.olx.com.pk_0.indexeddb.leveldb/000036.log 
+2026/04/05-14:45:28.987 feec Level-0 table #41: started
+2026/04/05-14:45:29.023 feec Level-0 table #41: 1397976 bytes OK
+2026/04/05-14:45:29.027 feec Delete type=0 #36
+2026/04/05-14:45:51.109 f8ec Compacting 1@1 + 1@2 files
+2026/04/05-14:45:51.156 f8ec Generated table #42@1: 224 keys, 12966 bytes
+2026/04/05-14:45:51.156 f8ec Compacted 1@1 + 1@2 files => 12966 bytes
+2026/04/05-14:45:51.159 f8ec compacted to: files[ 0 0 1 0 0 0 0 ]
+2026/04/05-14:45:51.159 f8ec Delete type=2 #38
+2026/04/05-14:45:51.160 f8ec Delete type=2 #41

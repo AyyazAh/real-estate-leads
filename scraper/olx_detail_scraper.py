@@ -13,40 +13,6 @@ from selenium.webdriver.chrome.service import Service
 
 PROFILE_DIR = os.path.join(os.getcwd(), "chrome_profile")
 
-# File to track processed leads (for deduplication)
-PROCESSED_FILE = "data/processed_leads.csv"
-
-
-def load_processed_links():
-    """Load previously processed links to avoid duplicates."""
-    if os.path.exists(PROCESSED_FILE):
-        df = pd.read_csv(PROCESSED_FILE)
-        if "Link" in df.columns:
-            return set(df["Link"].tolist())
-    return set()
-
-
-def save_processed_link(link):
-    """Save a processed link to the processed file."""
-    processed = load_processed_links()
-    processed.add(link)
-    pd.DataFrame({"Link": list(processed)}).to_csv(PROCESSED_FILE, index=False)
-
-
-def is_duplicate(new_row, existing_data):
-    """
-    Check if a lead is duplicate based on:
-    - Seller + Location + Phone + Area + Price
-    """
-    for existing in existing_data:
-        if (existing.get('Seller') == new_row.get('Seller') and
-                existing.get('Location') == new_row.get('Location') and
-                existing.get('Phone') == new_row.get('Phone') and
-                existing.get('Area') == new_row.get('Area') and
-                existing.get('Price') == new_row.get('Price')):
-            return True
-    return False
-
 
 def extract_phone_numbers(text):
     mobile = r'(?:(?:\+92|0092|0)?3[0-9]{2}[-. ]?[0-9]{7})'
@@ -110,36 +76,18 @@ def scrape_details(limit=None, headless=False):
         print("❌ No links to scrape.")
         return
 
-    # Load already processed links
-    processed_links = load_processed_links()
-
-    # Filter out already processed links
-    links = [link for link in df["Link"].tolist() if link not in processed_links]
-    print(f"📊 Total links: {len(df)} | New links: {len(links)} | Already processed: {len(processed_links)}")
-
+    links = df["Link"].tolist()
     if limit:
         links = links[:limit]
-
-    if not links:
-        print("✅ No new links to process. All leads are up to date!")
-        return
 
     driver = setup_driver(headless=headless)
     manual_login(driver)
 
     data = []
     failed = 0
-    duplicate_count = 0
-
-    # Load existing leads for duplicate checking
-    existing_leads = []
-    final_file = "data/final_leads.csv"
-    if os.path.exists(final_file):
-        existing_df = pd.read_csv(final_file)
-        existing_leads = existing_df.to_dict('records')
 
     for idx, link in enumerate(links):
-        print(f"\n  Scraping {idx + 1}/{len(links)}: {link[:80]}...")
+        print(f"  Scraping {link}")
         try:
             for attempt in range(3):
                 try:
@@ -153,32 +101,29 @@ def scrape_details(limit=None, headless=False):
             WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.TAG_NAME, "body")))
             time.sleep(2)
 
-            # Click "Show number" button
             show_btn = None
             xpath = "//button[.//span[contains(text(),'Show phone number')]]"
             try:
                 show_btn = driver.find_element(By.XPATH, xpath)
                 if show_btn.is_displayed() and show_btn.is_enabled():
-                    print("    📞 Clicked 'Show phone number' button.")
+                    print("    Found button by XPath.")
             except:
                 pass
             if show_btn:
                 driver.execute_script("arguments[0].click();", show_btn)
+                print("    Clicked 'Show phone number' button.")
                 time.sleep(2)
 
-            # Title
             title = driver.title
             if " - " in title:
                 title = title.split(" - ")[0]
 
-            # Description
             try:
                 meta_desc = driver.find_element(By.CSS_SELECTOR, "meta[name='description']")
                 description = meta_desc.get_attribute("content")
             except:
                 description = ""
 
-            # Price
             price = ""
             price_selectors = [
                 "span._24469da7",
@@ -196,34 +141,21 @@ def scrape_details(limit=None, headless=False):
                 except:
                     continue
 
-            # Image URL - extract first image
             image_url = ""
             try:
                 img_elem = driver.find_element(By.CSS_SELECTOR, "picture source[type='image/webp']")
                 image_url = img_elem.get_attribute("srcset")
                 if image_url:
                     image_url = image_url.split(",")[0].strip().split(" ")[0]
-                    print(f"    🖼️ Image extracted")
             except:
                 pass
             if not image_url:
                 try:
                     img_elem = driver.find_element(By.CSS_SELECTOR, "div.image-gallery-slide img")
                     image_url = img_elem.get_attribute("src")
-                    if image_url:
-                        print(f"    🖼️ Image extracted (gallery)")
-                except:
-                    pass
-            if not image_url:
-                try:
-                    img_elem = driver.find_element(By.CSS_SELECTOR, "img[class*='66938426']")
-                    image_url = img_elem.get_attribute("src")
-                    if image_url:
-                        print(f"    🖼️ Image extracted (class)")
                 except:
                     pass
 
-            # Furnished status
             furnished = ""
             try:
                 furnished_elem = driver.find_element(By.CSS_SELECTOR, "span._4b3efad3.a1c1940e")
@@ -239,7 +171,6 @@ def scrape_details(limit=None, headless=False):
                 except:
                     pass
 
-            # Bedrooms
             bedrooms = ""
             try:
                 bed_elem = driver.find_element(By.XPATH, "//span[contains(text(),'Bed')]")
@@ -247,7 +178,6 @@ def scrape_details(limit=None, headless=False):
             except:
                 pass
 
-            # Bathrooms
             bathrooms = ""
             try:
                 bath_elem = driver.find_element(By.XPATH, "//span[contains(text(),'Bath')]")
@@ -255,7 +185,6 @@ def scrape_details(limit=None, headless=False):
             except:
                 pass
 
-            # Area
             area = ""
             area_keywords = ['Marla', 'Kanal', 'Square Feet', 'Sq. Ft', 'Sq Ft', 'Yard', 'sqft', 'sqyd']
             for keyword in area_keywords:
@@ -267,7 +196,6 @@ def scrape_details(limit=None, headless=False):
                 except:
                     continue
 
-            # Seller name
             seller = ""
             try:
                 posted_by = driver.find_element(By.XPATH, "//span[contains(text(),'Posted by')]")
@@ -276,7 +204,6 @@ def scrape_details(limit=None, headless=False):
             except:
                 pass
 
-            # Active ads count
             active_ads = ""
             try:
                 active_label = driver.find_element(By.XPATH, "//span[contains(text(),'Active Ads')]")
@@ -285,7 +212,6 @@ def scrape_details(limit=None, headless=False):
             except:
                 pass
 
-            # Location
             location = ""
             try:
                 loc_elem = driver.find_element(By.CSS_SELECTOR, "span[aria-label='Location']")
@@ -293,7 +219,6 @@ def scrape_details(limit=None, headless=False):
             except:
                 pass
 
-            # Posted date
             posted_date = ""
             try:
                 date_elem = driver.find_element(By.CSS_SELECTOR, "span[aria-label='Creation date']")
@@ -301,11 +226,9 @@ def scrape_details(limit=None, headless=False):
             except:
                 pass
 
-            # Phone numbers
             page_text = driver.find_element(By.TAG_NAME, "body").text
             phones = extract_phone_numbers(page_text)
 
-            # Coordinates
             lat, lon = "", ""
             try:
                 meta_geo = driver.find_element(By.CSS_SELECTOR, "meta[name='geo.position']")
@@ -316,8 +239,7 @@ def scrape_details(limit=None, headless=False):
             except:
                 pass
 
-            # Create lead record
-            new_lead = {
+            data.append({
                 "Title": title,
                 "Description": description,
                 "Price": price,
@@ -334,17 +256,8 @@ def scrape_details(limit=None, headless=False):
                 "Latitude": lat,
                 "Longitude": lon,
                 "Link": link
-            }
-
-            # Check for duplicate based on seller + location + phone + area + price
-            if is_duplicate(new_lead, existing_leads):
-                print(f"    ⚠️ DUPLICATE SKIPPED: {seller} | {location} | {phones}")
-                duplicate_count += 1
-            else:
-                data.append(new_lead)
-                existing_leads.append(new_lead)  # Add to memory for future checks
-                save_processed_link(link)  # Mark link as processed
-                print(f"    ✅ NEW LEAD: {title[:50]}... | Phone: {phones if phones else 'none'}")
+            })
+            print(f"    ✅ Extracted: {title[:50]}... | Price: {price} | Phones: {phones if phones else 'none'}")
 
         except Exception as e:
             print(f"    ❌ Error: {e}")
@@ -354,33 +267,8 @@ def scrape_details(limit=None, headless=False):
 
     driver.quit()
 
-    # Append new leads to existing files
     if data:
-        # Append to raw_details.csv
-        raw_file = "data/raw_details.csv"
-        if os.path.exists(raw_file):
-            existing_raw = pd.read_csv(raw_file)
-            combined_raw = pd.concat([existing_raw, pd.DataFrame(data)], ignore_index=True)
-            combined_raw.to_csv(raw_file, index=False)
-        else:
-            pd.DataFrame(data).to_csv(raw_file, index=False)
-
-        # Append to final_leads.csv (only those with phone numbers)
-        leads_with_phones = [d for d in data if d.get('Phone')]
-        if leads_with_phones:
-            final_file = "data/final_leads.csv"
-            if os.path.exists(final_file):
-                existing_final = pd.read_csv(final_file)
-                combined_final = pd.concat([existing_final, pd.DataFrame(leads_with_phones)], ignore_index=True)
-                combined_final.to_csv(final_file, index=False)
-            else:
-                pd.DataFrame(leads_with_phones).to_csv(final_file, index=False)
-
-        print(f"\n✅ Scraped {len(data)} new property details")
-        print(f"   🚫 Skipped {duplicate_count} duplicates")
-        print(f"   📞 New leads with phones: {len(leads_with_phones)}")
-        print(f"   ❌ Failed: {failed}")
+        pd.DataFrame(data).to_csv("data/raw_details.csv", index=False)
+        print(f"\n✅ Scraped {len(data)} property details ({failed} failed)")
     else:
-        print(f"\n✅ No new leads found. All {len(links)} links were duplicates or failed.")
-        if duplicate_count > 0:
-            print(f"   🚫 Skipped {duplicate_count} duplicate leads")
+        print(f"\n❌ No details scraped. All {failed} attempts failed.")

@@ -39,9 +39,8 @@ def extract_phones():
         print("   Sample:")
         for _, row in leads_with_phones.head(3).iterrows():
             price = row.get('Price', '')
-            beds = row.get('Bedrooms', '')
-            area = row.get('Area', '')
             seller = row.get('Seller', '')
-            print(f"   - {row['Phone']} | {price} | Beds: {beds} | Area: {area} | Seller: {seller}")
+            loc = row.get('Location', '')[:30]
+            print(f"   - {row['Phone']} | {price} | Seller: {seller} | {loc}")
     else:
         print("⚠️ No phone numbers found in any property.")

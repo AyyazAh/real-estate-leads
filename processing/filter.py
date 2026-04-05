@@ -28,17 +28,14 @@ def filter_leads():
     df["Valid"] = df["Title"].apply(is_valid)
     filtered = df[df["Valid"] == True]
 
-    # Keep all relevant columns
     all_cols = ["Title", "Description", "Price", "ImageURL", "Furnished", "Bedrooms", "Bathrooms", "Area",
                 "Phone", "Seller", "ActiveAds", "Location", "Posted", "Latitude", "Longitude", "Link"]
     existing_cols = [c for c in all_cols if c in filtered.columns]
     filtered = filtered[existing_cols]
 
     if not filtered.empty:
-        # Remove duplicates from filtered leads as well
-        filtered = filtered.drop_duplicates(subset=["Seller", "Location", "Phone", "Area", "Price"], keep="first")
         filtered.to_csv("data/filtered_leads.csv", index=False)
-        print(f"✅ Filtered leads saved – {len(filtered)} rows kept (duplicates removed)")
+        print(f"✅ Filtered leads saved – {len(filtered)} rows kept")
     else:
         print("⚠️ No leads matched the keywords.")
         filtered.to_csv("data/filtered_leads.csv", index=False)

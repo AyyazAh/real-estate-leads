@@ -1,0 +1,32 @@
+# Virtual Environment
+.venv/
+venv/
+ENV/
+
+# Chrome Profile (don't upload to GitHub)
+chrome_profile/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Data exports (optional - you can keep if you want)
+data/exports/
+data/raw_links.csv
+data/raw_details.csv
+data/filtered_leads.csv
+data/final_leads.csv
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+
+# Logs
+logs/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db

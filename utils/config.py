@@ -7,22 +7,16 @@ HEADERS = {
     "Referer": "https://www.olx.com.pk/",
 }
 
-# Expanded keywords for filtering property leads
 KEYWORDS = [
-    # Property types
     r"house", r"villa", r"apartment", r"flat", r"plot", r"bungalow",
     r"residential", r"home", r"property", r"land", r"farmhouse",
     r"penthouse", r"townhouse", r"cottage", r"mansion", r"studio",
-    # Commercial
     r"commercial", r"shop", r"office", r"retail", r"showroom",
     r"warehouse", r"factory", r"industrial", r"godown",
-    # Real estate terms
     r"investment", r"opportunity", r"possession", r"file",
     r"allocation", r"booking", r"installment",
-    # Locations / sectors (optional)
     r"dha", r"bahria", r"askari", r"defence", r"clifton",
     r"gulshan", r"nazimabad", r"johar", r"faisal", r"i-", r"g-", r"e-", r"f-",
-    # Features
     r"furnished", r"corner", r"park facing", r"main road",
     r"near airport", r"near motorway", r"prime location"
 ]
