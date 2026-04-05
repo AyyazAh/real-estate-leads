@@ -160,6 +160,7 @@
             font-size: 12px;
         }
 
+        /* Recent Section - Clean Layout */
         .recent-section {
             background: rgba(255,255,255,0.03);
             backdrop-filter: blur(10px);
@@ -191,32 +192,33 @@
 
         .recent-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 16px;
         }
 
         .recent-card {
             background: rgba(255,255,255,0.05);
             border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 16px;
+            border-radius: 20px;
             padding: 16px;
-            display: flex;
-            gap: 12px;
             transition: all 0.3s;
+            display: flex;
+            gap: 14px;
         }
 
         .recent-card:hover {
             background: rgba(255,255,255,0.08);
-            transform: translateX(5px);
+            transform: translateY(-2px);
             border-color: rgba(102,126,234,0.5);
         }
 
         .recent-image {
-            width: 80px;
-            height: 80px;
+            width: 70px;
+            height: 70px;
             border-radius: 12px;
             object-fit: cover;
             background: rgba(255,255,255,0.05);
+            flex-shrink: 0;
         }
 
         .recent-info {
@@ -225,15 +227,16 @@
 
         .recent-title-text {
             font-weight: 600;
-            font-size: 13px;
+            font-size: 14px;
             margin-bottom: 6px;
             line-height: 1.3;
+            color: #fff;
         }
 
         .recent-price {
             color: #a0a0ff;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 13px;
             margin-bottom: 4px;
         }
 
@@ -246,8 +249,17 @@
         .recent-time {
             font-size: 10px;
             color: #2ecc71;
+            display: inline-block;
         }
 
+        .recent-score {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        /* Feed Section */
         .feed-section {
             background: rgba(255,255,255,0.03);
             backdrop-filter: blur(10px);
@@ -362,7 +374,7 @@
             display: inline-flex;
             align-items: center;
             gap: 4px;
-            padding: 3px 8px;
+            padding: 3px 10px;
             border-radius: 20px;
             font-size: 10px;
             font-weight: 600;
@@ -371,10 +383,6 @@
         }
 
         /* Tooltip Styles */
-        .score-badge {
-            position: relative;
-        }
-
         .score-badge .tooltip {
             visibility: hidden;
             opacity: 0;
@@ -440,9 +448,10 @@
             border: 1px solid rgba(149, 165, 166, 0.3);
         }
 
+        /* Leads Grid */
         .leads-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
             gap: 20px;
             max-height: 600px;
             overflow-y: auto;
@@ -479,56 +488,66 @@
 
         .lead-image {
             width: 100%;
-            height: 160px;
+            height: 180px;
             object-fit: cover;
             background: rgba(255,255,255,0.05);
         }
 
         .lead-content {
-            padding: 16px;
+            padding: 18px;
         }
 
         .lead-title {
             font-weight: 600;
-            font-size: 14px;
+            font-size: 15px;
             margin-bottom: 8px;
             line-height: 1.4;
             color: #fff;
         }
 
         .lead-price {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 700;
             color: #a0a0ff;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
 
-        .lead-details {
+        .lead-details-row {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 8px;
-            font-size: 12px;
-            color: rgba(255,255,255,0.6);
+            gap: 10px;
+            margin-bottom: 10px;
             align-items: center;
+        }
+
+        .lead-location {
+            font-size: 12px;
+            color: rgba(255,255,255,0.5);
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
 
         .lead-phone {
             color: #2ecc71;
             font-weight: 600;
-            margin-bottom: 8px;
-            font-size: 13px;
+            margin-bottom: 10px;
+            font-size: 14px;
             word-break: break-all;
+            background: rgba(46,204,113,0.1);
+            padding: 6px 10px;
+            border-radius: 10px;
+            display: inline-block;
         }
 
-        .lead-meta {
+        .lead-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-size: 11px;
             color: rgba(255,255,255,0.4);
-            margin-top: 8px;
-            padding-top: 8px;
+            margin-top: 10px;
+            padding-top: 10px;
             border-top: 1px solid rgba(255,255,255,0.05);
         }
 
@@ -667,6 +686,7 @@
             <span class="sync-time">Last sync: <span id="lastSync">--</span></span>
         </div>
 
+        <!-- Recent Ads Section - Clean Layout -->
         <div class="recent-section" id="recentSection">
             <div class="recent-header">
                 <div class="recent-title">
@@ -741,7 +761,6 @@
             let score = 0;
             let reasons = [];
 
-            // 1. Recency Score (max 50 points)
             const postedTime = lead.PostedTimestamp;
             if (postedTime) {
                 const now = new Date();
@@ -769,7 +788,6 @@
                 }
             }
 
-            // 2. Price Score (max 30 points)
             const priceStr = lead.Price || '';
             if (priceStr.includes('Lac')) {
                 const match = priceStr.match(/(\d+(?:\.\d+)?)/);
@@ -803,13 +821,11 @@
                 }
             }
 
-            // 3. Furnished Bonus (max 10 points)
             if (lead.Furnished === 'Furnished') {
                 score += 10;
                 reasons.push("🛋️ Ready to move in (Furnished) (+10)");
             }
 
-            // 4. Active Ads Score (seller reputation, max 10 points)
             if (lead.ActiveAds) {
                 const activeCount = parseInt(lead.ActiveAds);
                 if (!isNaN(activeCount)) {
@@ -907,7 +923,6 @@
                 const data = await response.json();
                 allLeads = data.leads || [];
 
-                // Calculate scores for all leads
                 allLeads = allLeads.map(lead => {
                     const { score, reasons } = calculateLeadScore(lead);
                     return { ...lead, score, scoreReasons: reasons };
@@ -931,20 +946,23 @@
                         const badge = getScoreBadge(ad.score);
                         const tooltipHTML = getTooltipHTML(ad.scoreReasons, ad.score);
                         return `
-                        <div class="recent-card">
-                            ${ad.ImageURL ? `<img src="${ad.ImageURL}" class="recent-image" onerror="this.style.display='none'">` : '<div class="recent-image" style="display:flex;align-items:center;justify-content:center;">📷</div>'}
-                            <div class="recent-info">
-                                <div class="recent-title-text">${escapeHtml(ad.Title?.substring(0, 50) || 'N/A')}</div>
-                                <div class="recent-price">💰 ${escapeHtml(ad.Price || 'N/A')}</div>
-                                <div class="recent-location">📍 ${escapeHtml(ad.Location?.substring(0, 35) || 'N/A')}</div>
-                                <div class="recent-time">🕐 ${getRelativeTime(ad.PostedTimestamp)}</div>
+                            <div class="recent-card">
+                                ${ad.ImageURL ? `<img src="${ad.ImageURL}" class="recent-image" onerror="this.style.display='none'">` : '<div class="recent-image" style="display:flex;align-items:center;justify-content:center;font-size:24px;">📷</div>'}
+                                <div class="recent-info">
+                                    <div class="recent-title-text">${escapeHtml(ad.Title?.substring(0, 55) || 'N/A')}</div>
+                                    <div class="recent-price">💰 ${escapeHtml(ad.Price || 'N/A')}</div>
+                                    <div class="recent-location">📍 ${escapeHtml(ad.Location?.substring(0, 40) || 'N/A')}</div>
+                                    <div class="recent-time">🕐 ${getRelativeTime(ad.PostedTimestamp)}</div>
+                                    <div class="recent-score">
+                                        <div class="score-badge ${badge.class}">
+                                            ${badge.icon} ${badge.text} ${ad.score}
+                                            <div class="tooltip">${tooltipHTML}</div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="score-badge ${badge.class}">
-                                ${badge.icon} ${badge.text} ${ad.score}
-                                <div class="tooltip">${tooltipHTML}</div>
-                            </div>
-                        </div>
-                    `}).join('');
+                        `;
+                    }).join('');
                 }
 
                 let filtered = [...allLeads];
@@ -996,12 +1014,12 @@
 
                                 return `
                                     <div class="lead-card">
-                                        ${imageUrl ? `<img src="${imageUrl}" class="lead-image" onerror="this.style.display='none'">` : '<div class="lead-image" style="display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.3);">📷 No Image</div>'}
+                                        ${imageUrl ? `<img src="${imageUrl}" class="lead-image" onerror="this.style.display='none'">` : '<div class="lead-image" style="display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.3);font-size:32px;">📷</div>'}
                                         <div class="lead-content">
                                             <div class="lead-title">${escapeHtml(title.substring(0, 80))}</div>
                                             <div class="lead-price">💰 ${escapeHtml(price)}</div>
-                                            <div class="lead-details">
-                                                <span>📍 ${escapeHtml(location.substring(0, 40))}</span>
+                                            <div class="lead-details-row">
+                                                <div class="lead-location">📍 ${escapeHtml(location.substring(0, 45))}</div>
                                                 ${furnishedBadge}
                                                 <div class="score-badge ${badge.class}">
                                                     ${badge.icon} ${badge.text} ${lead.score}
@@ -1009,7 +1027,7 @@
                                                 </div>
                                             </div>
                                             <div class="lead-phone">📞 ${escapeHtml(phone)}</div>
-                                            <div class="lead-meta">
+                                            <div class="lead-footer">
                                                 <span>👤 ${escapeHtml(seller.substring(0, 30))}</span>
                                                 <span>🕐 ${escapeHtml(postedTime)} ${newBadge}</span>
                                             </div>
