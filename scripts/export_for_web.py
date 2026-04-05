@@ -53,8 +53,23 @@ def parse_posted_to_timestamp(posted_str):
     # Default to current time
     return now.isoformat()
 
-def export_to_json():
-    """Convert CSV leads to JSON format with original timestamps."""
+def is_older_than_weeks(timestamp_str, weeks=2):
+    """Check if a timestamp is older than specified weeks."""
+    try:
+        posted_date = datetime.fromisoformat(timestamp_str)
+        cutoff_date = datetime.now() - timedelta(weeks=weeks)
+        return posted_date < cutoff_date
+    except:
+        return False
+
+def export_to_json(max_age_weeks=2):
+    """
+    Convert CSV leads to JSON format with original timestamps.
+    Removes ads older than max_age_weeks.
+    
+    Args:
+        max_age_weeks: Remove ads older than this many weeks (default: 2)
+    """
     
     leads_file = "data/final_leads.csv"
     output_file = "data/leads_data.json"
@@ -69,10 +84,17 @@ def export_to_json():
     print(f"📊 Processing {len(df)} leads...")
     
     leads = []
+    removed_count = 0
+    
     for _, row in df.iterrows():
         posted_str = str(row.get('Posted', ''))
         # Store original timestamp for dynamic calculation
         original_timestamp = parse_posted_to_timestamp(posted_str)
+        
+        # Check if ad is older than 2 weeks
+        if is_older_than_weeks(original_timestamp, max_age_weeks):
+            removed_count += 1
+            continue  # Skip this ad (don't include in JSON)
         
         lead = {
             "Title": str(row.get('Title', '')),
@@ -85,22 +107,31 @@ def export_to_json():
             "Bedrooms": str(row.get('Bedrooms', '')),
             "Bathrooms": str(row.get('Bathrooms', '')),
             "Posted": posted_str,
-            "PostedTimestamp": original_timestamp,  # NEW: store actual timestamp
+            "PostedTimestamp": original_timestamp,
             "ImageURL": str(row.get('ImageURL', '')),
             "Link": str(row.get('Link', ''))
         }
         leads.append(lead)
     
+    # Calculate age of oldest remaining ad
+    oldest_timestamp = None
+    if leads:
+        oldest_timestamp = min(lead['PostedTimestamp'] for lead in leads)
+    
     data = {
         "last_updated": datetime.now().isoformat(),
         "total_leads": len(leads),
+        "removed_old": removed_count,
+        "oldest_lead": oldest_timestamp,
+        "max_age_weeks": max_age_weeks,
         "leads": leads
     }
     
     with open(output_file, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
     
-    print(f"✅ Exported {len(leads)} leads with timestamps to {output_file}")
+    print(f"✅ Exported {len(leads)} leads (removed {removed_count} ads older than {max_age_weeks} weeks)")
+    print(f"   Oldest remaining ad: {oldest_timestamp}")
     
     # Copy to docs folder
     docs_dir = "docs"
@@ -114,4 +145,4 @@ def export_to_json():
     return True
 
 if __name__ == "__main__":
-    export_to_json()
+    export_to_json(max_age_weeks=2)
