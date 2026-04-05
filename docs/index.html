@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Real Estate Lead Engine | Live Property Leads Dashboard</title>
-    <meta name="description" content="Real-time property leads from OLX Pakistan. Find houses, apartments, plots and commercial properties with contact numbers.">
+    <meta name="description" content="Real-time property leads from OLX Pakistan. Live leads with verified contact numbers — updated continuously.">
     <link rel="icon" href="https://img.icons8.com/color/48/real-estate.png">
     <style>
         * {
@@ -366,6 +366,54 @@
             border-radius: 20px;
             font-size: 10px;
             font-weight: 600;
+            cursor: help;
+            position: relative;
+        }
+
+        /* Tooltip Styles */
+        .score-badge {
+            position: relative;
+        }
+
+        .score-badge .tooltip {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            bottom: 130%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(8px);
+            color: #fff;
+            text-align: left;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: normal;
+            white-space: nowrap;
+            z-index: 1000;
+            transition: all 0.2s ease;
+            pointer-events: none;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            font-family: monospace;
+            line-height: 1.5;
+        }
+
+        .score-badge .tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 6px;
+            border-style: solid;
+            border-color: rgba(0, 0, 0, 0.95) transparent transparent transparent;
+        }
+
+        .score-badge:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
         }
 
         .score-hot {
@@ -578,6 +626,12 @@
             .recent-grid {
                 grid-template-columns: 1fr;
             }
+            .score-badge .tooltip {
+                white-space: normal;
+                min-width: 200px;
+                max-width: 250px;
+                bottom: 140%;
+            }
         }
     </style>
 </head>
@@ -696,22 +750,22 @@
 
                 if (diffHours < 1) {
                     score += 50;
-                    reasons.push("🆕 Posted within last hour");
+                    reasons.push("🆕 Posted within last hour (+50)");
                 } else if (diffHours < 6) {
                     score += 40;
-                    reasons.push("⏰ Posted within 6 hours");
+                    reasons.push("⏰ Posted within 6 hours (+40)");
                 } else if (diffHours < 12) {
                     score += 30;
-                    reasons.push("📅 Posted within 12 hours");
+                    reasons.push("📅 Posted within 12 hours (+30)");
                 } else if (diffHours < 24) {
                     score += 20;
-                    reasons.push("🌙 Posted within 24 hours");
+                    reasons.push("🌙 Posted within 24 hours (+20)");
                 } else if (diffHours < 48) {
                     score += 10;
-                    reasons.push("📆 Posted within 2 days");
+                    reasons.push("📆 Posted within 2 days (+10)");
                 } else {
                     score += 5;
-                    reasons.push("📌 Posted recently");
+                    reasons.push("📌 Posted recently (+5)");
                 }
             }
 
@@ -723,13 +777,13 @@
                     const price = parseFloat(match[1]);
                     if (price < 50) {
                         score += 30;
-                        reasons.push("💰 Great value under 50 Lac");
+                        reasons.push("💰 Great value under 50 Lac (+30)");
                     } else if (price < 100) {
                         score += 20;
-                        reasons.push("💵 Good value under 1 Crore");
+                        reasons.push("💵 Good value under 1 Crore (+20)");
                     } else {
                         score += 10;
-                        reasons.push("🏠 Premium property");
+                        reasons.push("🏠 Premium property (+10)");
                     }
                 }
             } else if (priceStr.includes('Crore')) {
@@ -738,13 +792,13 @@
                     const price = parseFloat(match[1]);
                     if (price < 2) {
                         score += 20;
-                        reasons.push("🏡 Affordable luxury under 2 Crore");
+                        reasons.push("🏡 Affordable luxury under 2 Crore (+20)");
                     } else if (price < 5) {
                         score += 10;
-                        reasons.push("✨ Premium property");
+                        reasons.push("✨ Premium property (+10)");
                     } else {
                         score += 5;
-                        reasons.push("👑 Luxury estate");
+                        reasons.push("👑 Luxury estate (+5)");
                     }
                 }
             }
@@ -752,7 +806,7 @@
             // 3. Furnished Bonus (max 10 points)
             if (lead.Furnished === 'Furnished') {
                 score += 10;
-                reasons.push("🛋️ Ready to move in (Furnished)");
+                reasons.push("🛋️ Ready to move in (Furnished) (+10)");
             }
 
             // 4. Active Ads Score (seller reputation, max 10 points)
@@ -761,10 +815,10 @@
                 if (!isNaN(activeCount)) {
                     if (activeCount > 20) {
                         score += 10;
-                        reasons.push("🏢 Professional seller (20+ active ads)");
+                        reasons.push("🏢 Professional seller (20+ active ads) (+10)");
                     } else if (activeCount > 5) {
                         score += 5;
-                        reasons.push("🤝 Active seller");
+                        reasons.push("🤝 Active seller (+5)");
                     }
                 }
             }
@@ -782,6 +836,16 @@
             } else {
                 return { class: 'score-cold', icon: '❄️', text: 'COLD' };
             }
+        }
+
+        function getTooltipHTML(reasons, score) {
+            return `
+                <div style="font-family: monospace; font-size: 11px;">
+                    <div style="font-weight: bold; margin-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 4px;">📊 Score: ${score}/100</div>
+                    ${reasons.map(r => `<div>• ${r}</div>`).join('')}
+                    <div style="margin-top: 6px; padding-top: 4px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 9px; color: #888;">Hover for details</div>
+                </div>
+            `;
         }
 
         function getRelativeTime(timestamp) {
@@ -865,6 +929,7 @@
                 } else {
                     document.getElementById('recentAds').innerHTML = recent.map(ad => {
                         const badge = getScoreBadge(ad.score);
+                        const tooltipHTML = getTooltipHTML(ad.scoreReasons, ad.score);
                         return `
                         <div class="recent-card">
                             ${ad.ImageURL ? `<img src="${ad.ImageURL}" class="recent-image" onerror="this.style.display='none'">` : '<div class="recent-image" style="display:flex;align-items:center;justify-content:center;">📷</div>'}
@@ -874,7 +939,10 @@
                                 <div class="recent-location">📍 ${escapeHtml(ad.Location?.substring(0, 35) || 'N/A')}</div>
                                 <div class="recent-time">🕐 ${getRelativeTime(ad.PostedTimestamp)}</div>
                             </div>
-                            <div class="score-badge ${badge.class}" style="align-self: flex-start;">${badge.icon} ${badge.text}</div>
+                            <div class="score-badge ${badge.class}">
+                                ${badge.icon} ${badge.text} ${ad.score}
+                                <div class="tooltip">${tooltipHTML}</div>
+                            </div>
                         </div>
                     `}).join('');
                 }
@@ -924,6 +992,7 @@
                                 const furnishedBadge = lead.Furnished === 'Furnished' ? '<span class="badge-furnished">Furnished</span>' : '';
                                 const newBadge = isNew ? '<span class="badge-new">NEW</span>' : '';
                                 const badge = getScoreBadge(lead.score);
+                                const tooltipHTML = getTooltipHTML(lead.scoreReasons, lead.score);
 
                                 return `
                                     <div class="lead-card">
@@ -934,7 +1003,10 @@
                                             <div class="lead-details">
                                                 <span>📍 ${escapeHtml(location.substring(0, 40))}</span>
                                                 ${furnishedBadge}
-                                                <span class="score-badge ${badge.class}">${badge.icon} ${badge.text} ${lead.score}</span>
+                                                <div class="score-badge ${badge.class}">
+                                                    ${badge.icon} ${badge.text} ${lead.score}
+                                                    <div class="tooltip">${tooltipHTML}</div>
+                                                </div>
                                             </div>
                                             <div class="lead-phone">📞 ${escapeHtml(phone)}</div>
                                             <div class="lead-meta">
