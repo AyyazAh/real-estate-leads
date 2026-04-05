@@ -161,13 +161,97 @@
             font-size: 12px;
         }
 
-        .sync-time {
-            display: flex;
-            align-items: center;
-            gap: 6px;
+        /* Recent Ads Section */
+        .recent-section {
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 32px;
+            padding: 32px;
+            margin-bottom: 40px;
         }
 
-        /* Live Feed Section */
+        .recent-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .recent-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .recent-title h2 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .recent-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+        }
+
+        .recent-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            gap: 12px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .recent-card:hover {
+            background: rgba(255,255,255,0.08);
+            transform: translateX(5px);
+            border-color: rgba(102,126,234,0.5);
+        }
+
+        .recent-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            object-fit: cover;
+            background: rgba(255,255,255,0.05);
+        }
+
+        .recent-info {
+            flex: 1;
+        }
+
+        .recent-title-text {
+            font-weight: 600;
+            font-size: 13px;
+            margin-bottom: 6px;
+            line-height: 1.3;
+        }
+
+        .recent-price {
+            color: #a0a0ff;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .recent-location {
+            font-size: 11px;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 4px;
+        }
+
+        .recent-time {
+            font-size: 10px;
+            color: #2ecc71;
+        }
+
+        /* Feed Section */
         .feed-section {
             background: rgba(255,255,255,0.03);
             backdrop-filter: blur(10px);
@@ -236,7 +320,7 @@
             outline: none;
             transition: all 0.3s;
             flex: 1;
-            min-width: 200px;
+            min-width: 180px;
         }
 
         .filter-input:focus {
@@ -306,27 +390,38 @@
             background: rgba(255,255,255,0.05);
             border: 1px solid rgba(255,255,255,0.08);
             border-radius: 20px;
-            padding: 18px;
+            overflow: hidden;
             transition: all 0.3s;
             cursor: pointer;
         }
 
         .lead-card:hover {
             background: rgba(255,255,255,0.08);
-            transform: translateX(5px);
+            transform: translateY(-3px);
             border-color: rgba(102,126,234,0.5);
+        }
+
+        .lead-image {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            background: rgba(255,255,255,0.05);
+        }
+
+        .lead-content {
+            padding: 16px;
         }
 
         .lead-title {
             font-weight: 600;
-            font-size: 15px;
-            margin-bottom: 10px;
-            color: #fff;
+            font-size: 14px;
+            margin-bottom: 8px;
             line-height: 1.4;
+            color: #fff;
         }
 
         .lead-price {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
             color: #a0a0ff;
             margin-bottom: 8px;
@@ -336,7 +431,7 @@
             display: flex;
             flex-wrap: wrap;
             gap: 12px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             font-size: 12px;
             color: rgba(255,255,255,0.6);
         }
@@ -346,6 +441,7 @@
             font-weight: 600;
             margin-bottom: 8px;
             font-size: 13px;
+            word-break: break-all;
         }
 
         .lead-meta {
@@ -354,8 +450,8 @@
             align-items: center;
             font-size: 11px;
             color: rgba(255,255,255,0.4);
-            margin-top: 10px;
-            padding-top: 10px;
+            margin-top: 8px;
+            padding-top: 8px;
             border-top: 1px solid rgba(255,255,255,0.05);
         }
 
@@ -445,12 +541,15 @@
             .stat-number {
                 font-size: 40px;
             }
-            .feed-section {
+            .feed-section, .recent-section {
                 padding: 20px;
             }
             .leads-grid {
                 grid-template-columns: 1fr;
                 max-height: 500px;
+            }
+            .recent-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -483,6 +582,20 @@
         <div class="sync-info">
             <span class="sync-badge">● LIVE</span>
             <span class="sync-time">Last sync: <span id="lastSync">--</span></span>
+        </div>
+
+        <!-- Recent Ads Section -->
+        <div class="recent-section" id="recentSection">
+            <div class="recent-header">
+                <div class="recent-title">
+                    <span>🆕</span>
+                    <h2>Recently Posted</h2>
+                </div>
+                <div class="feed-badge">Last 24 hours</div>
+            </div>
+            <div id="recentAds" class="recent-grid">
+                <div class="loading">Loading recent ads...</div>
+            </div>
         </div>
 
         <!-- Live Feed Section -->
@@ -541,7 +654,6 @@
         
         const DATA_URL = 'https://raw.githubusercontent.com/AyyazAh/real-estate-leads/main/docs/leads_data.json';
         
-        // Helper Functions
         function getRelativeTime(timestamp) {
             if (!timestamp) return 'Unknown';
             const now = new Date();
@@ -592,6 +704,7 @@
             const perPage = parseInt(document.getElementById('perPage').value);
             
             document.getElementById('leadsContainer').innerHTML = '<div class="loading">Loading live data feed...</div>';
+            document.getElementById('recentAds').innerHTML = '<div class="loading">Loading recent ads...</div>';
             
             try {
                 const response = await fetch(DATA_URL + '?t=' + new Date().getTime());
@@ -602,7 +715,28 @@
                 // Update stats
                 document.getElementById('totalLeads').textContent = allLeads.length;
                 const syncDate = new Date(data.last_updated);
-                document.getElementById('lastSync').textContent = syncDate.toLocaleString();
+                document.getElementById('lastSync').innerHTML = syncDate.toLocaleString();
+                
+                // Display recent ads (last 24 hours)
+                const recent = allLeads.filter(l => isRecent(l.PostedTimestamp))
+                    .sort((a, b) => new Date(b.PostedTimestamp) - new Date(a.PostedTimestamp))
+                    .slice(0, 6);
+                
+                if (recent.length === 0) {
+                    document.getElementById('recentAds').innerHTML = '<div class="loading">No new ads in the last 24 hours</div>';
+                } else {
+                    document.getElementById('recentAds').innerHTML = recent.map(ad => `
+                        <div class="recent-card" onclick="window.open('${ad.Link}', '_blank')">
+                            ${ad.ImageURL ? `<img src="${ad.ImageURL}" class="recent-image" onerror="this.style.display='none'">` : '<div class="recent-image" style="display:flex;align-items:center;justify-content:center;">📷</div>'}
+                            <div class="recent-info">
+                                <div class="recent-title-text">${escapeHtml(ad.Title?.substring(0, 50) || 'N/A')}</div>
+                                <div class="recent-price">💰 ${escapeHtml(ad.Price || 'N/A')}</div>
+                                <div class="recent-location">📍 ${escapeHtml(ad.Location?.substring(0, 35) || 'N/A')}</div>
+                                <div class="recent-time">🕐 ${getRelativeTime(ad.PostedTimestamp)}</div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
                 
                 // Apply filters
                 let filtered = [...allLeads];
@@ -644,21 +778,25 @@
                                 const seller = lead.Seller || 'N/A';
                                 const price = lead.Price || 'N/A';
                                 const title = lead.Title || 'N/A';
+                                const imageUrl = lead.ImageURL || '';
                                 const furnishedBadge = lead.Furnished === 'Furnished' ? '<span class="badge-furnished">Furnished</span>' : '';
                                 const newBadge = isNew ? '<span class="badge-new">NEW</span>' : '';
                                 
                                 return `
                                     <div class="lead-card" onclick="window.open('${lead.Link}', '_blank')">
-                                        <div class="lead-title">${escapeHtml(title.substring(0, 80))}</div>
-                                        <div class="lead-price">💰 ${escapeHtml(price)}</div>
-                                        <div class="lead-details">
-                                            <span>📍 ${escapeHtml(location.substring(0, 40))}</span>
-                                            ${furnishedBadge}
-                                        </div>
-                                        <div class="lead-phone">📞 ${escapeHtml(phone)}</div>
-                                        <div class="lead-meta">
-                                            <span>👤 ${escapeHtml(seller.substring(0, 30))}</span>
-                                            <span>🕐 ${escapeHtml(postedTime)} ${newBadge}</span>
+                                        ${imageUrl ? `<img src="${imageUrl}" class="lead-image" onerror="this.style.display='none'">` : '<div class="lead-image" style="display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.3);">📷 No Image</div>'}
+                                        <div class="lead-content">
+                                            <div class="lead-title">${escapeHtml(title.substring(0, 80))}</div>
+                                            <div class="lead-price">💰 ${escapeHtml(price)}</div>
+                                            <div class="lead-details">
+                                                <span>📍 ${escapeHtml(location.substring(0, 40))}</span>
+                                                ${furnishedBadge}
+                                            </div>
+                                            <div class="lead-phone">📞 ${escapeHtml(phone)}</div>
+                                            <div class="lead-meta">
+                                                <span>👤 ${escapeHtml(seller.substring(0, 30))}</span>
+                                                <span>🕐 ${escapeHtml(postedTime)} ${newBadge}</span>
+                                            </div>
                                         </div>
                                     </div>
                                 `;
@@ -673,6 +811,7 @@
             } catch (error) {
                 console.error('Error:', error);
                 document.getElementById('leadsContainer').innerHTML = '<div class="loading">⚠️ Error loading data. Please try again later.</div>';
+                document.getElementById('recentAds').innerHTML = '<div class="loading">⚠️ Unable to load recent ads</div>';
             }
         }
         
@@ -707,7 +846,7 @@
         function goToPage(page) {
             currentPage = page;
             loadLeads();
-            window.scrollTo({ top: 400, behavior: 'smooth' });
+            window.scrollTo({ top: 500, behavior: 'smooth' });
         }
         
         function resetAndRefresh() {
